@@ -700,7 +700,8 @@ shaka.extern.ManifestConfiguration;
  *   stallThreshold: number,
  *   stallSkip: number,
  *   useNativeHlsOnSafari: boolean,
- *   inaccurateManifestTolerance: number
+ *   inaccurateManifestTolerance: number,
+ *   enableLowLatency: boolean
  * }}
  *
  * @description
@@ -786,6 +787,8 @@ shaka.extern.ManifestConfiguration;
  *   the times in the segments.  Larger values allow us to compensate for more
  *   drift (up to one segment duration).  Smaller values reduce the incidence of
  *   extra segment requests necessary to compensate for drift
+* @property {boolean} enableLowLatency
+ *   When set to <code>true</code>, enable low latency mode
  * @exportDoc
  */
 shaka.extern.StreamingConfiguration;

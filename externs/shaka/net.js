@@ -49,7 +49,8 @@ shaka.extern.RetryParameters;
  *   allowCrossSiteCredentials: boolean,
  *   retryParameters: !shaka.extern.RetryParameters,
  *   licenseRequestType: ?string,
- *   sessionId: ?string
+ *   sessionId: ?string,
+ *   customObj: ?Object
  * }}
  *
  * @description
@@ -79,6 +80,8 @@ shaka.extern.RetryParameters;
  * @property {?string} sessionId
  *   If this is a LICENSE request, this field contains the session ID of the
  *   EME session that made the request.
+ * @property {?Object} customObj
+ *   Custom object
  *
  * @exportDoc
  */
