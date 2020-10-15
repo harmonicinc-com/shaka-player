@@ -362,3 +362,38 @@ shaka.extern.CreateSegmentIndexFunction;
  * @exportDoc
  */
 shaka.extern.Stream;
+
+/**
+ * @typedef {{
+ *   prtMap: !Map.<string, shaka.extern.PrtData>,
+ *   periodIdMap: !Map.<number, string>
+ * }}
+ *
+ * @property {Map.<string, shaka.extern.PrtData>} prtMap
+ *   structure of key: <periodId>_<representationId>_<type>
+ * @description
+ * Data need for calculating presentation latency on low latency stream
+ * specified {@link https://dashif.org/docs/CR-Low-Latency-Live-r8.pdf 9.X.5}.
+ *
+ * @exportDoc
+ */
+shaka.extern.PresentationLatencyData;
+
+
+/**
+ * @typedef {{
+ *   wca: number,
+ *   pta: number,
+ *   isInBand: boolean,
+ *   timescale: number,
+ *   presentationTimeOffset: number,
+ *   type: string
+ * }}
+ *
+ * @description
+ * Data need for calculating presentation latency on low latency stream
+ * specified {@link https://dashif.org/docs/CR-Low-Latency-Live-r8.pdf 9.X.5}.
+ *
+ * @exportDoc
+ */
+shaka.extern.PrtData;
