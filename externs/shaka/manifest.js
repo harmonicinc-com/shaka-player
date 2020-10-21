@@ -375,7 +375,6 @@ shaka.extern.Stream;
  * Data need for calculating presentation latency on low latency stream
  * specified {@link https://dashif.org/docs/CR-Low-Latency-Live-r8.pdf 9.X.5}.
  *
- * @exportDoc
  */
 shaka.extern.PresentationLatencyData;
 
@@ -385,8 +384,6 @@ shaka.extern.PresentationLatencyData;
  *   wca: number,
  *   pta: number,
  *   isInBand: boolean,
- *   timescale: number,
- *   presentationTimeOffset: number,
  *   type: string
  * }}
  *
@@ -394,6 +391,5 @@ shaka.extern.PresentationLatencyData;
  * Data need for calculating presentation latency on low latency stream
  * specified {@link https://dashif.org/docs/CR-Low-Latency-Live-r8.pdf 9.X.5}.
  *
- * @exportDoc
  */
 shaka.extern.PrtData;
