@@ -49,11 +49,11 @@ jobs:
           rm -rf tmp
           mkdir tmp
           cp -r demo tmp
-          cp deploy_patch/demo/index.html tmp/demo/index.html
-          cp deploy_patch/index.html tmp/index.html
-          cp deploy_patch/.nojekyll  tmp/.nojekyll
-          cp deploy_patch/demo/main.js tmp/demo/main.js
-          cp deploy_patch/demo/load.js tmp/demo/load.js
+          cp .github_page_deploy/demo/index.html tmp/demo/index.html
+          cp .github_page_deploy/index.html tmp/index.html
+          cp .github_page_deploy/.nojekyll  tmp/.nojekyll
+          cp .github_page_deploy/demo/main.js tmp/demo/main.js
+          cp .github_page_deploy/demo/load.js tmp/demo/load.js
           cp -r dist tmp
           cp --parent ui/controls.less tmp
           cp -r --parent ui/locales tmp
