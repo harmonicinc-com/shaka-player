@@ -94,6 +94,17 @@ describe('SegmentIndex', /** @suppress {accessControls} */ () => {
       const pos = index.find(23);
       expect(pos).toBeNull();
     });
+
+    it('returns 2nd segment (up to 6 decimal on start time)', () => {
+      const actual1 = makeReference(uri(10), 96, 100);
+      const actual2 = makeReference(uri(25), 100.12345612, 104);
+      const index = new shaka.media.SegmentIndex([actual1, actual2]);
+
+      const pos = index.find(100.123456);
+      goog.asserts.assert(pos != null, 'Null position!');
+      const ref = index.get(pos);
+      expect(ref).toBe(actual2);
+    });
   });
 
   describe('get', () => {
