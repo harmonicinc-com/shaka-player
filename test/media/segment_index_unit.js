@@ -86,13 +86,15 @@ describe('SegmentIndex', /** @suppress {accessControls} */ () => {
       expect(pos).toBeNull();
     });
 
-    it('returns null if time is within a gap', () => {
+    it('returns segment next to gap if time is within a gap', () => {
       const actual1 = makeReference(uri(10), 10, 20);
       const actual2 = makeReference(uri(25), 25, 30);
       const index = new shaka.media.SegmentIndex([actual1, actual2]);
 
       const pos = index.find(23);
-      expect(pos).toBeNull();
+      goog.asserts.assert(pos != null, 'Null position!');
+      const ref = index.get(pos);
+      expect(ref).toBe(actual2);
     });
   });
 
