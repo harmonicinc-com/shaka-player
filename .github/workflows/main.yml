@@ -86,6 +86,7 @@ jobs:
 
       - name: Copy files to npm publish
         run: |
+          mkdir ./harmonicinc/npm_publish/dist
           cp ./AUTHORS ./CONTRIBUTORS ./LICENSE ./harmonicinc/npm_publish
           cp dist/shaka-player.compiled.debug.js dist/shaka-player.ui.debug.js dist/controls.css dist/shaka-player.compiled.js dist/shaka-player.ui.js ./harmonicinc/npm_publish/dist
         working-directory: ./
@@ -96,9 +97,17 @@ jobs:
           node-version: 12
           registry-url: https://registry.npmjs.org/
 
+      - name: Extract version
+        uses: bhowell2/github-substring-action
+        id: version
+        with:
+          value: ${{ env.RELEASE_VERSION }}
+          index_of_str: "v"
+
       - name: Publish to npm
         run: |
           yarn install
+          npm version ${{steps.version.outputs.substring}}
           npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
