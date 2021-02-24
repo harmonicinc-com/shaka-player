@@ -84,20 +84,22 @@ jobs:
       - name: Publish demo page to github page
         run: gh-pages-multi deploy --title "Harmonic Shaka Player Demo" -s tmp -t latest --no-history
 
-      - name: Prepare npm publish
+      - name: Copy files to npm publish
         run: |
           cp ./AUTHORS ./CONTRIBUTORS ./LICENSE ./harmonicinc/npm_publish
           cp dist/shaka-player.compiled.debug.js dist/shaka-player.ui.debug.js dist/controls.css dist/shaka-player.compiled.js dist/shaka-player.ui.js ./harmonicinc/npm_publish/dist
         working-directory: ./
 
-      - name: Publish to npm
-        uses: actions/checkout@v1
+      - name: Prepare publish to npm
         uses: actions/setup-node@v1
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
-        run: yarn install
-        run: npm publish --access public
+
+      - name: Publish to npm
+        run: |
+          yarn install
+          npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
         working-directory: ./harmonicinc/npm_publish
