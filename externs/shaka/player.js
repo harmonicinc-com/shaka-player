@@ -783,6 +783,7 @@ shaka.extern.ManifestConfiguration;
  *   inaccurateManifestTolerance: number,
  *   lowLatencyMode: boolean,
  *   autoLowLatencyMode: boolean,
+ *   harmonicLowLatencyABR: boolean,
  *   forceHTTPS: boolean,
  *   preferNativeHls: boolean
  * }}
@@ -887,6 +888,8 @@ shaka.extern.ManifestConfiguration;
  *   lowLatencyMode, but if it has been configured to activate the
  *   lowLatencyMode if a stream of this type is detected, we automatically
  *   activate the lowLatencyMode. Defaults to false.
+ * @property {boolean} harmonicLowLatencyABR
+ *   If true, enable SimpleLLABRManager and LiveCatchUpController
  * @property {boolean} forceHTTPS
  *   If true, if the protocol is HTTP change it to HTTPs.
  * @property {boolean} preferNativeHls
