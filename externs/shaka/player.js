@@ -908,7 +908,8 @@ shaka.extern.StreamingConfiguration;
  *   restrictions: shaka.extern.Restrictions,
  *   switchInterval: number,
  *   bandwidthUpgradeTarget: number,
- *   bandwidthDowngradeTarget: number
+ *   bandwidthDowngradeTarget: number,
+ *   stallCountToDowngrade: number
  * }}
  *
  * @property {boolean} enabled
@@ -936,6 +937,8 @@ shaka.extern.StreamingConfiguration;
  * @property {number} bandwidthDowngradeTarget
  *   The largest fraction of the estimated bandwidth we should use. We should
  *   downgrade to avoid this.
+ * @property {number} stallCountToDowngrade
+ *   The stall count to downgrade bandwidth in low latency mode.
  * @exportDoc
  */
 shaka.extern.AbrConfiguration;
