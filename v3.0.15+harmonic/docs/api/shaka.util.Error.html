@@ -1,0 +1,6160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Class: shaka.util.Error</title>
+
+    <script src="scripts/prettify.js"> </script>
+    <script src="scripts/lang-css.js"> </script>
+    <script src="scripts/show-widget.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/tomorrow.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+
+    <h1 class="page-title">Class: shaka.util.Error</h1>
+
+
+    
+
+
+
+
+<section>
+
+<!--
+<header>
+    
+        <h2><span class="attribs"><span class="type-signature"></span></span>Error<span class="signature">(severity, category, code, &hellip;varArgs)</span><span class="type-signature"></span></h2>
+        
+    
+</header>
+-->
+
+
+    <div class="class-description">Describes an error that happened.</div>
+
+
+<article>
+    <div class="container-overview">
+    
+        
+<div class="access-container access-export">
+
+
+    
+    <h2>Constructor</h2>
+    
+
+    
+    <h4 class="name" id="Error"><span class="type-signature"></span>new Error<span class="signature">(severity, category, code, &hellip;varArgs)</span><span class="type-signature"></span></h4>
+    
+
+    
+    <p class="summary">Describes an error that happened.</p>
+    
+
+
+
+<div class="description">
+    This uses numerical codes to describe
+which error happened.
+
+Some error are caused by errors from the browser.  In these cases, the error
+object is provided as part of the <code>data</code> field.  System codes come
+from the browser and may or may not be documented.  Here are some places
+where the errors may be documented:
+<ul>
+  <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/MediaError">MediaError</a>
+  <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status">HTTP Codes</a>
+  <li>
+    <a href="https://docs.microsoft.com/en-us/windows/win32/wmdm/error-codes">PlayReady errors</a>
+    or
+    <a href="https://github.com/tpn/winsdk-10/blob/master/Include/10.0.16299.0/winrt/Windows.Media.Protection.PlayReadyErrors.h">more PlayReady errors</a>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>severity</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="shaka.util.Error.html#.Severity">shaka.util.Error.Severity</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>category</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="shaka.util.Error.html#.Category">shaka.util.Error.Category</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>code</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="shaka.util.Error.html#.Code">shaka.util.Error.Code</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>varArgs</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                    &lt;repeatable><br>
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="implements">Implements:</dt>
+    <dd class="implements"><ul>
+        
+            <li><a href="shaka.extern.Error.html">shaka.extern.Error</a></li>
+        
+    </ul></dd>
+    
+
+    
+    <dt class="augments">Extends:</dt>
+    <dd class="augments"><ul>
+        
+            <li>Error</li>
+        
+    </ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_util_error.js.html">lib/util/error.js</a>, <a href="lib_util_error.js.html#line42">line 42</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+    
+    </div>
+
+    
+        <h3 class="subsection-title">Extends</h3>
+
+        
+
+
+    <ul>
+        <li>Error</li>
+    </ul>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<div class="access-container access-export">
+
+<h4 class="name" id=".Category"><span class="type-signature"></span>Category<span class="type-signature"> :number</span></h4>
+
+
+
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">number</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        
+        <th>Value</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        
+        <tr class="enum" id="value:1">
+        
+
+            
+                <td class="name"><code>NETWORK</code></td>
+            
+
+            
+                <td class="default">
+                
+                    1
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Errors from the network stack.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:2">
+        
+
+            
+                <td class="name"><code>TEXT</code></td>
+            
+
+            
+                <td class="default">
+                
+                    2
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Errors parsing text streams.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:3">
+        
+
+            
+                <td class="name"><code>MEDIA</code></td>
+            
+
+            
+                <td class="default">
+                
+                    3
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Errors parsing or processing audio or video streams.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4">
+        
+
+            
+                <td class="name"><code>MANIFEST</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Errors parsing the Manifest.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:5">
+        
+
+            
+                <td class="name"><code>STREAMING</code></td>
+            
+
+            
+                <td class="default">
+                
+                    5
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Errors related to streaming.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:6">
+        
+
+            
+                <td class="name"><code>DRM</code></td>
+            
+
+            
+                <td class="default">
+                
+                    6
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Errors related to DRM.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:7">
+        
+
+            
+                <td class="name"><code>PLAYER</code></td>
+            
+
+            
+                <td class="default">
+                
+                    7
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Miscellaneous errors from the player.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:8">
+        
+
+            
+                <td class="name"><code>CAST</code></td>
+            
+
+            
+                <td class="default">
+                
+                    8
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Errors related to cast.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:9">
+        
+
+            
+                <td class="name"><code>STORAGE</code></td>
+            
+
+            
+                <td class="default">
+                
+                    9
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Errors in the database storage (offline).</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:10">
+        
+
+            
+                <td class="name"><code>ADS</code></td>
+            
+
+            
+                <td class="default">
+                
+                    10
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Errors related to ad insertion.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_util_error.js.html">lib/util/error.js</a>, <a href="lib_util_error.js.html#line163">line 163</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+</div>
+
+        
+            
+<div class="access-container access-export">
+
+<h4 class="name" id=".Code"><span class="type-signature"></span>Code<span class="type-signature"> :number</span></h4>
+
+
+
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">number</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        
+        <th>Value</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        
+        <tr class="enum" id="value:1000">
+        
+
+            
+                <td class="name"><code>UNSUPPORTED_SCHEME</code></td>
+            
+
+            
+                <td class="default">
+                
+                    1000
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A network request was made using an unsupported URI scheme.
+<br> error.data[0] is the URI.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:1001">
+        
+
+            
+                <td class="name"><code>BAD_HTTP_STATUS</code></td>
+            
+
+            
+                <td class="default">
+                
+                    1001
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">An HTTP network request returned an HTTP status that indicated a failure.
+<br> error.data[0] is the URI.
+<br> error.data[1] is the status code.
+<br> error.data[2] is the response text, or null if the response could not
+  be interpretted as text.
+<br> error.data[3] is the map of response headers.
+<br> error.data[4] is the NetworkingEngine.RequestType of the request,
+  if one was provided.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:1002">
+        
+
+            
+                <td class="name"><code>HTTP_ERROR</code></td>
+            
+
+            
+                <td class="default">
+                
+                    1002
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">An HTTP network request failed with an error, but not from the server.
+<br> error.data[0] is the URI.
+<br> error.data[1] is the original error.
+<br> error.data[2] is the NetworkingEngine.RequestType of the request.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:1003">
+        
+
+            
+                <td class="name"><code>TIMEOUT</code></td>
+            
+
+            
+                <td class="default">
+                
+                    1003
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A network request timed out.
+<br> error.data[0] is the URI.
+<br> error.data[1] is the NetworkingEngine.RequestType of the request,
+  if one was provided.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:1004">
+        
+
+            
+                <td class="name"><code>MALFORMED_DATA_URI</code></td>
+            
+
+            
+                <td class="default">
+                
+                    1004
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A network request was made with a malformed data URI.
+<br> error.data[0] is the URI.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:1006">
+        
+
+            
+                <td class="name"><code>REQUEST_FILTER_ERROR</code></td>
+            
+
+            
+                <td class="default">
+                
+                    1006
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A request filter threw an error.
+<br> error.data[0] is the original error.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:1007">
+        
+
+            
+                <td class="name"><code>RESPONSE_FILTER_ERROR</code></td>
+            
+
+            
+                <td class="default">
+                
+                    1007
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A response filter threw an error.
+<br> error.data[0] is the original error.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:1008">
+        
+
+            
+                <td class="name"><code>MALFORMED_TEST_URI</code></td>
+            
+
+            
+                <td class="default">
+                
+                    1008
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A testing network request was made with a malformed URI.
+This error is only used by unit and integration tests.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:1009">
+        
+
+            
+                <td class="name"><code>UNEXPECTED_TEST_REQUEST</code></td>
+            
+
+            
+                <td class="default">
+                
+                    1009
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">An unexpected network request was made to the FakeNetworkingEngine.
+This error is only used by unit and integration tests.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:1010">
+        
+
+            
+                <td class="name"><code>ATTEMPTS_EXHAUSTED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    1010
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The number of retry attempts have run out.
+This is an internal error and shouldn't be propagated.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:2000">
+        
+
+            
+                <td class="name"><code>INVALID_TEXT_HEADER</code></td>
+            
+
+            
+                <td class="default">
+                
+                    2000
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The text parser failed to parse a text stream due to an invalid header.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:2001">
+        
+
+            
+                <td class="name"><code>INVALID_TEXT_CUE</code></td>
+            
+
+            
+                <td class="default">
+                
+                    2001
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The text parser failed to parse a text stream due to an invalid cue.
+<br> error.data[0] is extra context, if available.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:2003">
+        
+
+            
+                <td class="name"><code>UNABLE_TO_DETECT_ENCODING</code></td>
+            
+
+            
+                <td class="default">
+                
+                    2003
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Was unable to detect the encoding of the response text.  Suggest adding
+byte-order-markings to the response data.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:2004">
+        
+
+            
+                <td class="name"><code>BAD_ENCODING</code></td>
+            
+
+            
+                <td class="default">
+                
+                    2004
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The response data contains invalid Unicode character encoding.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:2005">
+        
+
+            
+                <td class="name"><code>INVALID_XML</code></td>
+            
+
+            
+                <td class="default">
+                
+                    2005
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The XML parser failed to parse an xml stream, or the XML lacks mandatory
+elements for TTML.
+<br> error.data[0] is extra context, if available.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:2007">
+        
+
+            
+                <td class="name"><code>INVALID_MP4_TTML</code></td>
+            
+
+            
+                <td class="default">
+                
+                    2007
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">MP4 segment does not contain TTML.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:2008">
+        
+
+            
+                <td class="name"><code>INVALID_MP4_VTT</code></td>
+            
+
+            
+                <td class="default">
+                
+                    2008
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">MP4 segment does not contain VTT.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:2009">
+        
+
+            
+                <td class="name"><code>UNABLE_TO_EXTRACT_CUE_START_TIME</code></td>
+            
+
+            
+                <td class="default">
+                
+                    2009
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">When examining media in advance, we were unable to extract the cue time.
+This should only be possible with HLS, where we do not have explicit
+segment start times.
+<br> error.data[0] is the underlying exception or Error object.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:2010">
+        
+
+            
+                <td class="name"><code>INVALID_MP4_CEA</code></td>
+            
+
+            
+                <td class="default">
+                
+                    2010
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">MP4 segment for CEA data is invalid.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:2011">
+        
+
+            
+                <td class="name"><code>TEXT_COULD_NOT_GUESS_MIME_TYPE</code></td>
+            
+
+            
+                <td class="default">
+                
+                    2011
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Unable to guess mime type of the text.
+<br> error.data[0] is the text file's extension.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:2012">
+        
+
+            
+                <td class="name"><code>CANNOT_ADD_EXTERNAL_TEXT_TO_SRC_EQUALS</code></td>
+            
+
+            
+                <td class="default">
+                
+                    2012
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">External text tracks cannot be added in src= because native platform
+doesn't support it.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:2013">
+        
+
+            
+                <td class="name"><code>TEXT_ONLY_WEBVTT_SRC_EQUALS</code></td>
+            
+
+            
+                <td class="default">
+                
+                    2013
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Only WebVTT is supported when using src=.
+<br> error.data[0] is the text MIME type.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:2014">
+        
+
+            
+                <td class="name"><code>MISSING_TEXT_PLUGIN</code></td>
+            
+
+            
+                <td class="default">
+                
+                    2014
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The compilation does not contain a required text plugin for this
+operation.
+<br> error.data[0] is the text MIME type.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:3000">
+        
+
+            
+                <td class="name"><code>BUFFER_READ_OUT_OF_BOUNDS</code></td>
+            
+
+            
+                <td class="default">
+                
+                    3000
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Some component tried to read past the end of a buffer.  The segment index,
+init segment, or PSSH may be malformed.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:3001">
+        
+
+            
+                <td class="name"><code>JS_INTEGER_OVERFLOW</code></td>
+            
+
+            
+                <td class="default">
+                
+                    3001
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Some component tried to parse an integer that was too large to fit in a
+JavaScript number without rounding error.  JavaScript can only natively
+represent integers up to 53 bits.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:3002">
+        
+
+            
+                <td class="name"><code>EBML_OVERFLOW</code></td>
+            
+
+            
+                <td class="default">
+                
+                    3002
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The EBML parser used to parse the WebM container encountered an integer,
+ID, or other field larger than the maximum supported by the parser.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:3003">
+        
+
+            
+                <td class="name"><code>EBML_BAD_FLOATING_POINT_SIZE</code></td>
+            
+
+            
+                <td class="default">
+                
+                    3003
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The EBML parser used to parse the WebM container encountered a floating-
+point field of a size not supported by the parser.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:3004">
+        
+
+            
+                <td class="name"><code>MP4_SIDX_WRONG_BOX_TYPE</code></td>
+            
+
+            
+                <td class="default">
+                
+                    3004
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The MP4 SIDX parser found the wrong box type.
+Either the segment index range is incorrect or the data is corrupt.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:3005">
+        
+
+            
+                <td class="name"><code>MP4_SIDX_INVALID_TIMESCALE</code></td>
+            
+
+            
+                <td class="default">
+                
+                    3005
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The MP4 SIDX parser encountered an invalid timescale.
+The segment index data may be corrupt.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:3006">
+        
+
+            
+                <td class="name"><code>MP4_SIDX_TYPE_NOT_SUPPORTED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    3006
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The MP4 SIDX parser encountered a type of SIDX that is not supported.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:3007">
+        
+
+            
+                <td class="name"><code>WEBM_CUES_ELEMENT_MISSING</code></td>
+            
+
+            
+                <td class="default">
+                
+                    3007
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The WebM Cues parser was unable to locate the Cues element.
+The segment index data may be corrupt.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:3008">
+        
+
+            
+                <td class="name"><code>WEBM_EBML_HEADER_ELEMENT_MISSING</code></td>
+            
+
+            
+                <td class="default">
+                
+                    3008
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The WebM header parser was unable to locate the Ebml element.
+The init segment data may be corrupt.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:3009">
+        
+
+            
+                <td class="name"><code>WEBM_SEGMENT_ELEMENT_MISSING</code></td>
+            
+
+            
+                <td class="default">
+                
+                    3009
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The WebM header parser was unable to locate the Segment element.
+The init segment data may be corrupt.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:3010">
+        
+
+            
+                <td class="name"><code>WEBM_INFO_ELEMENT_MISSING</code></td>
+            
+
+            
+                <td class="default">
+                
+                    3010
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The WebM header parser was unable to locate the Info element.
+The init segment data may be corrupt.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:3011">
+        
+
+            
+                <td class="name"><code>WEBM_DURATION_ELEMENT_MISSING</code></td>
+            
+
+            
+                <td class="default">
+                
+                    3011
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The WebM header parser was unable to locate the Duration element.
+The init segment data may be corrupt or may have been incorrectly encoded.
+Shaka requires a duration in WebM DASH content.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:3012">
+        
+
+            
+                <td class="name"><code>WEBM_CUE_TRACK_POSITIONS_ELEMENT_MISSING</code></td>
+            
+
+            
+                <td class="default">
+                
+                    3012
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The WebM Cues parser was unable to locate the Cue Track Positions element.
+The segment index data may be corrupt.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:3013">
+        
+
+            
+                <td class="name"><code>WEBM_CUE_TIME_ELEMENT_MISSING</code></td>
+            
+
+            
+                <td class="default">
+                
+                    3013
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The WebM Cues parser was unable to locate the Cue Time element.
+The segment index data may be corrupt.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:3014">
+        
+
+            
+                <td class="name"><code>MEDIA_SOURCE_OPERATION_FAILED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    3014
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A MediaSource operation failed.
+<br> error.data[0] is a MediaError code from the video element.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:3015">
+        
+
+            
+                <td class="name"><code>MEDIA_SOURCE_OPERATION_THREW</code></td>
+            
+
+            
+                <td class="default">
+                
+                    3015
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A MediaSource operation threw an exception.
+<br> error.data[0] is the exception that was thrown.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:3016">
+        
+
+            
+                <td class="name"><code>VIDEO_ERROR</code></td>
+            
+
+            
+                <td class="default">
+                
+                    3016
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The video element reported an error.
+<br> error.data[0] is a MediaError code from the video element.
+<br> On Edge & IE, error.data[1] is a Microsoft extended error code in hex.
+<br> On Chrome, error.data[2] is a string with details on the error.
+<br> See top of file for links to browser error codes.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:3017">
+        
+
+            
+                <td class="name"><code>QUOTA_EXCEEDED_ERROR</code></td>
+            
+
+            
+                <td class="default">
+                
+                    3017
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A MediaSource operation threw QuotaExceededError and recovery failed. The
+content cannot be played correctly because the segments are too large for
+the browser/platform. This may occur when attempting to play very high
+quality, very high bitrate content on low-end devices.
+<br> error.data[0] is the type of content which caused the error.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:3018">
+        
+
+            
+                <td class="name"><code>TRANSMUXING_FAILED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    3018
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Mux.js did not invoke the callback signifying successful transmuxing.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:3019">
+        
+
+            
+                <td class="name"><code>CONTENT_TRANSFORMATION_FAILED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    3019
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Content transformations required by the platform could not be performed for
+some reason (unsupported container, etc.)</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4000">
+        
+
+            
+                <td class="name"><code>UNABLE_TO_GUESS_MANIFEST_TYPE</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4000
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The Player was unable to guess the manifest type based on file extension
+or MIME type.  To fix, try one of the following:
+<br><ul>
+  <li>Rename the manifest so that the URI ends in a well-known extension.
+  <li>Configure the server to send a recognizable Content-Type header.
+  <li>Configure the server to accept a HEAD request for the manifest.
+</ul>
+<br> error.data[0] is the manifest URI.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4001">
+        
+
+            
+                <td class="name"><code>DASH_INVALID_XML</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4001
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The DASH Manifest contained invalid XML markup.
+<br> error.data[0] is the URI associated with the XML.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4002">
+        
+
+            
+                <td class="name"><code>DASH_NO_SEGMENT_INFO</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4002
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The DASH Manifest contained a Representation with insufficient segment
+information.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4003">
+        
+
+            
+                <td class="name"><code>DASH_EMPTY_ADAPTATION_SET</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4003
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The DASH Manifest contained an AdaptationSet with no Representations.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4004">
+        
+
+            
+                <td class="name"><code>DASH_EMPTY_PERIOD</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4004
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The DASH Manifest contained an Period with no AdaptationSets.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4005">
+        
+
+            
+                <td class="name"><code>DASH_WEBM_MISSING_INIT</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4005
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The DASH Manifest does not specify an init segment with a WebM container.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4006">
+        
+
+            
+                <td class="name"><code>DASH_UNSUPPORTED_CONTAINER</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4006
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The DASH Manifest contained an unsupported container format.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4007">
+        
+
+            
+                <td class="name"><code>DASH_PSSH_BAD_ENCODING</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4007
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The embedded PSSH data has invalid encoding.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4008">
+        
+
+            
+                <td class="name"><code>DASH_NO_COMMON_KEY_SYSTEM</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4008
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">There is an AdaptationSet whose Representations do not have any common
+key-systems.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4009">
+        
+
+            
+                <td class="name"><code>DASH_MULTIPLE_KEY_IDS_NOT_SUPPORTED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4009
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Having multiple key IDs per Representation is not supported.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4010">
+        
+
+            
+                <td class="name"><code>DASH_CONFLICTING_KEY_IDS</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4010
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The DASH Manifest specifies conflicting key IDs.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4012">
+        
+
+            
+                <td class="name"><code>RESTRICTIONS_CANNOT_BE_MET</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4012
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">There exist some streams that could be decoded, but restrictions imposed
+by the application or the key system prevent us from playing.  This may
+happen under the following conditions:
+<ul>
+  <li>The application has given restrictions to the Player that restrict
+      at least one content type completely (e.g. no playable audio).
+  <li>The manifest specifies different keys than were given to us from the
+      license server.
+  <li>The key system has imposed output restrictions that cannot be met
+      (such as HDCP) and there are no unrestricted alternatives.
+</ul>
+<br> error.data[0] is a <a href="shaka.extern.html#.RestrictionInfo">shaka.extern.RestrictionInfo</a> object
+describing the kinds of restrictions that caused this error.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4015">
+        
+
+            
+                <td class="name"><code>HLS_PLAYLIST_HEADER_MISSING</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4015
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">HLS playlist doesn't start with a mandory #EXTM3U tag.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4016">
+        
+
+            
+                <td class="name"><code>INVALID_HLS_TAG</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4016
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">HLS tag has an invalid name that doesn't start with '#EXT'
+<br> error.data[0] is the invalid tag.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4017">
+        
+
+            
+                <td class="name"><code>HLS_INVALID_PLAYLIST_HIERARCHY</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4017
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">HLS playlist has both Master and Media/Segment tags.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4018">
+        
+
+            
+                <td class="name"><code>DASH_DUPLICATE_REPRESENTATION_ID</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4018
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A Representation has an id that is the same as another Representation in
+the same Period.  This makes manifest updates impossible since we cannot
+map the updated Representation to the old one.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4020">
+        
+
+            
+                <td class="name"><code>HLS_MULTIPLE_MEDIA_INIT_SECTIONS_FOUND</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4020
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">HLS manifest has several #EXT-X-MAP tags. We can only
+support one at the moment.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4021">
+        
+
+            
+                <td class="name"><code>HLS_COULD_NOT_GUESS_MIME_TYPE</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4021
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">HLS parser was unable to guess mime type of a stream.
+<br> error.data[0] is the stream file's extension.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4022">
+        
+
+            
+                <td class="name"><code>HLS_MASTER_PLAYLIST_NOT_PROVIDED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4022
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">No Master Playlist has been provided. Master playlist provides
+vital information about the streams (like codecs) that is
+required for MediaSource. We don't support directly providing
+a Media Playlist.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4023">
+        
+
+            
+                <td class="name"><code>HLS_REQUIRED_ATTRIBUTE_MISSING</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4023
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">One of the required attributes was not provided, so the
+HLS manifest is invalid.
+<br> error.data[0] is the missing attribute's name.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4024">
+        
+
+            
+                <td class="name"><code>HLS_REQUIRED_TAG_MISSING</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4024
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">One of the required tags was not provided, so the
+HLS manifest is invalid.
+<br> error.data[0] is the missing tag's name.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4025">
+        
+
+            
+                <td class="name"><code>HLS_COULD_NOT_GUESS_CODECS</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4025
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The HLS parser was unable to guess codecs of a stream.
+<br> error.data[0] is the list of all codecs for the variant.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4026">
+        
+
+            
+                <td class="name"><code>HLS_KEYFORMATS_NOT_SUPPORTED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4026
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The HLS parser has encountered encrypted content with unsupported
+KEYFORMAT attributes.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4027">
+        
+
+            
+                <td class="name"><code>DASH_UNSUPPORTED_XLINK_ACTUATE</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4027
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The manifest parser only supports xlink links with xlink:actuate="onLoad".</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4028">
+        
+
+            
+                <td class="name"><code>DASH_XLINK_DEPTH_LIMIT</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4028
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The manifest parser has hit its depth limit on xlink link chains.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4030">
+        
+
+            
+                <td class="name"><code>HLS_COULD_NOT_PARSE_SEGMENT_START_TIME</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4030
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The HLS parser was unable to parse segment start time from the media.
+<br> error.data[0] is the failed media playlist URI.
+<br> error.data[1] is the failed media segment URI (if any).</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4032">
+        
+
+            
+                <td class="name"><code>CONTENT_UNSUPPORTED_BY_BROWSER</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4032
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The content container or codecs are not supported by this browser. For
+example, this could happen if the content is WebM, but your browser does
+not support the WebM container, or if the content uses HEVC, but your
+browser does not support the HEVC codec.  This can also occur for
+multicodec or multicontainer manifests if none of the codecs or containers
+are supported by the browser.
+
+To see what your browser supports, you can check the JSON data dumped by
+http://support.shaka-player-demo.appspot.com/</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4033">
+        
+
+            
+                <td class="name"><code>CANNOT_ADD_EXTERNAL_TEXT_TO_LIVE_STREAM</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4033
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">External text tracks cannot be added to live streams.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4034">
+        
+
+            
+                <td class="name"><code>HLS_AES_128_ENCRYPTION_NOT_SUPPORTED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4034
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">We do not support AES-128 encryption with HLS yet.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4035">
+        
+
+            
+                <td class="name"><code>HLS_INTERNAL_SKIP_STREAM</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4035
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">An internal error code that should never be seen by applications, thrown
+to force the HLS parser to skip an unsupported stream.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4036">
+        
+
+            
+                <td class="name"><code>NO_VARIANTS</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4036
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The Manifest contained no Variants.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4037">
+        
+
+            
+                <td class="name"><code>PERIOD_FLATTENING_FAILED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4037
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">We failed to find matching streams across DASH Periods, and the
+period-flattening aglorithm introduced in v3.0 has failed.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4038">
+        
+
+            
+                <td class="name"><code>INCONSISTENT_DRM_ACROSS_PERIODS</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4038
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">We failed to find matching streams across DASH Periods due to inconsistent
+DRM systems across periods.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:4039">
+        
+
+            
+                <td class="name"><code>HLS_VARIABLE_NOT_FOUND</code></td>
+            
+
+            
+                <td class="default">
+                
+                    4039
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The HLS manifest refers to an undeclared variables.
+<br> error.data[0] is the variable undeclared.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:5006">
+        
+
+            
+                <td class="name"><code>STREAMING_ENGINE_STARTUP_INVALID_STATE</code></td>
+            
+
+            
+                <td class="default">
+                
+                    5006
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">This would only happen if StreamingEngine were not started correctly, and
+should not be seen in production.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:6000">
+        
+
+            
+                <td class="name"><code>NO_RECOGNIZED_KEY_SYSTEMS</code></td>
+            
+
+            
+                <td class="default">
+                
+                    6000
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The manifest indicated protected content, but the manifest parser was
+unable to determine what key systems should be used.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:6001">
+        
+
+            
+                <td class="name"><code>REQUESTED_KEY_SYSTEM_CONFIG_UNAVAILABLE</code></td>
+            
+
+            
+                <td class="default">
+                
+                    6001
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">None of the requested key system configurations are available.  This may
+happen under the following conditions:
+<ul>
+  <li> The key system is not supported.
+  <li> The key system does not support the features requested (e.g.
+       persistent state).
+  <li> A user prompt was shown and the user denied access.
+  <li> The key system is not available from unsecure contexts. (i.e.
+            requires HTTPS) See https://bit.ly/2K9X1nY
+</ul></td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:6002">
+        
+
+            
+                <td class="name"><code>FAILED_TO_CREATE_CDM</code></td>
+            
+
+            
+                <td class="default">
+                
+                    6002
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The browser found one of the requested key systems, but it failed to
+create an instance of the CDM for some unknown reason.
+<br> error.data[0] is an error message string from the browser.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:6003">
+        
+
+            
+                <td class="name"><code>FAILED_TO_ATTACH_TO_VIDEO</code></td>
+            
+
+            
+                <td class="default">
+                
+                    6003
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The browser found one of the requested key systems and created an instance
+of the CDM, but it failed to attach the CDM to the video for some unknown
+reason.
+<br> error.data[0] is an error message string from the browser.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:6004">
+        
+
+            
+                <td class="name"><code>INVALID_SERVER_CERTIFICATE</code></td>
+            
+
+            
+                <td class="default">
+                
+                    6004
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The CDM rejected the server certificate supplied by the application.
+The certificate may be malformed or in an unsupported format.
+<br> error.data[0] is an error message string from the browser.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:6005">
+        
+
+            
+                <td class="name"><code>FAILED_TO_CREATE_SESSION</code></td>
+            
+
+            
+                <td class="default">
+                
+                    6005
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The CDM refused to create a session for some unknown reason.
+<br> error.data[0] is an error message string from the browser.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:6006">
+        
+
+            
+                <td class="name"><code>FAILED_TO_GENERATE_LICENSE_REQUEST</code></td>
+            
+
+            
+                <td class="default">
+                
+                    6006
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The CDM was unable to generate a license request for the init data it was
+given.  The init data may be malformed or in an unsupported format.
+<br> error.data[0] is an error message string from the browser.
+<br> error.data[1] is the error object from the browser.
+<br> error.data[2] is a string with the extended error code, if available.
+<br> See top of file for links to browser error codes.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:6007">
+        
+
+            
+                <td class="name"><code>LICENSE_REQUEST_FAILED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    6007
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The license request failed.  This could be a timeout, a network failure, or
+a rejection by the server.
+<br> error.data[0] is a shaka.util.Error from the networking engine.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:6008">
+        
+
+            
+                <td class="name"><code>LICENSE_RESPONSE_REJECTED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    6008
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The license response was rejected by the CDM.  The server's response may be
+invalid or malformed for this CDM.
+<br> error.data[0] is an error message string from the browser.
+<br> See top of file for links to browser error codes.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:6010">
+        
+
+            
+                <td class="name"><code>ENCRYPTED_CONTENT_WITHOUT_DRM_INFO</code></td>
+            
+
+            
+                <td class="default">
+                
+                    6010
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The manifest does not specify any DRM info, but the content is encrypted.
+Either the manifest or the manifest parser are broken.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:6012">
+        
+
+            
+                <td class="name"><code>NO_LICENSE_SERVER_GIVEN</code></td>
+            
+
+            
+                <td class="default">
+                
+                    6012
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">No license server was given for the key system signaled by the manifest.
+A license server URI is required for every key system.
+<br> error.data[0] is the key system identifier.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:6013">
+        
+
+            
+                <td class="name"><code>OFFLINE_SESSION_REMOVED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    6013
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A required offline session was removed.  The content is not playable.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:6014">
+        
+
+            
+                <td class="name"><code>EXPIRED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    6014
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The license has expired.  This is triggered when all keys in the key
+status map have a status of 'expired'.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:6015">
+        
+
+            
+                <td class="name"><code>SERVER_CERTIFICATE_REQUIRED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    6015
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A server certificate wasn't given when it is required.  FairPlay requires
+setting an explicit server certificate in the configuration.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:6016">
+        
+
+            
+                <td class="name"><code>INIT_DATA_TRANSFORM_ERROR</code></td>
+            
+
+            
+                <td class="default">
+                
+                    6016
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">An error was thrown while executing the init data transformation.
+<br> error.data[0] is the original error.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:7000">
+        
+
+            
+                <td class="name"><code>LOAD_INTERRUPTED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    7000
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The call to Player.load() was interrupted by a call to Player.unload()
+or another call to Player.load().</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:7001">
+        
+
+            
+                <td class="name"><code>OPERATION_ABORTED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    7001
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">An internal error which indicates that an operation was aborted.  This
+should not be seen by applications.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:7002">
+        
+
+            
+                <td class="name"><code>NO_VIDEO_ELEMENT</code></td>
+            
+
+            
+                <td class="default">
+                
+                    7002
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The call to Player.load() failed because the Player does not have a video
+element.  The video element must either be provided to the constructor or
+to Player.attach() before Player.load() is called.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:7003">
+        
+
+            
+                <td class="name"><code>OBJECT_DESTROYED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    7003
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The operation failed because the object has been destroyed.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:7004">
+        
+
+            
+                <td class="name"><code>CONTENT_NOT_LOADED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    7004
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The content has not been loaded in the Player.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:8000">
+        
+
+            
+                <td class="name"><code>CAST_API_UNAVAILABLE</code></td>
+            
+
+            
+                <td class="default">
+                
+                    8000
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The Cast API is unavailable.  This may be because of one of the following:
+ 1. The browser may not have Cast support
+ 2. The browser may be missing a necessary Cast extension
+ 3. The Cast sender library may not be loaded in your app</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:8001">
+        
+
+            
+                <td class="name"><code>NO_CAST_RECEIVERS</code></td>
+            
+
+            
+                <td class="default">
+                
+                    8001
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">No cast receivers are available at this time.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:8002">
+        
+
+            
+                <td class="name"><code>ALREADY_CASTING</code></td>
+            
+
+            
+                <td class="default">
+                
+                    8002
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The library is already casting.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:8003">
+        
+
+            
+                <td class="name"><code>UNEXPECTED_CAST_ERROR</code></td>
+            
+
+            
+                <td class="default">
+                
+                    8003
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A Cast SDK error that we did not explicitly plan for has occurred.
+Check data[0] and refer to the Cast SDK documentation for details.
+<br> error.data[0] is an error object from the Cast SDK.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:8004">
+        
+
+            
+                <td class="name"><code>CAST_CANCELED_BY_USER</code></td>
+            
+
+            
+                <td class="default">
+                
+                    8004
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The cast operation was canceled by the user.
+<br> error.data[0] is an error object from the Cast SDK.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:8005">
+        
+
+            
+                <td class="name"><code>CAST_CONNECTION_TIMED_OUT</code></td>
+            
+
+            
+                <td class="default">
+                
+                    8005
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The cast connection timed out.
+<br> error.data[0] is an error object from the Cast SDK.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:8006">
+        
+
+            
+                <td class="name"><code>CAST_RECEIVER_APP_UNAVAILABLE</code></td>
+            
+
+            
+                <td class="default">
+                
+                    8006
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The requested receiver app ID does not exist or is unavailable.
+Check the requested app ID for typos.
+<br> error.data[0] is an error object from the Cast SDK.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:9000">
+        
+
+            
+                <td class="name"><code>STORAGE_NOT_SUPPORTED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    9000
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Offline storage is not supported on this browser; it is required for
+offline support.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:9001">
+        
+
+            
+                <td class="name"><code>INDEXED_DB_ERROR</code></td>
+            
+
+            
+                <td class="default">
+                
+                    9001
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">An unknown error occurred in the IndexedDB.
+<br> On Firefox, one common source for UnknownError calls is reverting
+Firefox to an old version. This makes the IndexedDB storage inaccessible
+for older versions. The only way to fix this is to delete the storage
+data in your profile. See https://mzl.la/2yCGWCm
+<br> error.data[0] is the error object.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:9002">
+        
+
+            
+                <td class="name"><code>DEPRECATED_OPERATION_ABORTED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    9002
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The storage operation was aborted.  Deprecated in favor of more general
+OPERATION_ABORTED.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:9003">
+        
+
+            
+                <td class="name"><code>REQUESTED_ITEM_NOT_FOUND</code></td>
+            
+
+            
+                <td class="default">
+                
+                    9003
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The specified item was not found in the IndexedDB.
+<br> error.data[0] is the offline URI.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:9004">
+        
+
+            
+                <td class="name"><code>MALFORMED_OFFLINE_URI</code></td>
+            
+
+            
+                <td class="default">
+                
+                    9004
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A network request was made with a malformed offline URI.
+<br> error.data[0] is the URI.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:9005">
+        
+
+            
+                <td class="name"><code>CANNOT_STORE_LIVE_OFFLINE</code></td>
+            
+
+            
+                <td class="default">
+                
+                    9005
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The specified content is live or in-progress.
+Live and in-progress streams cannot be stored offline.
+<br> error.data[0] is the URI.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:9007">
+        
+
+            
+                <td class="name"><code>NO_INIT_DATA_FOR_OFFLINE</code></td>
+            
+
+            
+                <td class="default">
+                
+                    9007
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">There was no init data available for offline storage.  This happens when
+there is no init data in the manifest nor could we find any in the
+segments.  We currently only support searching MP4 init segments for init
+data.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:9008">
+        
+
+            
+                <td class="name"><code>LOCAL_PLAYER_INSTANCE_REQUIRED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    9008
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">shaka.offline.Storage was constructed with a Player proxy instead of a
+local player instance.  To fix this, use Player directly with Storage
+instead of the results of CastProxy.prototype.getPlayer().</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:9011">
+        
+
+            
+                <td class="name"><code>NEW_KEY_OPERATION_NOT_SUPPORTED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    9011
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The storage cell does not allow new operations that require new keys.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:9012">
+        
+
+            
+                <td class="name"><code>KEY_NOT_FOUND</code></td>
+            
+
+            
+                <td class="default">
+                
+                    9012
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A key was not found in a storage cell.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:9013">
+        
+
+            
+                <td class="name"><code>MISSING_STORAGE_CELL</code></td>
+            
+
+            
+                <td class="default">
+                
+                    9013
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A storage cell was not found.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:9014">
+        
+
+            
+                <td class="name"><code>STORAGE_LIMIT_REACHED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    9014
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The storage limit defined in <code>downloadSizeCallback</code> has been
+reached.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:9015">
+        
+
+            
+                <td class="name"><code>DOWNLOAD_SIZE_CALLBACK_ERROR</code></td>
+            
+
+            
+                <td class="default">
+                
+                    9015
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><code>downloadSizeCallback</code> has produced an unexpected error.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:10000">
+        
+
+            
+                <td class="name"><code>CS_IMA_SDK_MISSING</code></td>
+            
+
+            
+                <td class="default">
+                
+                    10000
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">CS IMA SDK, required for ad insertion, has not been included on the page.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:10001">
+        
+
+            
+                <td class="name"><code>CS_AD_MANAGER_NOT_INITIALIZED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    10001
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Client Side Ad Manager needs to be initialized to enable Client Side
+Ad Insertion. Call adManager.initClientSide() to do it.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:10002">
+        
+
+            
+                <td class="name"><code>SS_IMA_SDK_MISSING</code></td>
+            
+
+            
+                <td class="default">
+                
+                    10002
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">SS IMA SDK, required for ad insertion, has not been included on the page.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:10003">
+        
+
+            
+                <td class="name"><code>SS_AD_MANAGER_NOT_INITIALIZED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    10003
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Server Side Ad Manager needs to be initialized to enable Server Side
+Ad Insertion. Call adManager.initServerSide() to do it.</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:10004">
+        
+
+            
+                <td class="name"><code>CURRENT_DAI_REQUEST_NOT_FINISHED</code></td>
+            
+
+            
+                <td class="default">
+                
+                    10004
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A new DAI steam was requested before the previous request had been
+resolved. Only one stream request at a time is supported. Please wait
+for the previous request to complete before initiating a new one.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_util_error.js.html">lib/util/error.js</a>, <a href="lib_util_error.js.html#line200">line 200</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+</div>
+
+        
+            
+<div class="access-container access-public">
+
+<h4 class="name" id=".createStack"><span class="type-signature"></span>createStack<span class="type-signature"> :boolean</span></h4>
+
+
+
+
+<div class="description">
+    If true, create a stack trace in Error objects.
+
+Only available in uncompiled mode, and disabled in tests to avoid issues
+with karma-jasmine.  See comments in test/test/boot.js for details.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">boolean</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_util_error.js.html">lib/util/error.js</a>, <a href="lib_util_error.js.html#line132">line 132</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+</div>
+
+        
+            
+<div class="access-container access-export">
+
+<h4 class="name" id=".Severity"><span class="type-signature"></span>Severity<span class="type-signature"> :number</span></h4>
+
+
+
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">number</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        
+        <th>Value</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        
+        <tr class="enum" id="value:1">
+        
+
+            
+                <td class="name"><code>RECOVERABLE</code></td>
+            
+
+            
+                <td class="default">
+                
+                    1
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">An error occurred, but the Player is attempting to recover from the error.
+
+If the Player cannot ultimately recover, it still may not throw a CRITICAL
+error.  For example, retrying for a media segment will never result in
+a CRITICAL error (the Player will just retry forever).</td>
+        </tr>
+
+    
+
+        
+        <tr class="enum" id="value:2">
+        
+
+            
+                <td class="name"><code>CRITICAL</code></td>
+            
+
+            
+                <td class="default">
+                
+                    2
+                
+                </td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A critical error that the library cannot recover from.  These usually cause
+the Player to stop loading or updating.  A new manifest must be loaded
+to reset the library.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_util_error.js.html">lib/util/error.js</a>, <a href="lib_util_error.js.html#line140">line 140</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+</div>
+
+        
+            
+<div class="access-container access-export">
+
+<h4 class="name" id="category"><span class="type-signature"></span>category<span class="type-signature"></span></h4>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_util_error.js.html">lib/util/error.js</a>, <a href="lib_util_error.js.html#line52">line 52</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+</div>
+
+        
+            
+<div class="access-container access-export">
+
+<h4 class="name" id="code"><span class="type-signature"></span>code<span class="type-signature"></span></h4>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_util_error.js.html">lib/util/error.js</a>, <a href="lib_util_error.js.html#line57">line 57</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+</div>
+
+        
+            
+<div class="access-container access-export">
+
+<h4 class="name" id="data"><span class="type-signature"></span>data<span class="type-signature"></span></h4>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_util_error.js.html">lib/util/error.js</a>, <a href="lib_util_error.js.html#line62">line 62</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+</div>
+
+        
+            
+<div class="access-container access-export">
+
+<h4 class="name" id="handled"><span class="type-signature"></span>handled<span class="type-signature"></span></h4>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_util_error.js.html">lib/util/error.js</a>, <a href="lib_util_error.js.html#line67">line 67</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+</div>
+
+        
+            
+<div class="access-container access-export">
+
+<h4 class="name" id="message"><span class="type-signature"></span>message<span class="type-signature"> :string</span></h4>
+
+
+
+
+<div class="description">
+    A human-readable version of the category and code.
+<i>(Only available in uncompiled mode.)</i>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">string</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_util_error.js.html">lib/util/error.js</a>, <a href="lib_util_error.js.html#line92">line 92</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+</div>
+
+        
+            
+<div class="access-container access-export">
+
+<h4 class="name" id="severity"><span class="type-signature"></span>severity<span class="type-signature"></span></h4>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_util_error.js.html">lib/util/error.js</a>, <a href="lib_util_error.js.html#line47">line 47</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+</div>
+
+        
+            
+<div class="access-container access-export">
+
+<h4 class="name" id="stack"><span class="type-signature"></span>stack<span class="type-signature"> :string</span></h4>
+
+
+
+
+<div class="description">
+    A stack-trace showing where the error occurred.
+<i>(Only available in uncompiled mode.)</i>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">string</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_util_error.js.html">lib/util/error.js</a>, <a href="lib_util_error.js.html#line106">line 106</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+</div>
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+<div class="access-container access-public">
+
+
+    
+
+    
+    <h4 class="name" id="toString"><span class="type-signature"></span>toString<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_util_error.js.html">lib/util/error.js</a>, <a href="lib_util_error.js.html#line117">line 117</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+</div>
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <div id="showWidget">Show:
+        <select id="show" onchange="onShowChange()">
+            <option value="exported">exported</option>
+            <option value="public">public</option>
+            <option value="private">everything</option>
+        </select>
+    </div>
+
+    <h2><a href="index.html">Home</a></h2><h3>Tutorials</h3><ul><li class=""><a href="tutorial-welcome.html">Welcome to Shaka Player</a></li><li class=""><a href="tutorial-basic-usage.html">Basic Usage</a></li><li class=""><a href="tutorial-debugging.html">Debugging</a></li><li class=""><a href="tutorial-config.html">Configuration</a></li><li class=""><a href="tutorial-network-and-buffering-config.html">Network and Buffering Configuration</a></li><li class=""><a href="tutorial-drm-config.html">DRM Configuration</a></li><li class=""><a href="tutorial-license-server-auth.html">License Server Authentication</a></li><li class=""><a href="tutorial-license-wrapping.html">License Wrapping</a></li><li class=""><a href="tutorial-ui.html">UI Library</a></li><li class=""><a href="tutorial-ui-customization.html">Configuring the UI</a></li><li class=""><a href="tutorial-a11y.html">Creating accessible buttons</a></li><li class=""><a href="tutorial-ad_monetization.html">Serving ads with our IMA SDK integration</a></li><li class=""><a href="tutorial-plugins.html">Plugins and Customizing the Build</a></li><li class=""><a href="tutorial-manifest-parser.html">Manifest Parser Plugins</a></li><li class=""><a href="tutorial-architecture.html">Architecture Diagrams</a></li><li class=""><a href="tutorial-service-worker.html">Service Worker Caching</a></li><li class=""><a href="tutorial-offline.html">Offline Storage and Playback</a></li><li class=""><a href="tutorial-fairplay.html">FairPlay support</a></li><li class=""><a href="tutorial-application-level-redirects.html">Application-Level Redirects</a></li><li class=""><a href="tutorial-faq.html">Frequently Asked Questions</a></li><li class=""><a href="tutorial-upgrade.html">Upgrade Guide</a></li><li class=""><a href="tutorial-gsoc-ideas-list.html">gsoc-ideas-list</a></li></ul><h3>Classes</h3><ul><li class="access-public"><a href="goog.asserts.html">goog.asserts</a></li><li class="access-public"><a href="shaka.html">shaka</a></li><li class="access-public"><a href="shaka.abr.Ewma.html">shaka.abr.Ewma</a></li><li class="access-public"><a href="shaka.abr.EwmaBandwidthEstimator.html">shaka.abr.EwmaBandwidthEstimator</a></li><li class="access-export"><a href="shaka.abr.SimpleAbrManager.html">shaka.abr.SimpleAbrManager</a></li><li class="access-export"><a href="shaka.abr.SimpleLLAbrManager.html">shaka.abr.SimpleLLAbrManager</a></li><li class="access-export"><a href="shaka.ads.AdManager.html">shaka.ads.AdManager</a></li><li class="access-public"><a href="shaka.ads.AdsStats.html">shaka.ads.AdsStats</a></li><li class="access-export"><a href="shaka.ads.ClientSideAd.html">shaka.ads.ClientSideAd</a></li><li class="access-public"><a href="shaka.ads.ClientSideAdManager.html">shaka.ads.ClientSideAdManager</a></li><li class="access-export"><a href="shaka.ads.ServerSideAd.html">shaka.ads.ServerSideAd</a></li><li class="access-public"><a href="shaka.ads.ServerSideAdManager.html">shaka.ads.ServerSideAdManager</a></li><li class="access-public"><a href="shaka.ads-shaka.ads.CuePoint.html">shaka.ads~shaka.ads.CuePoint</a></li><li class="access-export"><a href="shaka.cast.CastProxy.html">shaka.cast.CastProxy</a></li><li class="access-export"><a href="shaka.cast.CastReceiver.html">shaka.cast.CastReceiver</a></li><li class="access-public"><a href="shaka.cast.CastSender.html">shaka.cast.CastSender</a></li><li class="access-public"><a href="shaka.cast.CastUtils.html">shaka.cast.CastUtils</a></li><li class="access-public"><a href="shaka.cea.Cea608DataChannel.html">shaka.cea.Cea608DataChannel</a></li><li class="access-public"><a href="shaka.cea.Cea608Memory.html">shaka.cea.Cea608Memory</a></li><li class="access-public"><a href="shaka.cea.Cea708Service.html">shaka.cea.Cea708Service</a></li><li class="access-public"><a href="shaka.cea.Cea708Window.html">shaka.cea.Cea708Window</a></li><li class="access-public"><a href="shaka.cea.CeaDecoder.html">shaka.cea.CeaDecoder</a></li><li class="access-public"><a href="shaka.cea.CeaUtils-shaka.cea.CeaUtils.StyledChar.html">shaka.cea.CeaUtils~shaka.cea.CeaUtils.StyledChar</a></li><li class="access-public"><a href="shaka.cea.DtvccPacketBuilder.html">shaka.cea.DtvccPacketBuilder</a></li><li class="access-public"><a href="shaka.cea.Mp4CeaParser.html">shaka.cea.Mp4CeaParser</a></li><li class="access-public"><a href="shaka.cea.SeiProcessor.html">shaka.cea.SeiProcessor</a></li><li class="access-public"><a href="shaka.cea-shaka.cea.DtvccPacket.html">shaka.cea~shaka.cea.DtvccPacket</a></li><li class="access-public"><a href="shaka.dash.ContentProtection.html">shaka.dash.ContentProtection</a></li><li class="access-export"><a href="shaka.dash.DashParser.html">shaka.dash.DashParser</a></li><li class="access-public"><a href="shaka.dash.MpdUtils.html">shaka.dash.MpdUtils</a></li><li class="access-public"><a href="shaka.dash.SegmentBase.html">shaka.dash.SegmentBase</a></li><li class="access-public"><a href="shaka.dash.SegmentList.html">shaka.dash.SegmentList</a></li><li class="access-public"><a href="shaka.dash.SegmentTemplate.html">shaka.dash.SegmentTemplate</a></li><li class="access-export"><a href="shaka.dependencies.html">shaka.dependencies</a></li><li class="access-public"><a href="shaka.Deprecate.html">shaka.Deprecate</a></li><li class="access-public"><a href="shaka.deprecate.Enforcer.html">shaka.deprecate.Enforcer</a></li><li class="access-public"><a href="shaka.deprecate.Version.html">shaka.deprecate.Version</a></li><li class="access-public"><a href="shaka.extern.html">shaka.extern</a></li><li class="access-export"><a href="shaka.extern.AbrManager.html">shaka.extern.AbrManager</a></li><li class="access-export"><a href="shaka.extern.Cue.html">shaka.extern.Cue</a></li><li class="access-export"><a href="shaka.extern.CueRegion.html">shaka.extern.CueRegion</a></li><li class="access-public"><a href="shaka.extern.EmeSessionStorageCell.html">shaka.extern.EmeSessionStorageCell</a></li><li class="access-export"><a href="shaka.extern.Error.html">shaka.extern.Error</a></li><li class="access-export"><a href="shaka.extern.IUIElement.html">shaka.extern.IUIElement</a></li><li class="access-export"><a href="shaka.extern.IUIRangeElement.html">shaka.extern.IUIRangeElement</a></li><li class="access-export"><a href="shaka.extern.IUISettingsMenu.html">shaka.extern.IUISettingsMenu</a></li><li class="access-export"><a href="shaka.extern.ManifestParser.html">shaka.extern.ManifestParser</a></li><li class="access-public"><a href="shaka.extern.StorageCell.html">shaka.extern.StorageCell</a></li><li class="access-public"><a href="shaka.extern.StorageMechanism.html">shaka.extern.StorageMechanism</a></li><li class="access-public"><a href="shaka.hls.Attribute.html">shaka.hls.Attribute</a></li><li class="access-export"><a href="shaka.hls.HlsParser.html">shaka.hls.HlsParser</a></li><li class="access-public"><a href="shaka.hls.ManifestTextParser.html">shaka.hls.ManifestTextParser</a></li><li class="access-public"><a href="shaka.hls.Playlist.html">shaka.hls.Playlist</a></li><li class="access-public"><a href="shaka.hls.Segment.html">shaka.hls.Segment</a></li><li class="access-public"><a href="shaka.hls.Tag.html">shaka.hls.Tag</a></li><li class="access-export"><a href="shaka.log.html">shaka.log</a></li><li class="access-public"><a href="shaka.media.AdaptationSet.html">shaka.media.AdaptationSet</a></li><li class="access-public"><a href="shaka.media.BufferingObserver.html">shaka.media.BufferingObserver</a></li><li class="access-public"><a href="shaka.media.ClosedCaptionParser.html">shaka.media.ClosedCaptionParser</a></li><li class="access-public"><a href="shaka.media.ContentWorkarounds.html">shaka.media.ContentWorkarounds</a></li><li class="access-public"><a href="shaka.media.DrmEngine.html">shaka.media.DrmEngine</a></li><li class="access-public"><a href="shaka.media.ExampleBasedCriteria.html">shaka.media.ExampleBasedCriteria</a></li><li class="access-public"><a href="shaka.media.GapJumpingController.html">shaka.media.GapJumpingController</a></li><li class="access-export"><a href="shaka.media.InitSegmentReference.html">shaka.media.InitSegmentReference</a></li><li class="access-public"><a href="shaka.media.LiveCatchUpController.html">shaka.media.LiveCatchUpController</a></li><li class="access-export"><a href="shaka.media.ManifestParser.html">shaka.media.ManifestParser</a></li><li class="access-public"><a href="shaka.media.MediaSourceEngine.html">shaka.media.MediaSourceEngine</a></li><li class="access-public"><a href="shaka.media.MediaSourcePlayhead.html">shaka.media.MediaSourcePlayhead</a></li><li class="access-export"><a href="shaka.media.MetaSegmentIndex.html">shaka.media.MetaSegmentIndex</a></li><li class="access-public"><a href="shaka.media.PlayheadObserverManager.html">shaka.media.PlayheadObserverManager</a></li><li class="access-public"><a href="shaka.media.PlayRateController.html">shaka.media.PlayRateController</a></li><li class="access-public"><a href="shaka.media.PreferenceBasedCriteria.html">shaka.media.PreferenceBasedCriteria</a></li><li class="access-export"><a href="shaka.media.PresentationTimeline.html">shaka.media.PresentationTimeline</a></li><li class="access-public"><a href="shaka.media.RegionObserver.html">shaka.media.RegionObserver</a></li><li class="access-public"><a href="shaka.media.RegionTimeline.html">shaka.media.RegionTimeline</a></li><li class="access-export"><a href="shaka.media.SegmentIndex.html">shaka.media.SegmentIndex</a></li><li class="access-export"><a href="shaka.media.SegmentIterator.html">shaka.media.SegmentIterator</a></li><li class="access-export"><a href="shaka.media.SegmentReference.html">shaka.media.SegmentReference</a></li><li class="access-public"><a href="shaka.media.SrcEqualsPlayhead.html">shaka.media.SrcEqualsPlayhead</a></li><li class="access-public"><a href="shaka.media.StallDetector.html">shaka.media.StallDetector</a></li><li class="access-public"><a href="shaka.media.StallDetector.MediaElementImplementation.html">shaka.media.StallDetector.MediaElementImplementation</a></li><li class="access-public"><a href="shaka.media.StreamingEngine.html">shaka.media.StreamingEngine</a></li><li class="access-public"><a href="shaka.media.TimeRangesUtils.html">shaka.media.TimeRangesUtils</a></li><li class="access-public"><a href="shaka.media.Transmuxer.html">shaka.media.Transmuxer</a></li><li class="access-public"><a href="shaka.media.VideoWrapper.html">shaka.media.VideoWrapper</a></li><li class="access-public"><a href="shaka.media.VideoWrapper.PlayheadMover.html">shaka.media.VideoWrapper.PlayheadMover</a></li><li class="access-public"><a href="shaka.net.Backoff.html">shaka.net.Backoff</a></li><li class="access-export"><a href="shaka.net.DataUriPlugin.html">shaka.net.DataUriPlugin</a></li><li class="access-export"><a href="shaka.net.HttpFetchPlugin.html">shaka.net.HttpFetchPlugin</a></li><li class="access-export"><a href="shaka.net.HttpPluginUtils.html">shaka.net.HttpPluginUtils</a></li><li class="access-export"><a href="shaka.net.HttpXHRPlugin.html">shaka.net.HttpXHRPlugin</a></li><li class="access-export"><a href="shaka.net.NetworkingEngine.html">shaka.net.NetworkingEngine</a></li><li class="access-export"><a href="shaka.net.NetworkingEngine.NumBytesRemainingClass.html">shaka.net.NetworkingEngine.NumBytesRemainingClass</a></li><li class="access-export"><a href="shaka.net.NetworkingEngine.PendingRequest.html">shaka.net.NetworkingEngine.PendingRequest</a></li><li class="access-public"><a href="shaka.offline.DownloadManager.html">shaka.offline.DownloadManager</a></li><li class="access-public"><a href="shaka.offline.DownloadProgressEstimator.html">shaka.offline.DownloadProgressEstimator</a></li><li class="access-public"><a href="shaka.offline.indexeddb.BaseStorageCell.html">shaka.offline.indexeddb.BaseStorageCell</a></li><li class="access-public"><a href="shaka.offline.indexeddb.DBConnection.html">shaka.offline.indexeddb.DBConnection</a></li><li class="access-public"><a href="shaka.offline.indexeddb.DBOperation.html">shaka.offline.indexeddb.DBOperation</a></li><li class="access-public"><a href="shaka.offline.indexeddb.EmeSessionStorageCell.html">shaka.offline.indexeddb.EmeSessionStorageCell</a></li><li class="access-public"><a href="shaka.offline.indexeddb.StorageMechanism.html">shaka.offline.indexeddb.StorageMechanism</a></li><li class="access-public"><a href="shaka.offline.indexeddb.V1StorageCell.html">shaka.offline.indexeddb.V1StorageCell</a></li><li class="access-public"><a href="shaka.offline.indexeddb.V2StorageCell.html">shaka.offline.indexeddb.V2StorageCell</a></li><li class="access-public"><a href="shaka.offline.indexeddb.V5StorageCell.html">shaka.offline.indexeddb.V5StorageCell</a></li><li class="access-public"><a href="shaka.offline.ManifestConverter.html">shaka.offline.ManifestConverter</a></li><li class="access-public"><a href="shaka.offline.OfflineManifestParser.html">shaka.offline.OfflineManifestParser</a></li><li class="access-export"><a href="shaka.offline.OfflineScheme.html">shaka.offline.OfflineScheme</a></li><li class="access-public"><a href="shaka.offline.OfflineUri.html">shaka.offline.OfflineUri</a></li><li class="access-public"><a href="shaka.offline.SessionDeleter.html">shaka.offline.SessionDeleter</a></li><li class="access-export"><a href="shaka.offline.Storage.html">shaka.offline.Storage</a></li><li class="access-export"><a href="shaka.offline.StorageMuxer.html">shaka.offline.StorageMuxer</a></li><li class="access-public"><a href="shaka.offline.StoredContentUtils.html">shaka.offline.StoredContentUtils</a></li><li class="access-public"><a href="shaka.offline.StreamBandwidthEstimator.html">shaka.offline.StreamBandwidthEstimator</a></li><li class="access-export"><a href="shaka.Player.html">shaka.Player</a></li><li class="access-export"><a href="shaka.polyfill.html">shaka.polyfill</a></li><li class="access-public"><a href="shaka.polyfill.EncryptionScheme.html">shaka.polyfill.EncryptionScheme</a></li><li class="access-public"><a href="shaka.polyfill.Fullscreen.html">shaka.polyfill.Fullscreen</a></li><li class="access-public"><a href="shaka.polyfill.InputEvent.html">shaka.polyfill.InputEvent</a></li><li class="access-public"><a href="shaka.polyfill.Languages.html">shaka.polyfill.Languages</a></li><li class="access-public"><a href="shaka.polyfill.MathRound.html">shaka.polyfill.MathRound</a></li><li class="access-public"><a href="shaka.polyfill.MediaSource.html">shaka.polyfill.MediaSource</a></li><li class="access-public"><a href="shaka.polyfill.Orientation.html">shaka.polyfill.Orientation</a></li><li class="access-public"><a href="shaka.polyfill.Orientation-shaka.polyfill.Orientation.FakeOrientation.html">shaka.polyfill.Orientation~shaka.polyfill.Orientation.FakeOrientation</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysApple.html">shaka.polyfill.PatchedMediaKeysApple</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysApple.MediaKeys.html">shaka.polyfill.PatchedMediaKeysApple.MediaKeys</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysApple.MediaKeySession.html">shaka.polyfill.PatchedMediaKeysApple.MediaKeySession</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysApple.MediaKeyStatusMap.html">shaka.polyfill.PatchedMediaKeysApple.MediaKeyStatusMap</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysApple.MediaKeySystemAccess.html">shaka.polyfill.PatchedMediaKeysApple.MediaKeySystemAccess</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysMs.html">shaka.polyfill.PatchedMediaKeysMs</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysMs.MediaKeys.html">shaka.polyfill.PatchedMediaKeysMs.MediaKeys</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysMs.MediaKeySession.html">shaka.polyfill.PatchedMediaKeysMs.MediaKeySession</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysMs.MediaKeyStatusMap.html">shaka.polyfill.PatchedMediaKeysMs.MediaKeyStatusMap</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysMs.MediaKeySystemAccess.html">shaka.polyfill.PatchedMediaKeysMs.MediaKeySystemAccess</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysNop.html">shaka.polyfill.PatchedMediaKeysNop</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysNop.MediaKeys.html">shaka.polyfill.PatchedMediaKeysNop.MediaKeys</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysNop.MediaKeySystemAccess.html">shaka.polyfill.PatchedMediaKeysNop.MediaKeySystemAccess</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysWebkit.html">shaka.polyfill.PatchedMediaKeysWebkit</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysWebkit.MediaKeys.html">shaka.polyfill.PatchedMediaKeysWebkit.MediaKeys</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysWebkit.MediaKeySession.html">shaka.polyfill.PatchedMediaKeysWebkit.MediaKeySession</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysWebkit.MediaKeyStatusMap.html">shaka.polyfill.PatchedMediaKeysWebkit.MediaKeyStatusMap</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysWebkit.MediaKeySystemAccess.html">shaka.polyfill.PatchedMediaKeysWebkit.MediaKeySystemAccess</a></li><li class="access-public"><a href="shaka.polyfill.PiPWebkit.html">shaka.polyfill.PiPWebkit</a></li><li class="access-public"><a href="shaka.polyfill.StorageEstimate.html">shaka.polyfill.StorageEstimate</a></li><li class="access-public"><a href="shaka.polyfill.VideoPlaybackQuality.html">shaka.polyfill.VideoPlaybackQuality</a></li><li class="access-public"><a href="shaka.polyfill.VideoPlayPromise.html">shaka.polyfill.VideoPlayPromise</a></li><li class="access-public"><a href="shaka.polyfill.VTTCue.html">shaka.polyfill.VTTCue</a></li><li class="access-public"><a href="shaka.routing.Walker.html">shaka.routing.Walker</a></li><li class="access-export"><a href="shaka.text.Cue.html">shaka.text.Cue</a></li><li class="access-export"><a href="shaka.text.CueRegion.html">shaka.text.CueRegion</a></li><li class="access-export"><a href="shaka.text.LrcTextParser.html">shaka.text.LrcTextParser</a></li><li class="access-export"><a href="shaka.text.Mp4TtmlParser.html">shaka.text.Mp4TtmlParser</a></li><li class="access-export"><a href="shaka.text.Mp4VttParser.html">shaka.text.Mp4VttParser</a></li><li class="access-export"><a href="shaka.text.SbvTextParser.html">shaka.text.SbvTextParser</a></li><li class="access-export"><a href="shaka.text.SimpleTextDisplayer.html">shaka.text.SimpleTextDisplayer</a></li><li class="access-export"><a href="shaka.text.SrtTextParser.html">shaka.text.SrtTextParser</a></li><li class="access-export"><a href="shaka.text.SsaTextParser.html">shaka.text.SsaTextParser</a></li><li class="access-export"><a href="shaka.text.TextEngine.html">shaka.text.TextEngine</a></li><li class="access-export"><a href="shaka.text.TtmlTextParser.html">shaka.text.TtmlTextParser</a></li><li class="access-private"><a href="shaka.text.TtmlTextParser.RateInfo_.html">shaka.text.TtmlTextParser.RateInfo_</a></li><li class="access-export"><a href="shaka.text.UITextDisplayer.html">shaka.text.UITextDisplayer</a></li><li class="access-export"><a href="shaka.text.VttTextParser.html">shaka.text.VttTextParser</a></li><li class="access-export"><a href="shaka.text.WebVttGenerator.html">shaka.text.WebVttGenerator</a></li><li class="access-export"><a href="shaka.ui.AdCounter.html">shaka.ui.AdCounter</a></li><li class="access-export"><a href="shaka.ui.AdPosition.html">shaka.ui.AdPosition</a></li><li class="access-export"><a href="shaka.ui.AirPlayButton.html">shaka.ui.AirPlayButton</a></li><li class="access-public"><a href="shaka.ui.AirPlayButton.Factory.html">shaka.ui.AirPlayButton.Factory</a></li><li class="access-export"><a href="shaka.ui.AudioLanguageSelection.html">shaka.ui.AudioLanguageSelection</a></li><li class="access-public"><a href="shaka.ui.AudioLanguageSelection.Factory.html">shaka.ui.AudioLanguageSelection.Factory</a></li><li class="access-export"><a href="shaka.ui.BigPlayButton.html">shaka.ui.BigPlayButton</a></li><li class="access-export"><a href="shaka.ui.CastButton.html">shaka.ui.CastButton</a></li><li class="access-public"><a href="shaka.ui.CastButton.Factory.html">shaka.ui.CastButton.Factory</a></li><li class="access-export"><a href="shaka.ui.Controls.html">shaka.ui.Controls</a></li><li class="access-export"><a href="shaka.ui.Element.html">shaka.ui.Element</a></li><li class="access-export"><a href="shaka.ui.FastForwardButton.html">shaka.ui.FastForwardButton</a></li><li class="access-public"><a href="shaka.ui.FastForwardButton.Factory.html">shaka.ui.FastForwardButton.Factory</a></li><li class="access-export"><a href="shaka.ui.FullscreenButton.html">shaka.ui.FullscreenButton</a></li><li class="access-public"><a href="shaka.ui.FullscreenButton.Factory.html">shaka.ui.FullscreenButton.Factory</a></li><li class="access-export"><a href="shaka.ui.Localization.html">shaka.ui.Localization</a></li><li class="access-export"><a href="shaka.ui.LoopButton.html">shaka.ui.LoopButton</a></li><li class="access-public"><a href="shaka.ui.LoopButton.Factory.html">shaka.ui.LoopButton.Factory</a></li><li class="access-export"><a href="shaka.ui.MuteButton.html">shaka.ui.MuteButton</a></li><li class="access-public"><a href="shaka.ui.MuteButton.Factory.html">shaka.ui.MuteButton.Factory</a></li><li class="access-export"><a href="shaka.ui.OverflowMenu.html">shaka.ui.OverflowMenu</a></li><li class="access-public"><a href="shaka.ui.OverflowMenu.Factory.html">shaka.ui.OverflowMenu.Factory</a></li><li class="access-export"><a href="shaka.ui.Overlay.html">shaka.ui.Overlay</a></li><li class="access-export"><a href="shaka.ui.PipButton.html">shaka.ui.PipButton</a></li><li class="access-public"><a href="shaka.ui.PipButton.Factory.html">shaka.ui.PipButton.Factory</a></li><li class="access-export"><a href="shaka.ui.PlaybackRateSelection.html">shaka.ui.PlaybackRateSelection</a></li><li class="access-public"><a href="shaka.ui.PlaybackRateSelection.Factory.html">shaka.ui.PlaybackRateSelection.Factory</a></li><li class="access-export"><a href="shaka.ui.PlayButton.html">shaka.ui.PlayButton</a></li><li class="access-export"><a href="shaka.ui.PresentationTimeTracker.html">shaka.ui.PresentationTimeTracker</a></li><li class="access-public"><a href="shaka.ui.PresentationTimeTracker.Factory.html">shaka.ui.PresentationTimeTracker.Factory</a></li><li class="access-export"><a href="shaka.ui.RangeElement.html">shaka.ui.RangeElement</a></li><li class="access-export"><a href="shaka.ui.ResolutionSelection.html">shaka.ui.ResolutionSelection</a></li><li class="access-public"><a href="shaka.ui.ResolutionSelection.Factory.html">shaka.ui.ResolutionSelection.Factory</a></li><li class="access-export"><a href="shaka.ui.RewindButton.html">shaka.ui.RewindButton</a></li><li class="access-public"><a href="shaka.ui.RewindButton.Factory.html">shaka.ui.RewindButton.Factory</a></li><li class="access-export"><a href="shaka.ui.SeekBar.html">shaka.ui.SeekBar</a></li><li class="access-export"><a href="shaka.ui.SeekBar.Factory.html">shaka.ui.SeekBar.Factory</a></li><li class="access-export"><a href="shaka.ui.SettingsMenu.html">shaka.ui.SettingsMenu</a></li><li class="access-export"><a href="shaka.ui.SkipAdButton.html">shaka.ui.SkipAdButton</a></li><li class="access-export"><a href="shaka.ui.SmallPlayButton.html">shaka.ui.SmallPlayButton</a></li><li class="access-public"><a href="shaka.ui.SmallPlayButton.Factory.html">shaka.ui.SmallPlayButton.Factory</a></li><li class="access-export"><a href="shaka.ui.Spacer.html">shaka.ui.Spacer</a></li><li class="access-public"><a href="shaka.ui.Spacer.Factory.html">shaka.ui.Spacer.Factory</a></li><li class="access-export"><a href="shaka.ui.TextSelection.html">shaka.ui.TextSelection</a></li><li class="access-public"><a href="shaka.ui.TextSelection.Factory.html">shaka.ui.TextSelection.Factory</a></li><li class="access-export"><a href="shaka.ui.VolumeBar.html">shaka.ui.VolumeBar</a></li><li class="access-public"><a href="shaka.ui.VolumeBar.Factory.html">shaka.ui.VolumeBar.Factory</a></li><li class="access-export"><a href="shaka.util.AbortableOperation.html">shaka.util.AbortableOperation</a></li><li class="access-public"><a href="shaka.util.ArrayUtils.html">shaka.util.ArrayUtils</a></li><li class="access-export"><a href="shaka.util.BufferUtils.html">shaka.util.BufferUtils</a></li><li class="access-export"><a href="shaka.util.ConfigUtils.html">shaka.util.ConfigUtils</a></li><li class="access-export"><a href="shaka.util.DataViewReader.html">shaka.util.DataViewReader</a></li><li class="access-public"><a href="shaka.util.DelayedTick.html">shaka.util.DelayedTick</a></li><li class="access-public"><a href="shaka.util.Destroyer.html">shaka.util.Destroyer</a></li><li class="access-export"><a href="shaka.util.Dom.html">shaka.util.Dom</a></li><li class="access-public"><a href="shaka.util.EbmlParser.html">shaka.util.EbmlParser</a></li><li class="access-export"><a href="shaka.util.Error.html">shaka.util.Error</a></li><li class="access-export"><a href="shaka.util.EventManager.html">shaka.util.EventManager</a></li><li class="access-private"><a href="shaka.util.EventManager.Binding_.html">shaka.util.EventManager.Binding_</a></li><li class="access-export"><a href="shaka.util.FairPlayUtils.html">shaka.util.FairPlayUtils</a></li><li class="access-export"><a href="shaka.util.FakeEvent.html">shaka.util.FakeEvent</a></li><li class="access-export"><a href="shaka.util.FakeEventTarget.html">shaka.util.FakeEventTarget</a></li><li class="access-public"><a href="shaka.util.Functional.html">shaka.util.Functional</a></li><li class="access-public"><a href="shaka.util.Iterables.html">shaka.util.Iterables</a></li><li class="access-public"><a href="shaka.util.LanguageUtils.html">shaka.util.LanguageUtils</a></li><li class="access-public"><a href="shaka.util.Lazy.html">shaka.util.Lazy</a></li><li class="access-public"><a href="shaka.util.ManifestFilter.html">shaka.util.ManifestFilter</a></li><li class="access-public"><a href="shaka.util.ManifestParserUtils.html">shaka.util.ManifestParserUtils</a></li><li class="access-public"><a href="shaka.util.MapUtils.html">shaka.util.MapUtils</a></li><li class="access-public"><a href="shaka.util.MimeUtils.html">shaka.util.MimeUtils</a></li><li class="access-export"><a href="shaka.util.Mp4Parser.html">shaka.util.Mp4Parser</a></li><li class="access-public"><a href="shaka.util.MultiMap.html">shaka.util.MultiMap</a></li><li class="access-public"><a href="shaka.util.Networking.html">shaka.util.Networking</a></li><li class="access-public"><a href="shaka.util.OperationManager.html">shaka.util.OperationManager</a></li><li class="access-public"><a href="shaka.util.PeriodCombiner.html">shaka.util.PeriodCombiner</a></li><li class="access-public"><a href="shaka.util.Platform.html">shaka.util.Platform</a></li><li class="access-export"><a href="shaka.util.PlayerConfiguration.html">shaka.util.PlayerConfiguration</a></li><li class="access-public"><a href="shaka.util.Pssh.html">shaka.util.Pssh</a></li><li class="access-public"><a href="shaka.util.PublicPromise.html">shaka.util.PublicPromise</a></li><li class="access-public"><a href="shaka.util.StateHistory.html">shaka.util.StateHistory</a></li><li class="access-public"><a href="shaka.util.Stats.html">shaka.util.Stats</a></li><li class="access-public"><a href="shaka.util.StreamUtils.html">shaka.util.StreamUtils</a></li><li class="access-export"><a href="shaka.util.StringUtils.html">shaka.util.StringUtils</a></li><li class="access-public"><a href="shaka.util.SwitchHistory.html">shaka.util.SwitchHistory</a></li><li class="access-public"><a href="shaka.util.TextParser.html">shaka.util.TextParser</a></li><li class="access-export"><a href="shaka.util.Timer.html">shaka.util.Timer</a></li><li class="access-export"><a href="shaka.util.Uint8ArrayUtils.html">shaka.util.Uint8ArrayUtils</a></li><li class="access-public"><a href="shaka.util.XmlUtils.html">shaka.util.XmlUtils</a></li><li class="access-public"><a href="shaka.util-shaka.util.EbmlElement.html">shaka.util~shaka.util.EbmlElement</a></li></ul><h3>Interfaces</h3><ul><li class="access-public"><a href="shaka.cea.ICaptionDecoder.html">shaka.cea.ICaptionDecoder</a></li><li class="access-public"><a href="shaka.cea.ICeaParser.html">shaka.cea.ICeaParser</a></li><li class="access-export"><a href="shaka.extern.IAbortableOperation.html">shaka.extern.IAbortableOperation</a></li><li class="access-export"><a href="shaka.extern.IAd.html">shaka.extern.IAd</a></li><li class="access-export"><a href="shaka.extern.IAdManager.html">shaka.extern.IAdManager</a></li><li class="access-export"><a href="shaka.extern.IUIElement.Factory.html">shaka.extern.IUIElement.Factory</a></li><li class="access-export"><a href="shaka.extern.IUISeekBar.html">shaka.extern.IUISeekBar</a></li><li class="access-export"><a href="shaka.extern.IUISeekBar.Factory.html">shaka.extern.IUISeekBar.Factory</a></li><li class="access-export"><a href="shaka.extern.TextDisplayer.html">shaka.extern.TextDisplayer</a></li><li class="access-export"><a href="shaka.extern.TextParser.html">shaka.extern.TextParser</a></li><li class="access-public"><a href="shaka.media.AdaptationSetCriteria.html">shaka.media.AdaptationSetCriteria</a></li><li class="access-public"><a href="shaka.media.IClosedCaptionParser.html">shaka.media.IClosedCaptionParser</a></li><li class="access-public"><a href="shaka.media.IPlayheadObserver.html">shaka.media.IPlayheadObserver</a></li><li class="access-public"><a href="shaka.media.Playhead.html">shaka.media.Playhead</a></li><li class="access-public"><a href="shaka.media.StallDetector.Implementation.html">shaka.media.StallDetector.Implementation</a></li><li class="access-export"><a href="shaka.util.IDestroyable.html">shaka.util.IDestroyable</a></li><li class="access-export"><a href="shaka.util.IReleasable.html">shaka.util.IReleasable</a></li></ul><h3>Events</h3><ul><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdBreakReadyEvent">shaka.ads.AdManager.AdBreakReadyEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdBufferingEvent">shaka.ads.AdManager.AdBufferingEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdClickedEvent">shaka.ads.AdManager.AdClickedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdClickEvent">shaka.ads.AdManager.AdClickEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdClosedEvent">shaka.ads.AdManager.AdClosedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdCompleteEvent">shaka.ads.AdManager.AdCompleteEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdDurationChangedEvent">shaka.ads.AdManager.AdDurationChangedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdFirstQuartileEvent">shaka.ads.AdManager.AdFirstQuartileEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdImpressionEvent">shaka.ads.AdManager.AdImpressionEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdInteractionEvent">shaka.ads.AdManager.AdInteractionEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdLinearChangedEvent">shaka.ads.AdManager.AdLinearChangedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdLoadedEvent">shaka.ads.AdManager.AdLoadedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdMetadataEvent">shaka.ads.AdManager.AdMetadataEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdMidpointEvent">shaka.ads.AdManager.AdMidpointEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdMutedEvent">shaka.ads.AdManager.AdMutedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdPausedEvent">shaka.ads.AdManager.AdPausedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdProgressEvent">shaka.ads.AdManager.AdProgressEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdRecoverableErrorEvent">shaka.ads.AdManager.AdRecoverableErrorEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdResumedEvent">shaka.ads.AdManager.AdResumedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:ADS_LOADED">shaka.ads.AdManager.ADS_LOADED</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdSkippedEvent">shaka.ads.AdManager.AdSkippedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdSkipStateChangedEvent">shaka.ads.AdManager.AdSkipStateChangedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdStartedEvent">shaka.ads.AdManager.AdStartedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdStoppedEvent">shaka.ads.AdManager.AdStoppedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdThirdQuartileEvent">shaka.ads.AdManager.AdThirdQuartileEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdVolumeChangedEvent">shaka.ads.AdManager.AdVolumeChangedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AllAdsCompletedEvent">shaka.ads.AdManager.AllAdsCompletedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:ImaAdManagerLoadedEvent">shaka.ads.AdManager.ImaAdManagerLoadedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:ImaStreamManagerLoadedEvent">shaka.ads.AdManager.ImaStreamManagerLoadedEvent</a></li><li class="access-export"><a href="shaka.cast.CastProxy.html#.event:CastStatusChangedEvent">shaka.cast.CastProxy.CastStatusChangedEvent</a></li><li class="access-export"><a href="shaka.net.NetworkingEngine.html#.event:RetryEvent">shaka.net.NetworkingEngine.RetryEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:AbrStatusChangedEvent">shaka.Player.AbrStatusChangedEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:AdaptationEvent">shaka.Player.AdaptationEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:BufferingEvent">shaka.Player.BufferingEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:DrmSessionUpdateEvent">shaka.Player.DrmSessionUpdateEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:EmsgEvent">shaka.Player.EmsgEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:ErrorEvent">shaka.Player.ErrorEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:ExpirationUpdatedEvent">shaka.Player.ExpirationUpdatedEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:LargeGapEvent">shaka.Player.LargeGapEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:LoadedEvent">shaka.Player.LoadedEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:LoadingEvent">shaka.Player.LoadingEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:ManifestParsedEvent">shaka.Player.ManifestParsedEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:MetadataEvent">shaka.Player.MetadataEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:RateChangeEvent">shaka.Player.RateChangeEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:SessionDataEvent">shaka.Player.SessionDataEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:StateChangeEvent">shaka.Player.StateChangeEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:StateIdleEvent">shaka.Player.StateIdleEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:StreamingEvent">shaka.Player.StreamingEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:TextChangedEvent">shaka.Player.TextChangedEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:TextTrackVisibilityEvent">shaka.Player.TextTrackVisibilityEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:TimelineRegionAddedEvent">shaka.Player.TimelineRegionAddedEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:TimelineRegionEnterEvent">shaka.Player.TimelineRegionEnterEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:TimelineRegionExitEvent">shaka.Player.TimelineRegionExitEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:TracksChangedEvent">shaka.Player.TracksChangedEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:UnloadingEvent">shaka.Player.UnloadingEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:VariantChangedEvent">shaka.Player.VariantChangedEvent</a></li><li class="access-export"><a href="shaka.ui.Controls.html#.event:CaptionSelectionUpdatedEvent">shaka.ui.Controls.CaptionSelectionUpdatedEvent</a></li><li class="access-export"><a href="shaka.ui.Controls.html#.event:CastStatusChangedEvent">shaka.ui.Controls.CastStatusChangedEvent</a></li><li class="access-export"><a href="shaka.ui.Controls.html#.event:ErrorEvent">shaka.ui.Controls.ErrorEvent</a></li><li class="access-export"><a href="shaka.ui.Controls.html#.event:LanguageSelectionUpdatedEvent">shaka.ui.Controls.LanguageSelectionUpdatedEvent</a></li><li class="access-export"><a href="shaka.ui.Controls.html#.event:ResolutionSelectionUpdatedEvent">shaka.ui.Controls.ResolutionSelectionUpdatedEvent</a></li><li class="access-export"><a href="shaka.ui.Controls.html#.event:SubMenuOpenEvent">shaka.ui.Controls.SubMenuOpenEvent</a></li><li class="access-export"><a href="shaka.ui.Controls.html#.event:TimeAndSeekRangeUpdatedEvent">shaka.ui.Controls.TimeAndSeekRangeUpdatedEvent</a></li><li class="access-export"><a href="shaka.ui.Controls.html#.event:UIUpdatedEvent">shaka.ui.Controls.UIUpdatedEvent</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.0-dev</a> on Thu Apr 01 2021 10:00:35 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> initShowWidget(); </script>
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
