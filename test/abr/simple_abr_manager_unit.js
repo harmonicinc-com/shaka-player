@@ -13,6 +13,7 @@ describe('SimpleAbrManager', () => {
   const sufficientBWMultiplier = 1.06;
   const defaultBandwidthEstimate = 500e3; // 500kbps
   const oldDateNow = Date.now;
+  const defaultUri = '';
 
   /** @type {shaka.extern.AbrConfiguration} */
   let config;
@@ -150,14 +151,14 @@ describe('SimpleAbrManager', () => {
       abrManager.setVariants(variants);
       abrManager.chooseVariant();
 
-      abrManager.segmentDownloaded(1000, bytesPerSecond);
-      abrManager.segmentDownloaded(1000, bytesPerSecond);
+      abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
+      abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
 
       abrManager.enable();
 
       // Make another call to segmentDownloaded() so switchCallback() is
       // called.
-      abrManager.segmentDownloaded(1000, bytesPerSecond);
+      abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
 
       // Expect variants 2 to be chosen for bandwidth = 5e5
       // and variant 5 - for bandwidth = 6e5
@@ -178,12 +179,12 @@ describe('SimpleAbrManager', () => {
     abrManager.chooseVariant();
 
     // 0 duration segment shouldn't cause us to get stuck on the lowest variant
-    abrManager.segmentDownloaded(0, bytesPerSecond);
-    abrManager.segmentDownloaded(1000, bytesPerSecond);
+    abrManager.segmentDownloaded(0, bytesPerSecond, defaultUri);
+    abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
 
     abrManager.enable();
 
-    abrManager.segmentDownloaded(1000, bytesPerSecond);
+    abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
 
     expect(abrManager.getBandwidthEstimate()).toBeTruthy();
   });
@@ -198,14 +199,14 @@ describe('SimpleAbrManager', () => {
     // bandwidth.
     const bytesPerSecond = sufficientBWMultiplier * bandwidth / 8.0;
 
-    abrManager.segmentDownloaded(1000, bytesPerSecond);
-    abrManager.segmentDownloaded(1000, bytesPerSecond);
+    abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
+    abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
 
     abrManager.enable();
 
     // Make another call to segmentDownloaded() so switchCallback() is
     // called.
-    abrManager.segmentDownloaded(1000, bytesPerSecond);
+    abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
 
     // Expect variants 4 to be chosen
     const expectedVariant = variants[4];
@@ -221,9 +222,9 @@ describe('SimpleAbrManager', () => {
     abrManager.chooseVariant();
 
     // Don't enable AbrManager.
-    abrManager.segmentDownloaded(1000, bytesPerSecond);
-    abrManager.segmentDownloaded(1000, bytesPerSecond);
-    abrManager.segmentDownloaded(1000, bytesPerSecond);
+    abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
+    abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
+    abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
     expect(switchCallback).not.toHaveBeenCalled();
   });
 
@@ -234,12 +235,12 @@ describe('SimpleAbrManager', () => {
     abrManager.setVariants(variants);
     abrManager.chooseVariant();
 
-    abrManager.segmentDownloaded(1000, bytesPerSecond);
-    abrManager.segmentDownloaded(1000, bytesPerSecond);
+    abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
+    abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
 
     abrManager.enable();
 
-    abrManager.segmentDownloaded(1000, bytesPerSecond);
+    abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
     expect(switchCallback).toHaveBeenCalled();
     switchCallback.calls.reset();
 
@@ -247,23 +248,23 @@ describe('SimpleAbrManager', () => {
     bandwidth = 2e6;
     bytesPerSecond = sufficientBWMultiplier * bandwidth / 8.0;
 
-    abrManager.segmentDownloaded(1000, bytesPerSecond);
-    abrManager.segmentDownloaded(1000, bytesPerSecond);
-    abrManager.segmentDownloaded(1000, bytesPerSecond);
-    abrManager.segmentDownloaded(1000, bytesPerSecond);
-    abrManager.segmentDownloaded(1000, bytesPerSecond);
-    abrManager.segmentDownloaded(1000, bytesPerSecond);
-    abrManager.segmentDownloaded(1000, bytesPerSecond);
+    abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
+    abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
+    abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
+    abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
+    abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
+    abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
+    abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
 
     // Stay inside switch interval.
     Date.now = () => (config.switchInterval - 2) * 1e3;
-    abrManager.segmentDownloaded(1000, bytesPerSecond);
+    abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
 
     expect(switchCallback).not.toHaveBeenCalled();
 
     // Move outside switch interval.
     Date.now = () => (config.switchInterval + 2) * 1e3;
-    abrManager.segmentDownloaded(1000, bytesPerSecond);
+    abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
 
     expect(switchCallback).toHaveBeenCalled();
   });
@@ -277,14 +278,14 @@ describe('SimpleAbrManager', () => {
     abrManager.setVariants(variants);
     abrManager.chooseVariant();
 
-    abrManager.segmentDownloaded(1000, bytesPerSecond);
-    abrManager.segmentDownloaded(1000, bytesPerSecond);
+    abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
+    abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
 
     abrManager.enable();
 
     // Make another call to segmentDownloaded(). switchCallback() will be
     // called to upgrade.
-    abrManager.segmentDownloaded(1000, bytesPerSecond);
+    abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
 
     // The second parameter is missing to indicate that the buffer should not be
     // cleared.
@@ -304,14 +305,14 @@ describe('SimpleAbrManager', () => {
     abrManager.setVariants(variants);
     abrManager.chooseVariant();
 
-    abrManager.segmentDownloaded(1000, bytesPerSecond);
-    abrManager.segmentDownloaded(1000, bytesPerSecond);
+    abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
+    abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
 
     abrManager.enable();
 
     // Make another call to segmentDownloaded(). switchCallback() will be
     // called to downgrade.
-    abrManager.segmentDownloaded(1000, bytesPerSecond);
+    abrManager.segmentDownloaded(1000, bytesPerSecond, defaultUri);
 
     // The second parameter is missing to indicate that the buffer should not be
     // cleared.
