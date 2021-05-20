@@ -66,6 +66,7 @@ describe('SimpleLLAbrManager', () => {
     abrManager.init(shaka.test.Util.spyFunc(switchCallback));
     abrManager.configure(config);
     abrManager.setVariants(variants);
+    abrManager.enable();
 
     jasmine.clock().install();
   });
@@ -200,5 +201,43 @@ describe('SimpleLLAbrManager', () => {
     // Second increase bitrate should be triggered
     const secondIncrease = manifest.variants.find((v) => v.id === 103);
     expect(switchCallback).not.toHaveBeenCalledWith(secondIncrease);
+  });
+
+  it('increases bitrate with bandwidth estimation', () => {
+    const original = abrManager.chooseVariant();
+    expect(original).not.toBe(null);
+    expect(original.bandwidth).toBe(2e6);
+
+    const uri = 'defaultUri';
+    abrManager.segmentDownloaded(10000, 4000000 / 8, uri);
+    jasmine.clock().tick(0.2);
+    const chosen = abrManager.getCurrentVariant();
+    expect(chosen.bandwidth).toBe(4e5);
+
+    Date.now = () => config.switchInterval * 1000;
+    abrManager.segmentDownloaded(10000, 90000000 / 8, uri);
+    jasmine.clock().tick(0.2);
+    const chosen2 = abrManager.getCurrentVariant();
+    expect(chosen2.bandwidth).toBe(2e6);
+  });
+
+  it('decreases bitrate with bandwidth estimation', () => {
+    const original = abrManager.chooseVariant();
+    expect(original).not.toBe(null);
+    expect(original.bandwidth).toBe(2e6);
+
+    const uri = 'defaultUri';
+    abrManager.segmentDownloaded(10000, 5500000 / 8, uri);
+    jasmine.clock().tick(0.2);
+    const chosen = abrManager.getCurrentVariant();
+    expect(chosen.bandwidth).toBe(5e5);
+  });
+
+  it('records download completed segment uri', () => {
+    for (let i = 0; i < 150; i++) {
+      abrManager.segmentDownloadCompleted(i, i, ['uri_' + i]);
+    }
+    expect(abrManager.getProcessedUriCount()).toBe(100);
+    expect(abrManager.getProcessedUri(0)).toBe('uri_50');
   });
 });
