@@ -209,13 +209,14 @@ describe('SimpleLLAbrManager', () => {
     expect(original.bandwidth).toBe(2e6);
 
     const uri = 'defaultUri';
-    abrManager.segmentDownloaded(10000, 4000000 / 8, uri);
+    abrManager.segmentDownloadCompleted(10000, 4000000 / 8, [uri], true);
     jasmine.clock().tick(0.2);
     const chosen = abrManager.getCurrentVariant();
     expect(chosen.bandwidth).toBe(4e5);
 
+    const uri2 = 'defaultUri2';
     Date.now = () => config.switchInterval * 1000;
-    abrManager.segmentDownloaded(10000, 90000000 / 8, uri);
+    abrManager.segmentDownloadCompleted(10000, 90000000 / 8, [uri2], true);
     jasmine.clock().tick(0.2);
     const chosen2 = abrManager.getCurrentVariant();
     expect(chosen2.bandwidth).toBe(2e6);
@@ -227,7 +228,7 @@ describe('SimpleLLAbrManager', () => {
     expect(original.bandwidth).toBe(2e6);
 
     const uri = 'defaultUri';
-    abrManager.segmentDownloaded(10000, 5500000 / 8, uri);
+    abrManager.segmentDownloadCompleted(10000, 5500000 / 8, [uri], true);
     jasmine.clock().tick(0.2);
     const chosen = abrManager.getCurrentVariant();
     expect(chosen.bandwidth).toBe(5e5);
@@ -235,7 +236,7 @@ describe('SimpleLLAbrManager', () => {
 
   it('records download completed segment uri', () => {
     for (let i = 0; i < 150; i++) {
-      abrManager.segmentDownloadCompleted(i, i, ['uri_' + i]);
+      abrManager.segmentDownloadCompleted(i, i, ['uri_' + i], true);
     }
     expect(abrManager.getProcessedUriCount()).toBe(100);
     expect(abrManager.getProcessedUri(0)).toBe('uri_50');
