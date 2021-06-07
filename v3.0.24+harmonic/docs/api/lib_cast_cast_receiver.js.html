@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: lib/cast/cast_receiver.js</title>
+
+    <script src="scripts/prettify.js"> </script>
+    <script src="scripts/lang-css.js"> </script>
+    <script src="scripts/show-widget.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/tomorrow.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+
+    <h1 class="page-title">Source: lib/cast/cast_receiver.js</h1>
+
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*! @license
+ * Shaka Player
+ * Copyright 2016 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+goog.provide('shaka.cast.CastReceiver');
+
+goog.require('goog.asserts');
+goog.require('shaka.Player');
+goog.require('shaka.cast.CastUtils');
+goog.require('shaka.log');
+goog.require('shaka.util.Error');
+goog.require('shaka.util.EventManager');
+goog.require('shaka.util.FakeEvent');
+goog.require('shaka.util.FakeEventTarget');
+goog.require('shaka.util.IDestroyable');
+goog.require('shaka.util.Platform');
+goog.require('shaka.util.Timer');
+
+
+/**
+ * A receiver to communicate between the Chromecast-hosted player and the
+ * sender application.
+ *
+ * @implements {shaka.util.IDestroyable}
+ * @export
+ */
+shaka.cast.CastReceiver = class extends shaka.util.FakeEventTarget {
+  /**
+   * @param {!HTMLMediaElement} video The local video element associated with
+   *   the local Player instance.
+   * @param {!shaka.Player} player A local Player instance.
+   * @param {function(Object)=} appDataCallback A callback to handle
+   *   application-specific data passed from the sender.  This can come either
+   *   from a Shaka-based sender through CastProxy.setAppData, or from a
+   *   sender using the customData field of the LOAD message of the standard
+   *   Cast message namespace.  It can also be null if no such data is sent.
+   * @param {function(string):string=} contentIdCallback A callback to
+   *   retrieve manifest URI from the provided content id.
+   */
+  constructor(video, player, appDataCallback, contentIdCallback) {
+    super();
+
+    /** @private {HTMLMediaElement} */
+    this.video_ = video;
+
+    /** @private {shaka.Player} */
+    this.player_ = player;
+
+    /** @private {shaka.util.EventManager} */
+    this.eventManager_ = new shaka.util.EventManager();
+
+    /** @private {Object} */
+    this.targets_ = {
+      'video': video,
+      'player': player,
+    };
+
+    /** @private {?function(Object)} */
+    this.appDataCallback_ = appDataCallback || (() => {});
+
+    /** @private {?function(string):string} */
+    this.contentIdCallback_ = contentIdCallback ||
+                          /** @param {string} contentId
+                              @return {string} */
+                          ((contentId) => contentId);
+
+    /**
+     * A Cast metadata object, one of:
+     *  - https://developers.google.com/cast/docs/reference/messages#GenericMediaMetadata
+     *  - https://developers.google.com/cast/docs/reference/messages#MovieMediaMetadata
+     *  - https://developers.google.com/cast/docs/reference/messages#TvShowMediaMetadata
+     *  - https://developers.google.com/cast/docs/reference/messages#MusicTrackMediaMetadata
+     * @private {Object}
+     */
+    this.metadata_ = null;
+
+    /** @private {boolean} */
+    this.isConnected_ = false;
+
+    /** @private {boolean} */
+    this.isIdle_ = true;
+
+    /** @private {number} */
+    this.updateNumber_ = 0;
+
+    /** @private {boolean} */
+    this.startUpdatingUpdateNumber_ = false;
+
+    /** @private {boolean} */
+    this.initialStatusUpdatePending_ = true;
+
+    /** @private {cast.receiver.CastMessageBus} */
+    this.shakaBus_ = null;
+
+    /** @private {cast.receiver.CastMessageBus} */
+    this.genericBus_ = null;
+
+    /** @private {shaka.util.Timer} */
+    this.pollTimer_ = new shaka.util.Timer(() => {
+      this.pollAttributes_();
+    });
+
+    this.init_();
+  }
+
+  /**
+   * @return {boolean} True if the cast API is available and there are
+   *   receivers.
+   * @export
+   */
+  isConnected() {
+    return this.isConnected_;
+  }
+
+  /**
+   * @return {boolean} True if the receiver is not currently doing loading or
+   *   playing anything.
+   * @export
+   */
+  isIdle() {
+    return this.isIdle_;
+  }
+
+  /**
+   * Set all Cast content metadata, as defined by the Cast SDK.
+   * Should be called from an appDataCallback.
+   *
+   * For a simpler way to set basic metadata, see:
+   *  - setContentTitle()
+   *  - setContentImage()
+   *  - setContentArtist()
+   *
+   * @param {Object} metadata
+   *   A Cast metadata object, one of:
+   *    - https://developers.google.com/cast/docs/reference/messages#GenericMediaMetadata
+   *    - https://developers.google.com/cast/docs/reference/messages#MovieMediaMetadata
+   *    - https://developers.google.com/cast/docs/reference/messages#TvShowMediaMetadata
+   *    - https://developers.google.com/cast/docs/reference/messages#MusicTrackMediaMetadata
+   * @export
+   */
+  setContentMetadata(metadata) {
+    this.metadata_ = metadata;
+  }
+
+  /**
+   * Clear all Cast content metadata.
+   * Should be called from an appDataCallback.
+   *
+   * @export
+   */
+  clearContentMetadata() {
+    this.metadata_ = null;
+  }
+
+  /**
+   * Set the Cast content's title.
+   * Should be called from an appDataCallback.
+   *
+   * @param {string} title
+   * @export
+   */
+  setContentTitle(title) {
+    if (!this.metadata_) {
+      this.metadata_ = {
+        'metadataType': cast.receiver.media.MetadataType.GENERIC,
+      };
+    }
+    this.metadata_['title'] = title;
+  }
+
+  /**
+   * Set the Cast content's thumbnail image.
+   * Should be called from an appDataCallback.
+   *
+   * @param {string} imageUrl
+   * @export
+   */
+  setContentImage(imageUrl) {
+    if (!this.metadata_) {
+      this.metadata_ = {
+        'metadataType': cast.receiver.media.MetadataType.GENERIC,
+      };
+    }
+    this.metadata_['images'] = [
+      {
+        'url': imageUrl,
+      },
+    ];
+  }
+
+  /**
+   * Set the Cast content's artist.
+   * Also sets the metadata type to music.
+   * Should be called from an appDataCallback.
+   *
+   * @param {string} artist
+   * @export
+   */
+  setContentArtist(artist) {
+    if (!this.metadata_) {
+      this.metadata_ = {};
+    }
+    this.metadata_['artist'] = artist;
+    this.metadata_['metadataType'] =
+        cast.receiver.media.MetadataType.MUSIC_TRACK;
+  }
+
+  /**
+   * Destroys the underlying Player, then terminates the cast receiver app.
+   *
+   * @override
+   * @export
+   */
+  async destroy() {
+    if (this.eventManager_) {
+      this.eventManager_.release();
+      this.eventManager_ = null;
+    }
+
+    const waitFor = [];
+    if (this.player_) {
+      waitFor.push(this.player_.destroy());
+      this.player_ = null;
+    }
+
+    if (this.pollTimer_) {
+      this.pollTimer_.stop();
+      this.pollTimer_ = null;
+    }
+
+    this.video_ = null;
+    this.targets_ = null;
+    this.appDataCallback_ = null;
+    this.isConnected_ = false;
+    this.isIdle_ = true;
+    this.shakaBus_ = null;
+    this.genericBus_ = null;
+
+    await Promise.all(waitFor);
+
+    const manager = cast.receiver.CastReceiverManager.getInstance();
+    manager.stop();
+  }
+
+  /** @private */
+  init_() {
+    const manager = cast.receiver.CastReceiverManager.getInstance();
+    manager.onSenderConnected = () => this.onSendersChanged_();
+    manager.onSenderDisconnected = () => this.onSendersChanged_();
+    manager.onSystemVolumeChanged = () => this.fakeVolumeChangeEvent_();
+
+    this.genericBus_ = manager.getCastMessageBus(
+        shaka.cast.CastUtils.GENERIC_MESSAGE_NAMESPACE);
+    this.genericBus_.onMessage = (event) => this.onGenericMessage_(event);
+
+    this.shakaBus_ = manager.getCastMessageBus(
+        shaka.cast.CastUtils.SHAKA_MESSAGE_NAMESPACE);
+    this.shakaBus_.onMessage = (event) => this.onShakaMessage_(event);
+
+    if (goog.DEBUG) {
+      // Sometimes it is useful to load the receiver app in Chrome to work on
+      // the UI.  To avoid log spam caused by the SDK trying to connect to web
+      // sockets that don't exist, in uncompiled mode we check if the hosting
+      // browser is a Chromecast before starting the receiver manager.  We
+      // wouldn't do browser detection except for debugging, so only do this in
+      // uncompiled mode.
+      if (shaka.util.Platform.isChromecast()) {
+        manager.start();
+      }
+    } else {
+      manager.start();
+    }
+
+    for (const name of shaka.cast.CastUtils.VideoEvents) {
+      this.eventManager_.listen(
+          this.video_, name, (event) => this.proxyEvent_('video', event));
+    }
+
+    for (const key in shaka.Player.EventName) {
+      const name = shaka.Player.EventName[key];
+      this.eventManager_.listen(
+          this.player_, name, (event) => this.proxyEvent_('player', event));
+    }
+
+    // In our tests, the original Chromecast seems to have trouble decoding
+    // above 1080p.  It would be a waste to select a higher res anyway, given
+    // that the device only outputs 1080p to begin with.
+
+    // Chromecast has an extension to query the device/display's resolution.
+    if (cast.__platform__ &amp;&amp; cast.__platform__.canDisplayType(
+        'video/mp4; codecs="avc1.640028"; width=3840; height=2160')) {
+      // The device and display can both do 4k.  Assume a 4k limit.
+      this.player_.setMaxHardwareResolution(3840, 2160);
+    } else {
+      // Chromecast has always been able to do 1080p.  Assume a 1080p limit.
+      this.player_.setMaxHardwareResolution(1920, 1080);
+    }
+
+    // Do not start excluding values from update messages until the video is
+    // fully loaded.
+    this.eventManager_.listen(this.video_, 'loadeddata', () => {
+      this.startUpdatingUpdateNumber_ = true;
+    });
+
+    // Maintain idle state.
+    this.eventManager_.listen(this.player_, 'loading', () => {
+      // No longer idle once loading.  This allows us to show the spinner during
+      // the initial buffering phase.
+      this.isIdle_ = false;
+      this.onCastStatusChanged_();
+    });
+    this.eventManager_.listen(this.video_, 'playing', () => {
+      // No longer idle once playing.  This allows us to replay a video without
+      // reloading.
+      this.isIdle_ = false;
+      this.onCastStatusChanged_();
+    });
+    this.eventManager_.listen(this.video_, 'pause', () => {
+      this.onCastStatusChanged_();
+    });
+    this.eventManager_.listen(this.player_, 'unloading', () => {
+      // Go idle when unloading content.
+      this.isIdle_ = true;
+      this.onCastStatusChanged_();
+    });
+    this.eventManager_.listen(this.video_, 'ended', () => {
+      // Go idle 5 seconds after 'ended', assuming we haven't started again or
+      // been destroyed.
+      const timer = new shaka.util.Timer(() => {
+        if (this.video_ &amp;&amp; this.video_.ended) {
+          this.isIdle_ = true;
+          this.onCastStatusChanged_();
+        }
+      });
+
+      timer.tickAfter(shaka.cast.CastReceiver.IDLE_INTERVAL);
+    });
+
+    // Do not start polling until after the sender's 'init' message is handled.
+  }
+
+  /** @private */
+  onSendersChanged_() {
+    // Reset update message frequency values, to make sure whomever joined
+    // will get a full update message.
+    this.updateNumber_ = 0;
+    // Don't reset startUpdatingUpdateNumber_, because this operation does not
+    // result in new data being loaded.
+    this.initialStatusUpdatePending_ = true;
+
+    const manager = cast.receiver.CastReceiverManager.getInstance();
+    this.isConnected_ = manager.getSenders().length != 0;
+    this.onCastStatusChanged_();
+  }
+
+  /**
+   * Dispatch an event to notify the receiver app that the status has changed.
+   * @private
+   */
+  async onCastStatusChanged_() {
+    // Do this asynchronously so that synchronous changes to idle state (such as
+    // Player calling unload() as part of load()) are coalesced before the event
+    // goes out.
+    await Promise.resolve();
+    if (!this.player_) {
+      // We've already been destroyed.
+      return;
+    }
+
+    const event = new shaka.util.FakeEvent('caststatuschanged');
+    this.dispatchEvent(event);
+    // Send a media status message, with a media info message if appropriate.
+    if (!this.maybeSendMediaInfoMessage_()) {
+      this.sendMediaStatus_();
+    }
+  }
+
+  /**
+   * Take on initial state from the sender.
+   * @param {shaka.cast.CastUtils.InitStateType} initState
+   * @param {Object} appData
+   * @private
+   */
+  async initState_(initState, appData) {
+    // Take on player state first.
+    for (const k in initState['player']) {
+      const v = initState['player'][k];
+      // All player state vars are setters to be called.
+      /** @type {Object} */(this.player_)[k](v);
+    }
+
+    // Now process custom app data, which may add additional player configs:
+    this.appDataCallback_(appData);
+
+    const autoplay = this.video_.autoplay;
+
+    // Now load the manifest, if present.
+    if (initState['manifest']) {
+      // Don't autoplay the content until we finish setting up initial state.
+      this.video_.autoplay = false;
+      try {
+        await this.player_.load(initState['manifest'], initState['startTime']);
+      } catch (error) {
+        // Pass any errors through to the app.
+        goog.asserts.assert(error instanceof shaka.util.Error,
+            'Wrong error type!');
+        const eventType = shaka.Player.EventName.Error;
+        const event = new shaka.util.FakeEvent(eventType, {'detail': error});
+        this.player_.dispatchEvent(event);
+        return;
+      }
+    } else {
+      // Ensure the below happens async.
+      await Promise.resolve();
+    }
+
+    if (!this.player_) {
+      // We've already been destroyed.
+      return;
+    }
+
+    // Finally, take on video state and player's "after load" state.
+    for (const k in initState['video']) {
+      const v = initState['video'][k];
+      this.video_[k] = v;
+    }
+
+    for (const k in initState['playerAfterLoad']) {
+      const v = initState['playerAfterLoad'][k];
+      // All player state vars are setters to be called.
+      /** @type {Object} */(this.player_)[k](v);
+    }
+
+    // Restore original autoplay setting.
+    this.video_.autoplay = autoplay;
+    if (initState['manifest']) {
+      // Resume playback with transferred state.
+      this.video_.play();
+      // Notify generic controllers of the state change.
+      this.sendMediaStatus_();
+    }
+  }
+
+  /**
+   * @param {string} targetName
+   * @param {!Event} event
+   * @private
+   */
+  proxyEvent_(targetName, event) {
+    if (!this.player_) {
+      // The receiver is destroyed, so it should ignore further events.
+      return;
+    }
+
+    // Poll and send an update right before we send the event.  Some events
+    // indicate an attribute change, so that change should be visible when the
+    // event is handled.
+    this.pollAttributes_();
+
+    this.sendMessage_({
+      'type': 'event',
+      'targetName': targetName,
+      'event': event,
+    }, this.shakaBus_);
+  }
+
+  /** @private */
+  pollAttributes_() {
+    // The poll timer may have been pre-empted by an event (e.g. timeupdate).
+    // Calling |start| will cancel any pending calls and therefore will avoid us
+    // polling too often.
+    this.pollTimer_.tickAfter(shaka.cast.CastReceiver.POLL_INTERVAL);
+
+    const update = {
+      'video': {},
+      'player': {},
+    };
+
+    for (const name of shaka.cast.CastUtils.VideoAttributes) {
+      update['video'][name] = this.video_[name];
+    }
+
+    // TODO: Instead of this variable frequency update system, instead cache the
+    // previous player state and only send over changed values, with complete
+    // updates every ~20 updates to account for dropped messages.
+
+    if (this.player_.isLive()) {
+      const PlayerGetterMethodsThatRequireLive =
+          shaka.cast.CastUtils.PlayerGetterMethodsThatRequireLive;
+      for (const name in PlayerGetterMethodsThatRequireLive) {
+        const frequency = PlayerGetterMethodsThatRequireLive[name];
+        if (this.updateNumber_ % frequency == 0) {
+          update['player'][name] = /** @type {Object} */ (this.player_)[name]();
+        }
+      }
+    }
+    for (const name in shaka.cast.CastUtils.PlayerGetterMethods) {
+      const frequency = shaka.cast.CastUtils.PlayerGetterMethods[name];
+      if (this.updateNumber_ % frequency == 0) {
+        update['player'][name] = /** @type {Object} */ (this.player_)[name]();
+      }
+    }
+
+    // Volume attributes are tied to the system volume.
+    const manager = cast.receiver.CastReceiverManager.getInstance();
+    const systemVolume = manager.getSystemVolume();
+    if (systemVolume) {
+      update['video']['volume'] = systemVolume.level;
+      update['video']['muted'] = systemVolume.muted;
+    }
+
+    // Only start progressing the update number once data is loaded,
+    // just in case any of the "rarely changing" properties with less frequent
+    // update messages changes significantly during the loading process.
+    if (this.startUpdatingUpdateNumber_) {
+      this.updateNumber_ += 1;
+    }
+
+    this.sendMessage_({
+      'type': 'update',
+      'update': update,
+    }, this.shakaBus_);
+
+    this.maybeSendMediaInfoMessage_();
+  }
+
+  /**
+   * Composes and sends a mediaStatus message if appropriate.
+   * @return {boolean}
+   * @private
+   */
+  maybeSendMediaInfoMessage_() {
+    if (this.initialStatusUpdatePending_ &amp;&amp;
+        (this.video_.duration || this.player_.isLive())) {
+      // Send over a media status message to set the duration of the cast
+      // dialogue.
+      this.sendMediaInfoMessage_();
+      this.initialStatusUpdatePending_ = false;
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Composes and sends a mediaStatus message with a mediaInfo component.
+   *
+   * @param {number=} requestId
+   * @private
+   */
+  sendMediaInfoMessage_(requestId = 0) {
+    const media = {
+      'contentId': this.player_.getAssetUri(),
+      'streamType': this.player_.isLive() ? 'LIVE' : 'BUFFERED',
+      // Sending an empty string for now since it's a mandatory field.
+      // We don't have this info, and it doesn't seem to be useful, anyway.
+      'contentType': '',
+    };
+    if (!this.player_.isLive()) {
+      // Optional, and only sent when the duration is known.
+      media['duration'] = this.video_.duration;
+    }
+    if (this.metadata_) {
+      media['metadata'] = this.metadata_;
+    }
+    this.sendMediaStatus_(requestId, media);
+  }
+
+  /**
+   * Dispatch a fake 'volumechange' event to mimic the video element, since
+   * volume changes are routed to the system volume on the receiver.
+   * @private
+   */
+  fakeVolumeChangeEvent_() {
+    // Volume attributes are tied to the system volume.
+    const manager = cast.receiver.CastReceiverManager.getInstance();
+    const systemVolume = manager.getSystemVolume();
+    goog.asserts.assert(systemVolume, 'System volume should not be null!');
+
+    if (systemVolume) {
+      // Send an update message with just the latest volume level and muted
+      // state.
+      this.sendMessage_({
+        'type': 'update',
+        'update': {
+          'video': {
+            'volume': systemVolume.level,
+            'muted': systemVolume.muted,
+          },
+        },
+      }, this.shakaBus_);
+    }
+
+    // Send another message with a 'volumechange' event to update the sender's
+    // UI.
+    this.sendMessage_({
+      'type': 'event',
+      'targetName': 'video',
+      'event': {'type': 'volumechange'},
+    }, this.shakaBus_);
+  }
+
+  /**
+   * Since this method is in the compiled library, make sure all messages are
+   * read with quoted properties.
+   * @param {!cast.receiver.CastMessageBus.Event} event
+   * @private
+   */
+  onShakaMessage_(event) {
+    const message = shaka.cast.CastUtils.deserialize(event.data);
+    shaka.log.debug('CastReceiver: message', message);
+
+    switch (message['type']) {
+      case 'init':
+        // Reset update message frequency values after initialization.
+        this.updateNumber_ = 0;
+        this.startUpdatingUpdateNumber_ = false;
+        this.initialStatusUpdatePending_ = true;
+
+        this.initState_(message['initState'], message['appData']);
+        // The sender is supposed to reflect the cast system volume after
+        // connecting.  Using fakeVolumeChangeEvent_() would create a race on
+        // the sender side, since it would have volume properties, but no
+        // others.
+        // This would lead to hasRemoteProperties() being true, even though a
+        // complete set had never been sent.
+        // Now that we have init state, this is a good time for the first update
+        // message anyway.
+        this.pollAttributes_();
+        break;
+      case 'appData':
+        this.appDataCallback_(message['appData']);
+        break;
+      case 'set': {
+        const targetName = message['targetName'];
+        const property = message['property'];
+        const value = message['value'];
+
+        if (targetName == 'video') {
+          // Volume attributes must be rerouted to the system.
+          const manager = cast.receiver.CastReceiverManager.getInstance();
+          if (property == 'volume') {
+            manager.setSystemVolumeLevel(value);
+            break;
+          } else if (property == 'muted') {
+            manager.setSystemVolumeMuted(value);
+            break;
+          }
+        }
+
+        this.targets_[targetName][property] = value;
+        break;
+      }
+      case 'call': {
+        const targetName = message['targetName'];
+        const methodName = message['methodName'];
+        const args = message['args'];
+        const target = this.targets_[targetName];
+        // eslint-disable-next-line prefer-spread
+        target[methodName].apply(target, args);
+        break;
+      }
+      case 'asyncCall': {
+        const targetName = message['targetName'];
+        const methodName = message['methodName'];
+        if (targetName == 'player' &amp;&amp; methodName == 'load') {
+          // Reset update message frequency values after a load.
+          this.updateNumber_ = 0;
+          this.startUpdatingUpdateNumber_ = false;
+        }
+        const args = message['args'];
+        const id = message['id'];
+        const senderId = event.senderId;
+        const target = this.targets_[targetName];
+        // eslint-disable-next-line prefer-spread
+        let p = target[methodName].apply(target, args);
+        if (targetName == 'player' &amp;&amp; methodName == 'load') {
+          // Wait until the manifest has actually loaded to send another media
+          // info message, so on a new load it doesn't send the old info over.
+          p = p.then(() => {
+            this.initialStatusUpdatePending_ = true;
+          });
+        }
+        // Replies must go back to the specific sender who initiated, so that we
+        // don't have to deal with conflicting IDs between senders.
+        p.then(
+            () => this.sendAsyncComplete_(senderId, id, /* error= */ null),
+            (error) => this.sendAsyncComplete_(senderId, id, error));
+        break;
+      }
+    }
+  }
+
+  /**
+   * @param {!cast.receiver.CastMessageBus.Event} event
+   * @private
+   */
+  onGenericMessage_(event) {
+    const message = shaka.cast.CastUtils.deserialize(event.data);
+    shaka.log.debug('CastReceiver: message', message);
+    // TODO(ismena): error message on duplicate request id from the same sender
+    switch (message['type']) {
+      case 'PLAY':
+        this.video_.play();
+        // Notify generic controllers that the player state changed.
+        // requestId=0 (the parameter) means that the message was not
+        // triggered by a GET_STATUS request.
+        this.sendMediaStatus_();
+        break;
+      case 'PAUSE':
+        this.video_.pause();
+        this.sendMediaStatus_();
+        break;
+      case 'SEEK': {
+        const currentTime = message['currentTime'];
+        const resumeState = message['resumeState'];
+        if (currentTime != null) {
+          this.video_.currentTime = Number(currentTime);
+        }
+        if (resumeState &amp;&amp; resumeState == 'PLAYBACK_START') {
+          this.video_.play();
+          this.sendMediaStatus_();
+        } else if (resumeState &amp;&amp; resumeState == 'PLAYBACK_PAUSE') {
+          this.video_.pause();
+          this.sendMediaStatus_();
+        }
+        break;
+      }
+      case 'STOP':
+        this.player_.unload().then(() => {
+          if (!this.player_) {
+            // We've already been destroyed.
+            return;
+          }
+
+          this.sendMediaStatus_();
+        });
+        break;
+      case 'GET_STATUS':
+        // TODO(ismena): According to the SDK this is supposed to be a
+        // unicast message to the sender that requested the status,
+        // but it doesn't appear to be working.
+        // Look into what's going on there and change this to be a
+        // unicast.
+        this.sendMediaInfoMessage_(Number(message['requestId']));
+        break;
+      case 'VOLUME': {
+        const volumeObject = message['volume'];
+        const level = volumeObject['level'];
+        const muted = volumeObject['muted'];
+        const oldVolumeLevel = this.video_.volume;
+        const oldVolumeMuted = this.video_.muted;
+        if (level != null) {
+          this.video_.volume = Number(level);
+        }
+        if (muted != null) {
+          this.video_.muted = muted;
+        }
+        // Notify generic controllers if the volume changed.
+        if (oldVolumeLevel != this.video_.volume ||
+            oldVolumeMuted != this.video_.muted) {
+          this.sendMediaStatus_();
+        }
+        break;
+      }
+      case 'LOAD': {
+        // Reset update message frequency values after a load.
+        this.updateNumber_ = 0;
+        this.startUpdatingUpdateNumber_ = false;
+        // This already sends an update.
+        this.initialStatusUpdatePending_ = false;
+
+        const mediaInfo = message['media'];
+        const contentId = mediaInfo['contentId'];
+        const currentTime = message['currentTime'];
+        const assetUri = this.contentIdCallback_(contentId);
+        const autoplay = message['autoplay'] || true;
+        const customData = mediaInfo['customData'];
+
+        this.appDataCallback_(customData);
+
+        if (autoplay) {
+          this.video_.autoplay = true;
+        }
+        this.player_.load(assetUri, currentTime).then(() => {
+          if (!this.player_) {
+            // We've already been destroyed.
+            return;
+          }
+
+          // Notify generic controllers that the media has changed.
+          this.sendMediaInfoMessage_();
+        }).catch((error) => {
+          goog.asserts.assert(error instanceof shaka.util.Error,
+              'Wrong error type!');
+
+          // Load failed.  Dispatch the error message to the sender.
+          let type = 'LOAD_FAILED';
+          if (error.category == shaka.util.Error.Category.PLAYER &amp;&amp;
+              error.code == shaka.util.Error.Code.LOAD_INTERRUPTED) {
+            type = 'LOAD_CANCELLED';
+          }
+
+          this.sendMessage_({
+            'requestId': Number(message['requestId']),
+            'type': type,
+          }, this.genericBus_);
+        });
+        break;
+      }
+      default:
+        shaka.log.warning(
+            'Unrecognized message type from the generic Chromecast controller!',
+            message['type']);
+        // Dispatch an error to the sender.
+        this.sendMessage_({
+          'requestId': Number(message['requestId']),
+          'type': 'INVALID_REQUEST',
+          'reason': 'INVALID_COMMAND',
+        }, this.genericBus_);
+        break;
+    }
+  }
+
+  /**
+   * Tell the sender that the async operation is complete.
+   * @param {string} senderId
+   * @param {string} id
+   * @param {shaka.util.Error} error
+   * @private
+   */
+  sendAsyncComplete_(senderId, id, error) {
+    if (!this.player_) {
+      // We've already been destroyed.
+      return;
+    }
+
+    this.sendMessage_({
+      'type': 'asyncComplete',
+      'id': id,
+      'error': error,
+    }, this.shakaBus_, senderId);
+  }
+
+  /**
+   * Since this method is in the compiled library, make sure all messages passed
+   * in here were created with quoted property names.
+   * @param {!Object} message
+   * @param {cast.receiver.CastMessageBus} bus
+   * @param {string=} senderId
+   * @private
+   */
+  sendMessage_(message, bus, senderId) {
+    // Cuts log spam when debugging the receiver UI in Chrome.
+    if (!this.isConnected_) {
+      return;
+    }
+
+    const serialized = shaka.cast.CastUtils.serialize(message);
+    if (senderId) {
+      bus.getCastChannel(senderId).send(serialized);
+    } else {
+      bus.broadcast(serialized);
+    }
+  }
+
+  /**
+   * @return {string}
+   * @private
+   */
+  getPlayState_() {
+    const playState = shaka.cast.CastReceiver.PLAY_STATE;
+    if (this.isIdle_) {
+      return playState.IDLE;
+    } else if (this.player_.isBuffering()) {
+      return playState.BUFFERING;
+    } else if (this.video_.paused) {
+      return playState.PAUSED;
+    } else {
+      return playState.PLAYING;
+    }
+  }
+
+  /**
+   * @param {number=} requestId
+   * @param {Object=} media
+   * @private
+   */
+  sendMediaStatus_(requestId = 0, media = null) {
+    const mediaStatus = {
+      // mediaSessionId is a unique ID for the playback of this specific
+      // session.
+      // It's used to identify a specific instance of a playback.
+      // We don't support multiple playbacks, so just return 0.
+      'mediaSessionId': 0,
+      'playbackRate': this.video_.playbackRate,
+      'playerState': this.getPlayState_(),
+      'currentTime': this.video_.currentTime,
+      // supportedMediaCommands is a sum of all the flags of commands that the
+      // player supports.
+      // The list of comands with respective flags is:
+      // 1 - Pause
+      // 2 - Seek
+      // 4 - Stream volume
+      // 8 - Stream mute
+      // 16 - Skip forward
+      // 32 - Skip backward
+      // We support all of them, and their sum is 63.
+      'supportedMediaCommands': 63,
+      'volume': {
+        'level': this.video_.volume,
+        'muted': this.video_.muted,
+      },
+    };
+
+    if (media) {
+      mediaStatus['media'] = media;
+    }
+
+    const ret = {
+      'requestId': requestId,
+      'type': 'MEDIA_STATUS',
+      'status': [mediaStatus],
+    };
+
+    this.sendMessage_(ret, this.genericBus_);
+  }
+};
+
+/** @type {number} The interval, in seconds, to poll for changes. */
+shaka.cast.CastReceiver.POLL_INTERVAL = 0.5;
+
+/** @type {number} The interval, in seconds, to go "idle". */
+shaka.cast.CastReceiver.IDLE_INTERVAL = 5;
+
+/**
+ * @enum {string}
+ */
+shaka.cast.CastReceiver.PLAY_STATE = {
+  IDLE: 'IDLE',
+  PLAYING: 'PLAYING',
+  BUFFERING: 'BUFFERING',
+  PAUSED: 'PAUSED',
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <div id="showWidget">Show:
+        <select id="show" onchange="onShowChange()">
+            <option value="exported">exported</option>
+            <option value="public">public</option>
+            <option value="private">everything</option>
+        </select>
+    </div>
+
+    <h2><a href="index.html">Home</a></h2><h3>Tutorials</h3><ul><li class=""><a href="tutorial-welcome.html">Welcome to Shaka Player</a></li><li class=""><a href="tutorial-basic-usage.html">Basic Usage</a></li><li class=""><a href="tutorial-debugging.html">Debugging</a></li><li class=""><a href="tutorial-config.html">Configuration</a></li><li class=""><a href="tutorial-network-and-buffering-config.html">Network and Buffering Configuration</a></li><li class=""><a href="tutorial-drm-config.html">DRM Configuration</a></li><li class=""><a href="tutorial-license-server-auth.html">License Server Authentication</a></li><li class=""><a href="tutorial-license-wrapping.html">License Wrapping</a></li><li class=""><a href="tutorial-ui.html">UI Library</a></li><li class=""><a href="tutorial-ui-customization.html">Configuring the UI</a></li><li class=""><a href="tutorial-a11y.html">Creating accessible buttons</a></li><li class=""><a href="tutorial-ad_monetization.html">Serving ads with our IMA SDK integration</a></li><li class=""><a href="tutorial-plugins.html">Plugins and Customizing the Build</a></li><li class=""><a href="tutorial-manifest-parser.html">Manifest Parser Plugins</a></li><li class=""><a href="tutorial-architecture.html">Architecture Diagrams</a></li><li class=""><a href="tutorial-service-worker.html">Service Worker Caching</a></li><li class=""><a href="tutorial-offline.html">Offline Storage and Playback</a></li><li class=""><a href="tutorial-fairplay.html">FairPlay support</a></li><li class=""><a href="tutorial-application-level-redirects.html">Application-Level Redirects</a></li><li class=""><a href="tutorial-faq.html">Frequently Asked Questions</a></li><li class=""><a href="tutorial-upgrade.html">Upgrade Guide</a></li><li class=""><a href="tutorial-gsoc-ideas-list.html">gsoc-ideas-list</a></li></ul><h3>Classes</h3><ul><li class="access-public"><a href="goog.asserts.html">goog.asserts</a></li><li class="access-public"><a href="shaka.html">shaka</a></li><li class="access-public"><a href="shaka.abr.Ewma.html">shaka.abr.Ewma</a></li><li class="access-public"><a href="shaka.abr.EwmaBandwidthEstimator.html">shaka.abr.EwmaBandwidthEstimator</a></li><li class="access-export"><a href="shaka.abr.SimpleAbrManager.html">shaka.abr.SimpleAbrManager</a></li><li class="access-export"><a href="shaka.abr.SimpleLLAbrManager.html">shaka.abr.SimpleLLAbrManager</a></li><li class="access-export"><a href="shaka.abr.SlidingPercentile.html">shaka.abr.SlidingPercentile</a></li><li class="access-public"><a href="shaka.abr.SlidingPercentileBandwidthEstimator.html">shaka.abr.SlidingPercentileBandwidthEstimator</a></li><li class="access-export"><a href="shaka.ads.AdManager.html">shaka.ads.AdManager</a></li><li class="access-public"><a href="shaka.ads.AdsStats.html">shaka.ads.AdsStats</a></li><li class="access-export"><a href="shaka.ads.ClientSideAd.html">shaka.ads.ClientSideAd</a></li><li class="access-public"><a href="shaka.ads.ClientSideAdManager.html">shaka.ads.ClientSideAdManager</a></li><li class="access-export"><a href="shaka.ads.ServerSideAd.html">shaka.ads.ServerSideAd</a></li><li class="access-public"><a href="shaka.ads.ServerSideAdManager.html">shaka.ads.ServerSideAdManager</a></li><li class="access-public"><a href="shaka.ads-shaka.ads.CuePoint.html">shaka.ads~shaka.ads.CuePoint</a></li><li class="access-export"><a href="shaka.cast.CastProxy.html">shaka.cast.CastProxy</a></li><li class="access-export"><a href="shaka.cast.CastReceiver.html">shaka.cast.CastReceiver</a></li><li class="access-public"><a href="shaka.cast.CastSender.html">shaka.cast.CastSender</a></li><li class="access-public"><a href="shaka.cast.CastUtils.html">shaka.cast.CastUtils</a></li><li class="access-public"><a href="shaka.cea.Cea608DataChannel.html">shaka.cea.Cea608DataChannel</a></li><li class="access-public"><a href="shaka.cea.Cea608Memory.html">shaka.cea.Cea608Memory</a></li><li class="access-public"><a href="shaka.cea.Cea708Service.html">shaka.cea.Cea708Service</a></li><li class="access-public"><a href="shaka.cea.Cea708Window.html">shaka.cea.Cea708Window</a></li><li class="access-public"><a href="shaka.cea.CeaDecoder.html">shaka.cea.CeaDecoder</a></li><li class="access-public"><a href="shaka.cea.CeaUtils-shaka.cea.CeaUtils.StyledChar.html">shaka.cea.CeaUtils~shaka.cea.CeaUtils.StyledChar</a></li><li class="access-public"><a href="shaka.cea.DtvccPacketBuilder.html">shaka.cea.DtvccPacketBuilder</a></li><li class="access-public"><a href="shaka.cea.Mp4CeaParser.html">shaka.cea.Mp4CeaParser</a></li><li class="access-public"><a href="shaka.cea.SeiProcessor.html">shaka.cea.SeiProcessor</a></li><li class="access-public"><a href="shaka.cea-shaka.cea.DtvccPacket.html">shaka.cea~shaka.cea.DtvccPacket</a></li><li class="access-public"><a href="shaka.dash.ContentProtection.html">shaka.dash.ContentProtection</a></li><li class="access-export"><a href="shaka.dash.DashParser.html">shaka.dash.DashParser</a></li><li class="access-public"><a href="shaka.dash.MpdUtils.html">shaka.dash.MpdUtils</a></li><li class="access-public"><a href="shaka.dash.SegmentBase.html">shaka.dash.SegmentBase</a></li><li class="access-public"><a href="shaka.dash.SegmentList.html">shaka.dash.SegmentList</a></li><li class="access-public"><a href="shaka.dash.SegmentTemplate.html">shaka.dash.SegmentTemplate</a></li><li class="access-export"><a href="shaka.dependencies.html">shaka.dependencies</a></li><li class="access-public"><a href="shaka.Deprecate.html">shaka.Deprecate</a></li><li class="access-public"><a href="shaka.deprecate.Enforcer.html">shaka.deprecate.Enforcer</a></li><li class="access-public"><a href="shaka.deprecate.Version.html">shaka.deprecate.Version</a></li><li class="access-public"><a href="shaka.extern.html">shaka.extern</a></li><li class="access-export"><a href="shaka.extern.AbrManager.html">shaka.extern.AbrManager</a></li><li class="access-export"><a href="shaka.extern.Cue.html">shaka.extern.Cue</a></li><li class="access-export"><a href="shaka.extern.CueRegion.html">shaka.extern.CueRegion</a></li><li class="access-public"><a href="shaka.extern.EmeSessionStorageCell.html">shaka.extern.EmeSessionStorageCell</a></li><li class="access-export"><a href="shaka.extern.Error.html">shaka.extern.Error</a></li><li class="access-export"><a href="shaka.extern.IUIElement.html">shaka.extern.IUIElement</a></li><li class="access-export"><a href="shaka.extern.IUIRangeElement.html">shaka.extern.IUIRangeElement</a></li><li class="access-export"><a href="shaka.extern.IUISettingsMenu.html">shaka.extern.IUISettingsMenu</a></li><li class="access-export"><a href="shaka.extern.ManifestParser.html">shaka.extern.ManifestParser</a></li><li class="access-public"><a href="shaka.extern.StorageCell.html">shaka.extern.StorageCell</a></li><li class="access-public"><a href="shaka.extern.StorageMechanism.html">shaka.extern.StorageMechanism</a></li><li class="access-public"><a href="shaka.hls.Attribute.html">shaka.hls.Attribute</a></li><li class="access-export"><a href="shaka.hls.HlsParser.html">shaka.hls.HlsParser</a></li><li class="access-public"><a href="shaka.hls.ManifestTextParser.html">shaka.hls.ManifestTextParser</a></li><li class="access-public"><a href="shaka.hls.Playlist.html">shaka.hls.Playlist</a></li><li class="access-public"><a href="shaka.hls.Segment.html">shaka.hls.Segment</a></li><li class="access-public"><a href="shaka.hls.Tag.html">shaka.hls.Tag</a></li><li class="access-export"><a href="shaka.log.html">shaka.log</a></li><li class="access-public"><a href="shaka.media.AdaptationSet.html">shaka.media.AdaptationSet</a></li><li class="access-public"><a href="shaka.media.BufferingObserver.html">shaka.media.BufferingObserver</a></li><li class="access-public"><a href="shaka.media.ClosedCaptionParser.html">shaka.media.ClosedCaptionParser</a></li><li class="access-public"><a href="shaka.media.ContentWorkarounds.html">shaka.media.ContentWorkarounds</a></li><li class="access-public"><a href="shaka.media.DrmEngine.html">shaka.media.DrmEngine</a></li><li class="access-public"><a href="shaka.media.ExampleBasedCriteria.html">shaka.media.ExampleBasedCriteria</a></li><li class="access-public"><a href="shaka.media.GapJumpingController.html">shaka.media.GapJumpingController</a></li><li class="access-export"><a href="shaka.media.InitSegmentReference.html">shaka.media.InitSegmentReference</a></li><li class="access-public"><a href="shaka.media.LiveCatchUpController.html">shaka.media.LiveCatchUpController</a></li><li class="access-export"><a href="shaka.media.ManifestParser.html">shaka.media.ManifestParser</a></li><li class="access-public"><a href="shaka.media.MediaSourceEngine.html">shaka.media.MediaSourceEngine</a></li><li class="access-public"><a href="shaka.media.MediaSourcePlayhead.html">shaka.media.MediaSourcePlayhead</a></li><li class="access-export"><a href="shaka.media.MetaSegmentIndex.html">shaka.media.MetaSegmentIndex</a></li><li class="access-public"><a href="shaka.media.PlayheadObserverManager.html">shaka.media.PlayheadObserverManager</a></li><li class="access-public"><a href="shaka.media.PlayRateController.html">shaka.media.PlayRateController</a></li><li class="access-public"><a href="shaka.media.PreferenceBasedCriteria.html">shaka.media.PreferenceBasedCriteria</a></li><li class="access-export"><a href="shaka.media.PresentationTimeline.html">shaka.media.PresentationTimeline</a></li><li class="access-public"><a href="shaka.media.RegionObserver.html">shaka.media.RegionObserver</a></li><li class="access-public"><a href="shaka.media.RegionTimeline.html">shaka.media.RegionTimeline</a></li><li class="access-export"><a href="shaka.media.SegmentIndex.html">shaka.media.SegmentIndex</a></li><li class="access-export"><a href="shaka.media.SegmentIterator.html">shaka.media.SegmentIterator</a></li><li class="access-export"><a href="shaka.media.SegmentReference.html">shaka.media.SegmentReference</a></li><li class="access-public"><a href="shaka.media.SrcEqualsPlayhead.html">shaka.media.SrcEqualsPlayhead</a></li><li class="access-public"><a href="shaka.media.StallDetector.html">shaka.media.StallDetector</a></li><li class="access-public"><a href="shaka.media.StallDetector.MediaElementImplementation.html">shaka.media.StallDetector.MediaElementImplementation</a></li><li class="access-public"><a href="shaka.media.StreamingEngine.html">shaka.media.StreamingEngine</a></li><li class="access-public"><a href="shaka.media.TimeRangesUtils.html">shaka.media.TimeRangesUtils</a></li><li class="access-public"><a href="shaka.media.Transmuxer.html">shaka.media.Transmuxer</a></li><li class="access-public"><a href="shaka.media.VideoWrapper.html">shaka.media.VideoWrapper</a></li><li class="access-public"><a href="shaka.media.VideoWrapper.PlayheadMover.html">shaka.media.VideoWrapper.PlayheadMover</a></li><li class="access-public"><a href="shaka.net.Backoff.html">shaka.net.Backoff</a></li><li class="access-export"><a href="shaka.net.DataUriPlugin.html">shaka.net.DataUriPlugin</a></li><li class="access-export"><a href="shaka.net.HttpFetchPlugin.html">shaka.net.HttpFetchPlugin</a></li><li class="access-export"><a href="shaka.net.HttpPluginUtils.html">shaka.net.HttpPluginUtils</a></li><li class="access-export"><a href="shaka.net.HttpXHRPlugin.html">shaka.net.HttpXHRPlugin</a></li><li class="access-export"><a href="shaka.net.NetworkingEngine.html">shaka.net.NetworkingEngine</a></li><li class="access-export"><a href="shaka.net.NetworkingEngine.NumBytesRemainingClass.html">shaka.net.NetworkingEngine.NumBytesRemainingClass</a></li><li class="access-export"><a href="shaka.net.NetworkingEngine.PendingRequest.html">shaka.net.NetworkingEngine.PendingRequest</a></li><li class="access-public"><a href="shaka.offline.DownloadManager.html">shaka.offline.DownloadManager</a></li><li class="access-public"><a href="shaka.offline.DownloadProgressEstimator.html">shaka.offline.DownloadProgressEstimator</a></li><li class="access-public"><a href="shaka.offline.indexeddb.BaseStorageCell.html">shaka.offline.indexeddb.BaseStorageCell</a></li><li class="access-public"><a href="shaka.offline.indexeddb.DBConnection.html">shaka.offline.indexeddb.DBConnection</a></li><li class="access-public"><a href="shaka.offline.indexeddb.DBOperation.html">shaka.offline.indexeddb.DBOperation</a></li><li class="access-public"><a href="shaka.offline.indexeddb.EmeSessionStorageCell.html">shaka.offline.indexeddb.EmeSessionStorageCell</a></li><li class="access-public"><a href="shaka.offline.indexeddb.StorageMechanism.html">shaka.offline.indexeddb.StorageMechanism</a></li><li class="access-public"><a href="shaka.offline.indexeddb.V1StorageCell.html">shaka.offline.indexeddb.V1StorageCell</a></li><li class="access-public"><a href="shaka.offline.indexeddb.V2StorageCell.html">shaka.offline.indexeddb.V2StorageCell</a></li><li class="access-public"><a href="shaka.offline.indexeddb.V5StorageCell.html">shaka.offline.indexeddb.V5StorageCell</a></li><li class="access-public"><a href="shaka.offline.ManifestConverter.html">shaka.offline.ManifestConverter</a></li><li class="access-public"><a href="shaka.offline.OfflineManifestParser.html">shaka.offline.OfflineManifestParser</a></li><li class="access-export"><a href="shaka.offline.OfflineScheme.html">shaka.offline.OfflineScheme</a></li><li class="access-public"><a href="shaka.offline.OfflineUri.html">shaka.offline.OfflineUri</a></li><li class="access-public"><a href="shaka.offline.SessionDeleter.html">shaka.offline.SessionDeleter</a></li><li class="access-export"><a href="shaka.offline.Storage.html">shaka.offline.Storage</a></li><li class="access-export"><a href="shaka.offline.StorageMuxer.html">shaka.offline.StorageMuxer</a></li><li class="access-public"><a href="shaka.offline.StoredContentUtils.html">shaka.offline.StoredContentUtils</a></li><li class="access-public"><a href="shaka.offline.StreamBandwidthEstimator.html">shaka.offline.StreamBandwidthEstimator</a></li><li class="access-export"><a href="shaka.Player.html">shaka.Player</a></li><li class="access-export"><a href="shaka.polyfill.html">shaka.polyfill</a></li><li class="access-public"><a href="shaka.polyfill.EncryptionScheme.html">shaka.polyfill.EncryptionScheme</a></li><li class="access-public"><a href="shaka.polyfill.Fullscreen.html">shaka.polyfill.Fullscreen</a></li><li class="access-public"><a href="shaka.polyfill.InputEvent.html">shaka.polyfill.InputEvent</a></li><li class="access-public"><a href="shaka.polyfill.Languages.html">shaka.polyfill.Languages</a></li><li class="access-public"><a href="shaka.polyfill.MathRound.html">shaka.polyfill.MathRound</a></li><li class="access-public"><a href="shaka.polyfill.MediaSource.html">shaka.polyfill.MediaSource</a></li><li class="access-public"><a href="shaka.polyfill.Orientation.html">shaka.polyfill.Orientation</a></li><li class="access-public"><a href="shaka.polyfill.Orientation-shaka.polyfill.Orientation.FakeOrientation.html">shaka.polyfill.Orientation~shaka.polyfill.Orientation.FakeOrientation</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysApple.html">shaka.polyfill.PatchedMediaKeysApple</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysApple.MediaKeys.html">shaka.polyfill.PatchedMediaKeysApple.MediaKeys</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysApple.MediaKeySession.html">shaka.polyfill.PatchedMediaKeysApple.MediaKeySession</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysApple.MediaKeyStatusMap.html">shaka.polyfill.PatchedMediaKeysApple.MediaKeyStatusMap</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysApple.MediaKeySystemAccess.html">shaka.polyfill.PatchedMediaKeysApple.MediaKeySystemAccess</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysMs.html">shaka.polyfill.PatchedMediaKeysMs</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysMs.MediaKeys.html">shaka.polyfill.PatchedMediaKeysMs.MediaKeys</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysMs.MediaKeySession.html">shaka.polyfill.PatchedMediaKeysMs.MediaKeySession</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysMs.MediaKeyStatusMap.html">shaka.polyfill.PatchedMediaKeysMs.MediaKeyStatusMap</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysMs.MediaKeySystemAccess.html">shaka.polyfill.PatchedMediaKeysMs.MediaKeySystemAccess</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysNop.html">shaka.polyfill.PatchedMediaKeysNop</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysNop.MediaKeys.html">shaka.polyfill.PatchedMediaKeysNop.MediaKeys</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysNop.MediaKeySystemAccess.html">shaka.polyfill.PatchedMediaKeysNop.MediaKeySystemAccess</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysWebkit.html">shaka.polyfill.PatchedMediaKeysWebkit</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysWebkit.MediaKeys.html">shaka.polyfill.PatchedMediaKeysWebkit.MediaKeys</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysWebkit.MediaKeySession.html">shaka.polyfill.PatchedMediaKeysWebkit.MediaKeySession</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysWebkit.MediaKeyStatusMap.html">shaka.polyfill.PatchedMediaKeysWebkit.MediaKeyStatusMap</a></li><li class="access-public"><a href="shaka.polyfill.PatchedMediaKeysWebkit.MediaKeySystemAccess.html">shaka.polyfill.PatchedMediaKeysWebkit.MediaKeySystemAccess</a></li><li class="access-public"><a href="shaka.polyfill.PiPWebkit.html">shaka.polyfill.PiPWebkit</a></li><li class="access-public"><a href="shaka.polyfill.StorageEstimate.html">shaka.polyfill.StorageEstimate</a></li><li class="access-public"><a href="shaka.polyfill.VideoPlaybackQuality.html">shaka.polyfill.VideoPlaybackQuality</a></li><li class="access-public"><a href="shaka.polyfill.VideoPlayPromise.html">shaka.polyfill.VideoPlayPromise</a></li><li class="access-public"><a href="shaka.polyfill.VTTCue.html">shaka.polyfill.VTTCue</a></li><li class="access-public"><a href="shaka.routing.Walker.html">shaka.routing.Walker</a></li><li class="access-export"><a href="shaka.text.Cue.html">shaka.text.Cue</a></li><li class="access-export"><a href="shaka.text.CueRegion.html">shaka.text.CueRegion</a></li><li class="access-export"><a href="shaka.text.LrcTextParser.html">shaka.text.LrcTextParser</a></li><li class="access-export"><a href="shaka.text.Mp4TtmlParser.html">shaka.text.Mp4TtmlParser</a></li><li class="access-export"><a href="shaka.text.Mp4VttParser.html">shaka.text.Mp4VttParser</a></li><li class="access-export"><a href="shaka.text.SbvTextParser.html">shaka.text.SbvTextParser</a></li><li class="access-export"><a href="shaka.text.SimpleTextDisplayer.html">shaka.text.SimpleTextDisplayer</a></li><li class="access-export"><a href="shaka.text.SrtTextParser.html">shaka.text.SrtTextParser</a></li><li class="access-export"><a href="shaka.text.SsaTextParser.html">shaka.text.SsaTextParser</a></li><li class="access-export"><a href="shaka.text.TextEngine.html">shaka.text.TextEngine</a></li><li class="access-export"><a href="shaka.text.TtmlTextParser.html">shaka.text.TtmlTextParser</a></li><li class="access-private"><a href="shaka.text.TtmlTextParser.RateInfo_.html">shaka.text.TtmlTextParser.RateInfo_</a></li><li class="access-export"><a href="shaka.text.UITextDisplayer.html">shaka.text.UITextDisplayer</a></li><li class="access-export"><a href="shaka.text.VttTextParser.html">shaka.text.VttTextParser</a></li><li class="access-export"><a href="shaka.text.WebVttGenerator.html">shaka.text.WebVttGenerator</a></li><li class="access-export"><a href="shaka.ui.AdCounter.html">shaka.ui.AdCounter</a></li><li class="access-export"><a href="shaka.ui.AdPosition.html">shaka.ui.AdPosition</a></li><li class="access-export"><a href="shaka.ui.AirPlayButton.html">shaka.ui.AirPlayButton</a></li><li class="access-public"><a href="shaka.ui.AirPlayButton.Factory.html">shaka.ui.AirPlayButton.Factory</a></li><li class="access-export"><a href="shaka.ui.AudioLanguageSelection.html">shaka.ui.AudioLanguageSelection</a></li><li class="access-public"><a href="shaka.ui.AudioLanguageSelection.Factory.html">shaka.ui.AudioLanguageSelection.Factory</a></li><li class="access-export"><a href="shaka.ui.BigPlayButton.html">shaka.ui.BigPlayButton</a></li><li class="access-export"><a href="shaka.ui.CastButton.html">shaka.ui.CastButton</a></li><li class="access-public"><a href="shaka.ui.CastButton.Factory.html">shaka.ui.CastButton.Factory</a></li><li class="access-export"><a href="shaka.ui.Controls.html">shaka.ui.Controls</a></li><li class="access-export"><a href="shaka.ui.Element.html">shaka.ui.Element</a></li><li class="access-export"><a href="shaka.ui.FastForwardButton.html">shaka.ui.FastForwardButton</a></li><li class="access-public"><a href="shaka.ui.FastForwardButton.Factory.html">shaka.ui.FastForwardButton.Factory</a></li><li class="access-export"><a href="shaka.ui.FullscreenButton.html">shaka.ui.FullscreenButton</a></li><li class="access-public"><a href="shaka.ui.FullscreenButton.Factory.html">shaka.ui.FullscreenButton.Factory</a></li><li class="access-export"><a href="shaka.ui.Localization.html">shaka.ui.Localization</a></li><li class="access-export"><a href="shaka.ui.LoopButton.html">shaka.ui.LoopButton</a></li><li class="access-public"><a href="shaka.ui.LoopButton.Factory.html">shaka.ui.LoopButton.Factory</a></li><li class="access-export"><a href="shaka.ui.MuteButton.html">shaka.ui.MuteButton</a></li><li class="access-public"><a href="shaka.ui.MuteButton.Factory.html">shaka.ui.MuteButton.Factory</a></li><li class="access-export"><a href="shaka.ui.OverflowMenu.html">shaka.ui.OverflowMenu</a></li><li class="access-public"><a href="shaka.ui.OverflowMenu.Factory.html">shaka.ui.OverflowMenu.Factory</a></li><li class="access-export"><a href="shaka.ui.Overlay.html">shaka.ui.Overlay</a></li><li class="access-export"><a href="shaka.ui.PipButton.html">shaka.ui.PipButton</a></li><li class="access-public"><a href="shaka.ui.PipButton.Factory.html">shaka.ui.PipButton.Factory</a></li><li class="access-export"><a href="shaka.ui.PlaybackRateSelection.html">shaka.ui.PlaybackRateSelection</a></li><li class="access-public"><a href="shaka.ui.PlaybackRateSelection.Factory.html">shaka.ui.PlaybackRateSelection.Factory</a></li><li class="access-export"><a href="shaka.ui.PlayButton.html">shaka.ui.PlayButton</a></li><li class="access-export"><a href="shaka.ui.PresentationTimeTracker.html">shaka.ui.PresentationTimeTracker</a></li><li class="access-public"><a href="shaka.ui.PresentationTimeTracker.Factory.html">shaka.ui.PresentationTimeTracker.Factory</a></li><li class="access-export"><a href="shaka.ui.RangeElement.html">shaka.ui.RangeElement</a></li><li class="access-export"><a href="shaka.ui.ResolutionSelection.html">shaka.ui.ResolutionSelection</a></li><li class="access-public"><a href="shaka.ui.ResolutionSelection.Factory.html">shaka.ui.ResolutionSelection.Factory</a></li><li class="access-export"><a href="shaka.ui.RewindButton.html">shaka.ui.RewindButton</a></li><li class="access-public"><a href="shaka.ui.RewindButton.Factory.html">shaka.ui.RewindButton.Factory</a></li><li class="access-export"><a href="shaka.ui.SeekBar.html">shaka.ui.SeekBar</a></li><li class="access-export"><a href="shaka.ui.SeekBar.Factory.html">shaka.ui.SeekBar.Factory</a></li><li class="access-export"><a href="shaka.ui.SettingsMenu.html">shaka.ui.SettingsMenu</a></li><li class="access-export"><a href="shaka.ui.SkipAdButton.html">shaka.ui.SkipAdButton</a></li><li class="access-export"><a href="shaka.ui.SmallPlayButton.html">shaka.ui.SmallPlayButton</a></li><li class="access-public"><a href="shaka.ui.SmallPlayButton.Factory.html">shaka.ui.SmallPlayButton.Factory</a></li><li class="access-export"><a href="shaka.ui.Spacer.html">shaka.ui.Spacer</a></li><li class="access-public"><a href="shaka.ui.Spacer.Factory.html">shaka.ui.Spacer.Factory</a></li><li class="access-export"><a href="shaka.ui.TextSelection.html">shaka.ui.TextSelection</a></li><li class="access-public"><a href="shaka.ui.TextSelection.Factory.html">shaka.ui.TextSelection.Factory</a></li><li class="access-export"><a href="shaka.ui.VolumeBar.html">shaka.ui.VolumeBar</a></li><li class="access-public"><a href="shaka.ui.VolumeBar.Factory.html">shaka.ui.VolumeBar.Factory</a></li><li class="access-export"><a href="shaka.util.AbortableOperation.html">shaka.util.AbortableOperation</a></li><li class="access-public"><a href="shaka.util.ArrayUtils.html">shaka.util.ArrayUtils</a></li><li class="access-export"><a href="shaka.util.BufferUtils.html">shaka.util.BufferUtils</a></li><li class="access-export"><a href="shaka.util.ConfigUtils.html">shaka.util.ConfigUtils</a></li><li class="access-export"><a href="shaka.util.DataViewReader.html">shaka.util.DataViewReader</a></li><li class="access-public"><a href="shaka.util.DelayedTick.html">shaka.util.DelayedTick</a></li><li class="access-public"><a href="shaka.util.Destroyer.html">shaka.util.Destroyer</a></li><li class="access-export"><a href="shaka.util.Dom.html">shaka.util.Dom</a></li><li class="access-public"><a href="shaka.util.EbmlParser.html">shaka.util.EbmlParser</a></li><li class="access-export"><a href="shaka.util.Error.html">shaka.util.Error</a></li><li class="access-export"><a href="shaka.util.EventManager.html">shaka.util.EventManager</a></li><li class="access-private"><a href="shaka.util.EventManager.Binding_.html">shaka.util.EventManager.Binding_</a></li><li class="access-export"><a href="shaka.util.FairPlayUtils.html">shaka.util.FairPlayUtils</a></li><li class="access-export"><a href="shaka.util.FakeEvent.html">shaka.util.FakeEvent</a></li><li class="access-export"><a href="shaka.util.FakeEventTarget.html">shaka.util.FakeEventTarget</a></li><li class="access-public"><a href="shaka.util.Functional.html">shaka.util.Functional</a></li><li class="access-public"><a href="shaka.util.Iterables.html">shaka.util.Iterables</a></li><li class="access-public"><a href="shaka.util.LanguageUtils.html">shaka.util.LanguageUtils</a></li><li class="access-public"><a href="shaka.util.Lazy.html">shaka.util.Lazy</a></li><li class="access-public"><a href="shaka.util.ManifestFilter.html">shaka.util.ManifestFilter</a></li><li class="access-public"><a href="shaka.util.ManifestParserUtils.html">shaka.util.ManifestParserUtils</a></li><li class="access-public"><a href="shaka.util.MapUtils.html">shaka.util.MapUtils</a></li><li class="access-public"><a href="shaka.util.MimeUtils.html">shaka.util.MimeUtils</a></li><li class="access-export"><a href="shaka.util.Mp4Parser.html">shaka.util.Mp4Parser</a></li><li class="access-public"><a href="shaka.util.MultiMap.html">shaka.util.MultiMap</a></li><li class="access-public"><a href="shaka.util.Networking.html">shaka.util.Networking</a></li><li class="access-public"><a href="shaka.util.OperationManager.html">shaka.util.OperationManager</a></li><li class="access-public"><a href="shaka.util.PeriodCombiner.html">shaka.util.PeriodCombiner</a></li><li class="access-public"><a href="shaka.util.Platform.html">shaka.util.Platform</a></li><li class="access-export"><a href="shaka.util.PlayerConfiguration.html">shaka.util.PlayerConfiguration</a></li><li class="access-public"><a href="shaka.util.Pssh.html">shaka.util.Pssh</a></li><li class="access-public"><a href="shaka.util.PublicPromise.html">shaka.util.PublicPromise</a></li><li class="access-public"><a href="shaka.util.StateHistory.html">shaka.util.StateHistory</a></li><li class="access-public"><a href="shaka.util.Stats.html">shaka.util.Stats</a></li><li class="access-public"><a href="shaka.util.StreamUtils.html">shaka.util.StreamUtils</a></li><li class="access-export"><a href="shaka.util.StringUtils.html">shaka.util.StringUtils</a></li><li class="access-public"><a href="shaka.util.SwitchHistory.html">shaka.util.SwitchHistory</a></li><li class="access-public"><a href="shaka.util.TextParser.html">shaka.util.TextParser</a></li><li class="access-export"><a href="shaka.util.Timer.html">shaka.util.Timer</a></li><li class="access-export"><a href="shaka.util.Uint8ArrayUtils.html">shaka.util.Uint8ArrayUtils</a></li><li class="access-public"><a href="shaka.util.XmlUtils.html">shaka.util.XmlUtils</a></li><li class="access-public"><a href="shaka.util-shaka.util.EbmlElement.html">shaka.util~shaka.util.EbmlElement</a></li></ul><h3>Interfaces</h3><ul><li class="access-public"><a href="shaka.cea.ICaptionDecoder.html">shaka.cea.ICaptionDecoder</a></li><li class="access-public"><a href="shaka.cea.ICeaParser.html">shaka.cea.ICeaParser</a></li><li class="access-export"><a href="shaka.extern.IAbortableOperation.html">shaka.extern.IAbortableOperation</a></li><li class="access-export"><a href="shaka.extern.IAd.html">shaka.extern.IAd</a></li><li class="access-export"><a href="shaka.extern.IAdManager.html">shaka.extern.IAdManager</a></li><li class="access-export"><a href="shaka.extern.IUIElement.Factory.html">shaka.extern.IUIElement.Factory</a></li><li class="access-export"><a href="shaka.extern.IUISeekBar.html">shaka.extern.IUISeekBar</a></li><li class="access-export"><a href="shaka.extern.IUISeekBar.Factory.html">shaka.extern.IUISeekBar.Factory</a></li><li class="access-export"><a href="shaka.extern.TextDisplayer.html">shaka.extern.TextDisplayer</a></li><li class="access-export"><a href="shaka.extern.TextParser.html">shaka.extern.TextParser</a></li><li class="access-public"><a href="shaka.media.AdaptationSetCriteria.html">shaka.media.AdaptationSetCriteria</a></li><li class="access-public"><a href="shaka.media.IClosedCaptionParser.html">shaka.media.IClosedCaptionParser</a></li><li class="access-public"><a href="shaka.media.IPlayheadObserver.html">shaka.media.IPlayheadObserver</a></li><li class="access-public"><a href="shaka.media.Playhead.html">shaka.media.Playhead</a></li><li class="access-public"><a href="shaka.media.StallDetector.Implementation.html">shaka.media.StallDetector.Implementation</a></li><li class="access-export"><a href="shaka.util.IDestroyable.html">shaka.util.IDestroyable</a></li><li class="access-export"><a href="shaka.util.IReleasable.html">shaka.util.IReleasable</a></li></ul><h3>Events</h3><ul><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdBreakReadyEvent">shaka.ads.AdManager.AdBreakReadyEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdBufferingEvent">shaka.ads.AdManager.AdBufferingEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdClickedEvent">shaka.ads.AdManager.AdClickedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdClickEvent">shaka.ads.AdManager.AdClickEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdClosedEvent">shaka.ads.AdManager.AdClosedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdCompleteEvent">shaka.ads.AdManager.AdCompleteEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdDurationChangedEvent">shaka.ads.AdManager.AdDurationChangedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdFirstQuartileEvent">shaka.ads.AdManager.AdFirstQuartileEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdImpressionEvent">shaka.ads.AdManager.AdImpressionEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdInteractionEvent">shaka.ads.AdManager.AdInteractionEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdLinearChangedEvent">shaka.ads.AdManager.AdLinearChangedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdLoadedEvent">shaka.ads.AdManager.AdLoadedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdMetadataEvent">shaka.ads.AdManager.AdMetadataEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdMidpointEvent">shaka.ads.AdManager.AdMidpointEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdMutedEvent">shaka.ads.AdManager.AdMutedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdPausedEvent">shaka.ads.AdManager.AdPausedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdProgressEvent">shaka.ads.AdManager.AdProgressEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdRecoverableErrorEvent">shaka.ads.AdManager.AdRecoverableErrorEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdResumedEvent">shaka.ads.AdManager.AdResumedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:ADS_LOADED">shaka.ads.AdManager.ADS_LOADED</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdSkippedEvent">shaka.ads.AdManager.AdSkippedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdSkipStateChangedEvent">shaka.ads.AdManager.AdSkipStateChangedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdStartedEvent">shaka.ads.AdManager.AdStartedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdStoppedEvent">shaka.ads.AdManager.AdStoppedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdThirdQuartileEvent">shaka.ads.AdManager.AdThirdQuartileEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AdVolumeChangedEvent">shaka.ads.AdManager.AdVolumeChangedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:AllAdsCompletedEvent">shaka.ads.AdManager.AllAdsCompletedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:ImaAdManagerLoadedEvent">shaka.ads.AdManager.ImaAdManagerLoadedEvent</a></li><li class="access-export"><a href="shaka.ads.AdManager.html#.event:ImaStreamManagerLoadedEvent">shaka.ads.AdManager.ImaStreamManagerLoadedEvent</a></li><li class="access-export"><a href="shaka.cast.CastProxy.html#.event:CastStatusChangedEvent">shaka.cast.CastProxy.CastStatusChangedEvent</a></li><li class="access-export"><a href="shaka.net.NetworkingEngine.html#.event:RetryEvent">shaka.net.NetworkingEngine.RetryEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:AbrStatusChangedEvent">shaka.Player.AbrStatusChangedEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:AdaptationEvent">shaka.Player.AdaptationEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:BufferingEvent">shaka.Player.BufferingEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:DrmSessionUpdateEvent">shaka.Player.DrmSessionUpdateEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:EmsgEvent">shaka.Player.EmsgEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:ErrorEvent">shaka.Player.ErrorEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:ExpirationUpdatedEvent">shaka.Player.ExpirationUpdatedEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:LargeGapEvent">shaka.Player.LargeGapEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:LoadedEvent">shaka.Player.LoadedEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:LoadingEvent">shaka.Player.LoadingEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:ManifestParsedEvent">shaka.Player.ManifestParsedEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:MetadataEvent">shaka.Player.MetadataEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:RateChangeEvent">shaka.Player.RateChangeEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:SessionDataEvent">shaka.Player.SessionDataEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:StateChangeEvent">shaka.Player.StateChangeEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:StateIdleEvent">shaka.Player.StateIdleEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:StreamingEvent">shaka.Player.StreamingEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:TextChangedEvent">shaka.Player.TextChangedEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:TextTrackVisibilityEvent">shaka.Player.TextTrackVisibilityEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:TimelineRegionAddedEvent">shaka.Player.TimelineRegionAddedEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:TimelineRegionEnterEvent">shaka.Player.TimelineRegionEnterEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:TimelineRegionExitEvent">shaka.Player.TimelineRegionExitEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:TracksChangedEvent">shaka.Player.TracksChangedEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:UnloadingEvent">shaka.Player.UnloadingEvent</a></li><li class="access-export"><a href="shaka.Player.html#.event:VariantChangedEvent">shaka.Player.VariantChangedEvent</a></li><li class="access-export"><a href="shaka.ui.Controls.html#.event:CaptionSelectionUpdatedEvent">shaka.ui.Controls.CaptionSelectionUpdatedEvent</a></li><li class="access-export"><a href="shaka.ui.Controls.html#.event:CastStatusChangedEvent">shaka.ui.Controls.CastStatusChangedEvent</a></li><li class="access-export"><a href="shaka.ui.Controls.html#.event:ErrorEvent">shaka.ui.Controls.ErrorEvent</a></li><li class="access-export"><a href="shaka.ui.Controls.html#.event:LanguageSelectionUpdatedEvent">shaka.ui.Controls.LanguageSelectionUpdatedEvent</a></li><li class="access-export"><a href="shaka.ui.Controls.html#.event:ResolutionSelectionUpdatedEvent">shaka.ui.Controls.ResolutionSelectionUpdatedEvent</a></li><li class="access-export"><a href="shaka.ui.Controls.html#.event:SubMenuOpenEvent">shaka.ui.Controls.SubMenuOpenEvent</a></li><li class="access-export"><a href="shaka.ui.Controls.html#.event:TimeAndSeekRangeUpdatedEvent">shaka.ui.Controls.TimeAndSeekRangeUpdatedEvent</a></li><li class="access-export"><a href="shaka.ui.Controls.html#.event:UIUpdatedEvent">shaka.ui.Controls.UIUpdatedEvent</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.0-dev</a> on Mon Jun 07 2021 03:28:57 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> initShowWidget(); </script>
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
