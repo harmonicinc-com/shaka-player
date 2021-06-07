@@ -96,9 +96,10 @@ shaka.extern.AbrManager = class {
    *     took to complete.
    * @param {number} numBytes The total number of bytes transferred.
    * @param {!Array.<string>} uris
+   * @param {boolean} isFullSpeed
    * @exportDoc
    */
-  segmentDownloadCompleted(deltaTimeMs, numBytes, uris) {}
+  segmentDownloadCompleted(deltaTimeMs, numBytes, uris, isFullSpeed) {}
 
   /**
    * Gets an estimate of the current bandwidth in bit/sec.  This is used by the
