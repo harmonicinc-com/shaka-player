@@ -377,7 +377,8 @@ shaka.extern.Stream;
 /**
  * @typedef {{
  *   prtMap: !Map.<string, shaka.extern.PrtData>,
- *   periodIdMap: !Map.<number, string>
+ *   periodIdMap: !Map.<number, string>,
+ *   clockOffset: number
  * }}
  *
  * @property {Map.<string, shaka.extern.PrtData>} prtMap
