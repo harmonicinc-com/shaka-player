@@ -2146,4 +2146,55 @@ describe('DashParser Manifest', () => {
     expect(serviceDescription.playbackRate.max).toBe(1.1);
     expect(serviceDescription.playbackRate.min).toBe(0.9);
   });
+
+  // Cater out-of-sync mpds when geo-redundant failover occurs
+  it('skip periods that are not the latest', async () => {
+    const periodContents = [
+      '    <AdaptationSet mimeType="video/mp4" lang="en" group="1">',
+      '      <Representation bandwidth="100">',
+      '        <SegmentTemplate startNumber="1" media="l-$Number$.mp4">',
+      '          <SegmentTimeline>',
+      '            <S t="0" d="10" />',
+      '          </SegmentTimeline>',
+      '        </SegmentTemplate>',
+      '      </Representation>',
+      '    </AdaptationSet>',
+    ].join('\n');
+    const template = [
+      `<MPD type="dynamic"`,
+      '     availabilityStartTime="1970-01-01T00:00:00Z"',
+      '     timeShiftBufferDepth="PT10H">',
+      '  <Period id="1" start="PT1H45M">',
+      '%(periodContents)s',
+      '  </Period>',
+      '  <Period id="2" start="PT1H51M">',
+      '%(periodContents)s',
+      '  </Period>',
+      '</MPD>',
+    ].join('\n');
+    const template2 = [
+      `<MPD type="dynamic"`,
+      '     availabilityStartTime="1970-01-01T00:00:00Z"',
+      '     timeShiftBufferDepth="PT10H">',
+      '  <Period id="1" start="PT1H41M">',
+      '%(periodContents)s',
+      '  </Period>',
+      '  <Period id="2" start="PT1H51M">',
+      '%(periodContents)s',
+      '  </Period>',
+      '</MPD>',
+    ].join('\n');
+    const source = sprintf(template, {periodContents: periodContents});
+    const source2 = sprintf(template2, {periodContents: periodContents});
+
+    fakeNetEngine.setResponseText('dummy://foo', source);
+    const manifest = await parser.start('dummy://foo', playerInterface);
+    const minSegStartTime = manifest.presentationTimeline.getMinSegmentStartTime();
+
+    fakeNetEngine.setResponseText('dummy://foo', source2);
+    const manifest2 = await parser.start('dummy://foo', playerInterface);
+    const minSegStartTime2 = manifest2.presentationTimeline.getMinSegmentStartTime();
+
+    expect(minSegStartTime).toBe(minSegStartTime2);
+  });
 });
