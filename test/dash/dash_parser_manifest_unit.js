@@ -2220,11 +2220,18 @@ describe('DashParser Manifest', () => {
     }
   }
 
-  // Cater out-of-sync mpds when geo-redundant failover occurs
-  it('skip periods that are earlier than max period start time', async () => {
+  // Following two unit tests are to cater out-of-sync mpds
+  // when geo-redundant failover occurs
+
+  // There is a chance that incoming mpd can have a start time
+  // earlier than the one in previous mpd
+  // e.g. First mpd: PT5S; Second mpd: PT4S
+  it('skip periods that are earlier than min period start time', async () => {
     await testMpdOutOfSync(-1);
   });
 
+  // Similarly, the time can also be in between min and max
+  // e.g. First mpd: PT5S; Second mpd: PT6S
   it('skip periods that are in between min and max period time', async () => {
     await testMpdOutOfSync(1);
   });
