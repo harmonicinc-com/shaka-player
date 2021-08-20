@@ -50,13 +50,13 @@ describe('DashParser Manifest', () => {
     playerInterface = {
       networkingEngine: fakeNetEngine,
       filter: (manifest) => Promise.resolve(),
-      makeTextStreamsForClosedCaptions: (manifest) => { },
+      makeTextStreamsForClosedCaptions: (manifest) => {},
       onTimelineRegionAdded: fail,  // Should not have any EventStream elements.
       onEvent: shaka.test.Util.spyFunc(onEventSpy),
       onError: fail,
       isLowLatencyMode: () => false,
       isAutoLowLatencyMode: () => false,
-      enableLowLatencyMode: () => { },
+      enableLowLatencyMode: () => {},
     };
   });
 
@@ -344,7 +344,7 @@ describe('DashParser Manifest', () => {
     expect(ref).toEqual(new shaka.media.SegmentReference(
         /* startTime= */ 0,
         /* endTime= */ 30,
-        /* getUris= */() => ['http://example.com/de.vtt'],
+        /* getUris= */ () => ['http://example.com/de.vtt'],
         /* startByte= */ 0,
         /* endBytes= */ null,
         /* initSegmentReference= */ null,
@@ -905,11 +905,11 @@ describe('DashParser Manifest', () => {
     it('xlink problems when xlinkFailGracefully is false', async () => {
       const source = [
         '<MPD minBufferTime="PT75S" xmlns="urn:mpeg:dash:schema:mpd:2011" ' +
-        'xmlns:xlink="http://www.w3.org/1999/xlink">',
+            'xmlns:xlink="http://www.w3.org/1999/xlink">',
         '  <Period id="1" duration="PT30S">',
         '    <AdaptationSet mimeType="video/mp4">',
         '      <Representation bandwidth="1" xlink:href="https://xlink1" ' +
-        'xlink:actuate="onInvalid">', // Incorrect actuate
+            'xlink:actuate="onInvalid">', // Incorrect actuate
         '        <SegmentBase indexRange="100-200" />',
         '      </Representation>',
         '    </AdaptationSet>',
@@ -1026,7 +1026,7 @@ describe('DashParser Manifest', () => {
 
     const variant = manifest.variants[0];
     const trickModeVideo = variant && variant.video &&
-      variant.video.trickModeVideo;
+                         variant.video.trickModeVideo;
     expect(trickModeVideo).toEqual(jasmine.objectContaining({
       id: 2,
       type: shaka.util.ManifestParserUtils.ContentType.VIDEO,
@@ -1066,7 +1066,7 @@ describe('DashParser Manifest', () => {
 
     const variant = manifest.variants[0];
     const trickModeVideo = variant && variant.video &&
-      variant.video.trickModeVideo;
+                         variant.video.trickModeVideo;
     expect(trickModeVideo).toEqual(jasmine.objectContaining({
       id: 3,
       type: shaka.util.ManifestParserUtils.ContentType.VIDEO,
@@ -1074,7 +1074,7 @@ describe('DashParser Manifest', () => {
 
     const variant2 = manifest.variants[1];
     const trickModeVideo2 = variant2 && variant2.video &&
-      variant2.video.trickModeVideo;
+                         variant2.video.trickModeVideo;
     expect(trickModeVideo2).toEqual(jasmine.objectContaining({
       id: 3,
       type: shaka.util.ManifestParserUtils.ContentType.VIDEO,
@@ -1139,7 +1139,7 @@ describe('DashParser Manifest', () => {
     // The bogus EssentialProperty did not result in a trick mode track.
     const variant = manifest.variants[0];
     const trickModeVideo = variant && variant.video &&
-      variant.video.trickModeVideo;
+                         variant.video.trickModeVideo;
     expect(trickModeVideo).toBe(null);
   });
 
@@ -1324,7 +1324,7 @@ describe('DashParser Manifest', () => {
       for (const scheme in schemeMap) {
         const value = schemeMap[scheme];
         configs.push('<AudioChannelConfiguration schemeIdUri="' + scheme +
-          '" value="' + value + '" />');
+                     '" value="' + value + '" />');
       }
 
       const footer = [
@@ -1353,17 +1353,13 @@ describe('DashParser Manifest', () => {
     it('parses outputChannelPositionList scheme', async () => {
       // Parses the space-separated list and finds 8 channels.
       await testAudioChannelConfiguration(8,
-          {
-            'urn:mpeg:dash:outputChannelPositionList:2012':
-            '2 0 1 4 5 3 17 1',
-          });
+          {'urn:mpeg:dash:outputChannelPositionList:2012':
+                '2 0 1 4 5 3 17 1'});
 
       // Does not get confused about extra spaces.
       await testAudioChannelConfiguration(7,
-          {
-            'urn:mpeg:dash:outputChannelPositionList:2012':
-            '  5 2 1 12   8 9   1  ',
-          });
+          {'urn:mpeg:dash:outputChannelPositionList:2012':
+                '  5 2 1 12   8 9   1  '});
     });
 
     it('parses 23003:3 scheme', async () => {
@@ -1383,10 +1379,8 @@ describe('DashParser Manifest', () => {
     it('parses dolby scheme', async () => {
       // Parses a hex value in which each 1-bit is a channel.
       await testAudioChannelConfiguration(6,
-          {
-            'tag:dolby.com,2014:dash:audio_channel_configuration:2011':
-            'F801',
-          });
+          {'tag:dolby.com,2014:dash:audio_channel_configuration:2011':
+                'F801'});
 
       // This scheme seems to use the same format.
       await testAudioChannelConfiguration(8,
@@ -1654,7 +1648,7 @@ describe('DashParser Manifest', () => {
     /** @type {shaka.extern.Manifest} */
     const manifest = await parser.start('dummy://foo', playerInterface);
     const maxSegmentDuration =
-      manifest.presentationTimeline.getMaxSegmentDuration();
+        manifest.presentationTimeline.getMaxSegmentDuration();
     expect(maxSegmentDuration).toBe(1);
   });
 
@@ -1680,7 +1674,7 @@ describe('DashParser Manifest', () => {
     /** @type {shaka.extern.Manifest} */
     const manifest = await parser.start('dummy://foo', playerInterface);
     const maxSegmentDuration =
-      manifest.presentationTimeline.getMaxSegmentDuration();
+        manifest.presentationTimeline.getMaxSegmentDuration();
     expect(maxSegmentDuration).toBe(5);
   });
 
@@ -1767,7 +1761,7 @@ describe('DashParser Manifest', () => {
     const manifest = await parser.start('dummy://foo', playerInterface);
     const presentationTimeline = manifest.presentationTimeline;
     const presentationDelay = presentationTimeline.getDelay();
-    expect(presentationDelay).toBe(1.5 * manifest.minBufferTime);
+    expect(presentationDelay).toBe(1.5*manifest.minBufferTime);
   });
 
   it('Honors the ignoreEmptyAdaptationSet config', async () => {
@@ -1862,7 +1856,7 @@ describe('DashParser Manifest', () => {
 
   it('supports HDR signaling', async () => {
     const hdrProfile =
-      'http://dashif.org/guidelines/dash-if-uhd#hevc-hdr-pq10';
+        'http://dashif.org/guidelines/dash-if-uhd#hevc-hdr-pq10';
     const manifestText = [
       `<MPD minBufferTime="PT75S" profiles="${hdrProfile}">`,
       '  <Period id="1" duration="PT30S">',
@@ -2066,7 +2060,7 @@ describe('DashParser Manifest', () => {
     // second period (30s into the live stream).
     const availabilityStartTimeMilliseconds = Date.now() - 10e3;
     const availabilityStartTime =
-      (new Date(availabilityStartTimeMilliseconds)).toISOString();
+        (new Date(availabilityStartTimeMilliseconds)).toISOString();
     const manifestText = [
       `<MPD type="dynamic" availabilityStartTime="${availabilityStartTime}">`,
       '  <Period id="1" duration="PT30S">',
@@ -2154,85 +2148,69 @@ describe('DashParser Manifest', () => {
   });
 
   /**
-   * Test if old periods are skipped
-   *
-   * @param {number} timeDiff Time difference to simulate MPDs out of sync
-   * @return {!Promise}
-  */
-  async function testMpdOutOfSync(timeDiff) {
-    const startTime = 5;
-    const periodContents = [
-      '    <AdaptationSet mimeType="video/mp4" lang="en" group="1">',
-      '        <SegmentTemplate startNumber="1" media="l-$Number$.mp4">',
-      '          <SegmentTimeline>',
-      '            <S t="0" d="10" />',
-      '          </SegmentTimeline>',
-      '        </SegmentTemplate>',
-      '<Representation id="1"/>',
-      '    </AdaptationSet>',
-    ].join('\n');
-    const template = [
+     * @param {!Array.<number>} periods
+     * @return {string}
+     */
+  function buildManifest(periods) {
+    const mpdTemplate = [
       `<MPD type="dynamic"`,
-      '     availabilityStartTime="1970-01-01T00:00:00Z"',
-      '     timeShiftBufferDepth="PT10H">',
-      '  <Period id="1" start="%(start)s">',
-      '%(periodContents)s',
-      '  </Period>',
-      '  <Period id="2" start="PT30S">',
-      '%(periodContents)s',
-      '  </Period>',
+      'availabilityStartTime="1970-01-01T00:00:00Z"',
+      'timeShiftBufferDepth="PT10H">',
+      '    %(periods)s',
       '</MPD>',
     ].join('\n');
-
-    const source = sprintf(template, {
-      periodContents: periodContents, start: `PT${startTime}S`,
+    const periodTemplate = (id, period, duration) => {
+      return [
+        `    <Period id="${id}" start="PT${period}S">`,
+        '        <AdaptationSet mimeType="video/mp4" lang="en" group="1">',
+        '            <SegmentTemplate startNumber="1" media="l-$Number$.mp4">',
+        '                <SegmentTimeline>',
+        `                    <S t="0" d="${duration}" />`,
+        '                </SegmentTimeline>',
+        '            </SegmentTemplate>',
+        '            <Representation id="1"/>',
+        '        </AdaptationSet>',
+        '    </Period>',
+      ].join('\n');
+    };
+    const periodXmls = periods.map((period, i) => {
+      const duration = i+1 === periods.length ? 10 : periods[i+1] - period;
+      return periodTemplate(i+1, period, duration);
     });
-    const source2 = sprintf(template, {
-      periodContents: periodContents, start: `PT${startTime + timeDiff}S`,
+    return sprintf(mpdTemplate, {
+      periods: periodXmls.join('\n'),
     });
-
-    fakeNetEngine.setResponseText('dummy://foo', source);
-    const manifest = await parser.start('dummy://foo', playerInterface);
-    const video = manifest.variants[0].video;
-    await video.createSegmentIndex();
-    const segment = Array.from(video.segmentIndex);
-
-    fakeNetEngine.setResponseText('dummy://foo', source2);
-    const manifest2 = await parser.start('dummy://foo', playerInterface);
-    const video2 = manifest2.variants[0].video;
-    await video2.createSegmentIndex();
-    const segment2 = Array.from(video2.segmentIndex);
-
-    if (timeDiff < 0) {
-      // If new mpd has a smaller period start time,
-      // the period should be skipped
-      // such that the first segment for both manifests should
-      // have the same start time
-      expect(segment[0].startTime).toBe(segment2[0].startTime);
-    } else {
-      // If new mpd has a period start time in between min and max,
-      // the period should also be skipped
-      // If not there'll be an extra segment and discontinued periods (jumps)
-      expect(segment.length).toBe(segment2.length);
-      const period = video.segmentIndex.find(startTime);
-      const period2 = video.segmentIndex.find(startTime + timeDiff);
-      expect(period).toBe(period2);
-    }
   }
 
-  // Following two unit tests are to cater out-of-sync mpds
-  // when geo-redundant failover occurs
+  // There is a chance of inconsistency that incoming mpd can
+  // have a period start time earlier than the max start time
+  // in all previous mpds
 
-  // There is a chance that incoming mpd can have a start time
-  // earlier than the one in previous mpd
-  // e.g. First mpd: PT5S; Second mpd: PT4S
-  it('skip periods that are earlier than min period start time', async () => {
-    await testMpdOutOfSync(-1);
-  });
+  it('skip periods that are earlier than max period start time', async () => {
+    const sources = [
+      buildManifest([5, 15]),
+      buildManifest([4, 15]),
+      buildManifest([6, 15]),
+    ];
+    const segments = [];
 
-  // Similarly, the time can also be in between min and max
-  // e.g. First mpd: PT5S; Second mpd: PT6S
-  it('skip periods that are in between min and max period time', async () => {
-    await testMpdOutOfSync(1);
+    for (const source of sources) {
+      fakeNetEngine.setResponseText('dummy://foo', source);
+      // eslint-disable-next-line no-await-in-loop
+      const manifest = await parser.start('dummy://foo', playerInterface);
+      const video = manifest.variants[0].video;
+      // eslint-disable-next-line no-await-in-loop
+      await video.createSegmentIndex();
+      segments.push(Array.from(video.segmentIndex));
+    }
+
+    // Fail when period start time < min start time
+    // Also merge error will be thrown
+    expect(segments[0][0].startTime).toBe(segments[1][0].startTime);
+    expect(segments[1][0].startTime).toBe(segments[2][0].startTime);
+
+    // Fail when: min start time < period start time < max start time
+    expect(segments[0].length).toBe(segments[1].length);
+    expect(segments[1].length).toBe(segments[2].length);
   });
 });
