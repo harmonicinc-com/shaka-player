@@ -2200,11 +2200,13 @@ describe('DashParser Manifest', () => {
 
     for (const source of sources) {
       fakeNetEngine.setResponseText('dummy://foo', source);
+      /** @type {shaka.extern.Manifest} */
       // eslint-disable-next-line no-await-in-loop
       const manifest = await parser.start('dummy://foo', playerInterface);
       const video = manifest.variants[0].video;
       // eslint-disable-next-line no-await-in-loop
       await video.createSegmentIndex();
+      goog.asserts.assert(video.segmentIndex, 'Null segmentIndex!');
       segments.push(Array.from(video.segmentIndex));
     }
 
