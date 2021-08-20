@@ -2148,10 +2148,10 @@ describe('DashParser Manifest', () => {
   });
 
   /**
-     * @param {!Array.<number>} periods
+     * @param {!Array.<number>} periods Start time of multiple periods
      * @return {string}
      */
-  function buildManifest(periods) {
+  function buildManifestWithPeriodStartTime(periods) {
     const mpdTemplate = [
       `<MPD type="dynamic"`,
       'availabilityStartTime="1970-01-01T00:00:00Z"',
@@ -2182,15 +2182,19 @@ describe('DashParser Manifest', () => {
     });
   }
 
-  // There is a chance of inconsistency that incoming mpd can
-  // have a period start time earlier than the max start time
-  // in all previous mpds
+  // Bug description: Inconsistent period start time in the manifests due
+  // to failover triggered in backend servers
+
+  // When one of the servers is down, the manifest will be served by other
+  // redundant servers. The period start time might become out of sync
+  // during the switch-over/recovery.
+
+  // Solution: Ignore old DASH periods that are older than the latest one.
 
   it('skip periods that are earlier than max period start time', async () => {
     const sources = [
-      buildManifest([5, 15]),
-      buildManifest([4, 15]),
-      buildManifest([6, 15]),
+      buildManifestWithPeriodStartTime([5, 15]),
+      buildManifestWithPeriodStartTime([4, 15]), // simulate out-of-sync of -1s
     ];
     const segments = [];
 
@@ -2204,13 +2208,10 @@ describe('DashParser Manifest', () => {
       segments.push(Array.from(video.segmentIndex));
     }
 
-    // Fail when period start time < min start time
-    // Also merge error will be thrown
-    expect(segments[0][0].startTime).toBe(segments[1][0].startTime);
-    expect(segments[1][0].startTime).toBe(segments[2][0].startTime);
-
-    // Fail when: min start time < period start time < max start time
-    expect(segments[0].length).toBe(segments[1].length);
-    expect(segments[1].length).toBe(segments[2].length);
+    // Expect identical segments
+    expect(segments[0][0].startTime).toBe(5);
+    expect(segments[1][0].startTime).toBe(5);
+    expect(segments[0].length).toBe(2);
+    expect(segments[1].length).toBe(2);
   });
 });
