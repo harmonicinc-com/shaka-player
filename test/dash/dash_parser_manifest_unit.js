@@ -2175,7 +2175,9 @@ describe('DashParser Manifest', () => {
     };
     const periodXmls = periods.map((period, i) => {
       const duration = i+1 === periods.length ? 10 : periods[i+1] - period;
-      return periodTemplate(i+1, period, duration);
+      // Period start time as ID here. If we use index then there will be
+      // periods with same period ID and different start time which are invalid.
+      return periodTemplate(period, period, duration);
     });
     return sprintf(mpdTemplate, {
       periods: periodXmls.join('\n'),
@@ -2189,11 +2191,10 @@ describe('DashParser Manifest', () => {
   // redundant servers. The period start time might become out of sync
   // during the switch-over/recovery.
 
-  // Solution: Ignore old DASH periods that are older than the latest one.
-
   it('skip periods that are earlier than max period start time', async () => {
     const sources = [
       buildManifestWithPeriodStartTime([5, 15]),
+      buildManifestWithPeriodStartTime([6, 15]), // simulate out-of-sync of +1s
       buildManifestWithPeriodStartTime([4, 15]), // simulate out-of-sync of -1s
     ];
     const segments = [];
