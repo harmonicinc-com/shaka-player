@@ -2,7 +2,8 @@
   "name": "@harmonicinc/shaka-player",
   "version": "3.0.10",
   "description": "Forked from google/shaka-player by Harmonic Inc.",
-  "main": "index.html",
+  "main": "dist/shaka-player.compiled.js",
+  "types": "dist/shaka-player.compiled.d.ts",
   "scripts": {
     "test": "echo \"No test specified\" && exit 1"
   },
