@@ -15,7 +15,7 @@ describe('LiveCatchUpController', () => {
   let getPresentationTimeSpy;
 
   /** @type {!jasmine.Spy} */
-  let getPresentationLatencySpy;
+  let getPresentationLatencyInfo;
 
   /** @type {!jasmine.Spy} */
   let trickPlaySpy;
@@ -35,8 +35,8 @@ describe('LiveCatchUpController', () => {
       getBufferEnd: shaka.test.Util.spyFunc(getBufferEndSpy),
       getPlayRate: shaka.test.Util.spyFunc(getPlayRateSpy),
       getPresentationTime: shaka.test.Util.spyFunc(getPresentationTimeSpy),
-      getPresentationLatency:
-        shaka.test.Util.spyFunc(getPresentationLatencySpy),
+      getPresentationLatencyInfo:
+        shaka.test.Util.spyFunc(getPresentationLatencyInfo),
       trickPlay: shaka.test.Util.spyFunc(trickPlaySpy),
       getServiceDescription: shaka.test.Util.spyFunc(getServiceDescriptionSpy),
     };
