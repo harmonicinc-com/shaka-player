@@ -1063,7 +1063,8 @@ shaka.extern.PlayerConfiguration;
  *   enabled: boolean,
  *   playbackRateBlend: number,
  *   playbackRateMaxOverride: number,
- *   playbackRateMinOverride: number
+ *   playbackRateMinOverride: number,
+ *   targetLiveLatencyOverride: number
  * }}
  *
  * @property {boolean} enabled
@@ -1074,6 +1075,8 @@ shaka.extern.PlayerConfiguration;
  *   If not zero, override PlaybackRate.max in manifest.
  * @property {number} playbackRateMinOverride
  *   If not zero, override PlaybackRate.min in manifest.
+ * @property {number} targetLiveLatencyOverride
+ *   If not zero, override target live latency in manifest.
  * @exportDoc
  */
 shaka.extern.LiveCatchUpConfiguration;
