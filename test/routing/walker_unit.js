@@ -23,6 +23,7 @@ describe('Walker', () => {
     mimeType: null,
     startTime: null,
     startTimeOfLoad: NaN,
+    startTimeOffsetMs: null,
     uri: null,
   };
 
