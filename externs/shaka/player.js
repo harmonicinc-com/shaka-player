@@ -1061,7 +1061,6 @@ shaka.extern.PlayerConfiguration;
 /**
  * @typedef {{
  *   enabled: boolean,
- *   playbackRateBlend: number,
  *   playbackRateMaxOverride: number,
  *   playbackRateMinOverride: number,
  *   targetLiveLatencyOverride: number
@@ -1069,8 +1068,6 @@ shaka.extern.PlayerConfiguration;
  *
  * @property {boolean} enabled
  *   If true, enable LiveCatchUpController.  Defaults to false.
- * @property {number} playbackRateBlend
- *   The blend weight of current playback rate.
  * @property {number} playbackRateMaxOverride
  *   If not zero, override PlaybackRate.max in manifest.
  * @property {number} playbackRateMinOverride
