@@ -395,6 +395,8 @@ shaka.extern.PresentationLatencyData;
  * @typedef {{
  *   wca: number,
  *   pta: number,
+ *   pto: number,
+ *   periodStart: number,
  *   isInBand: boolean,
  *   type: string
  * }}
