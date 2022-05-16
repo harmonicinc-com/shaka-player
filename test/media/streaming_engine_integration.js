@@ -62,8 +62,8 @@ describe('StreamingEngine', () => {
     onError = jasmine.createSpy('onError');
     onError.and.callFake(fail);
     onEvent = jasmine.createSpy('onEvent');
-    onSegmentDownloadCompleted
-      = jasmine.createSpy('onSegmentDownloadCompleted');
+    onSegmentDownloadCompleted =
+      jasmine.createSpy('onSegmentDownloadCompleted');
 
     eventManager = new shaka.util.EventManager();
     waiter = new shaka.test.Waiter(eventManager);

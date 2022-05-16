@@ -1,7 +1,3 @@
-
-goog.require('shaka.test.Dash');
-goog.require('shaka.test.FakeNetworkingEngine');
-goog.require('shaka.test.Util');
 goog.require('shaka.dash.DashParser');
 
 describe('DashParser Manifest Patch', () => {
@@ -28,6 +24,9 @@ describe('DashParser Manifest Patch', () => {
       isLowLatencyMode: () => false,
       isAutoLowLatencyMode: () => false,
       enableLowLatencyMode: () => {},
+
+      modifyManifestRequest: () => {},
+      modifySegmentRequest: () => {},
     };
   });
 

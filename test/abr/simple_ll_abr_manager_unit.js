@@ -1,6 +1,4 @@
 goog.require('shaka.abr.SimpleLLAbrManager');
-goog.require('shaka.test.ManifestGenerator');
-goog.require('shaka.test.Util');
 goog.require('shaka.util.PlayerConfiguration');
 
 describe('SimpleLLAbrManager', () => {

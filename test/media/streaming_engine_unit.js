@@ -421,8 +421,8 @@ describe('StreamingEngine', () => {
     onSegmentAppended = jasmine.createSpy('onSegmentAppended');
     getBandwidthEstimate = jasmine.createSpy('getBandwidthEstimate');
     getBandwidthEstimate.and.returnValue(1e3);
-    onSegmentDownloadCompleted
-      = jasmine.createSpy('onSegmentDownloadCompleted');
+    onSegmentDownloadCompleted =
+      jasmine.createSpy('onSegmentDownloadCompleted');
 
     if (!config) {
       config = shaka.util.PlayerConfiguration.createDefault().streaming;

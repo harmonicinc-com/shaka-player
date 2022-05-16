@@ -1,5 +1,4 @@
 goog.require('shaka.media.LiveCatchUpController');
-goog.require('shaka.test.Util');
 
 describe('LiveCatchUpController', () => {
   /** @type {!shaka.media.LiveCatchUpController} */
