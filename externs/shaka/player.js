@@ -848,6 +848,7 @@ shaka.extern.ManifestConfiguration;
  *   inaccurateManifestTolerance: number,
  *   lowLatencyMode: boolean,
  *   autoLowLatencyMode: boolean,
+ *   liveCatchUp: shaka.extern.LiveCatchUpConfiguration,
  *   forceHTTPS: boolean,
  *   preferNativeHls: boolean,
  *   updateIntervalSeconds: number,
@@ -946,6 +947,8 @@ shaka.extern.ManifestConfiguration;
  *   lowLatencyMode, but if it has been configured to activate the
  *   lowLatencyMode if a stream of this type is detected, we automatically
  *   activate the lowLatencyMode. Defaults to false.
+ * @property {shaka.extern.LiveCatchUpConfiguration} liveCatchUp
+ *   Parameters for live catch up
  * @property {boolean} forceHTTPS
  *   If true, if the protocol is HTTP change it to HTTPs.
  * @property {boolean} preferNativeHls
@@ -971,7 +974,8 @@ shaka.extern.StreamingConfiguration;
  *   switchInterval: number,
  *   bandwidthUpgradeTarget: number,
  *   bandwidthDowngradeTarget: number,
- *   advanced: shaka.extern.AdvancedAbrConfiguration
+ *   advanced: shaka.extern.AdvancedAbrConfiguration,
+ *   stallCountToDowngrade: number
  * }}
  *
  * @property {boolean} enabled
@@ -1001,6 +1005,8 @@ shaka.extern.StreamingConfiguration;
  *   downgrade to avoid this.
  * @property {shaka.extern.AdvancedAbrConfiguration} advanced
  *   Advanced ABR configuration.
+ * @property {number} stallCountToDowngrade
+ *   The stall count to downgrade bandwidth in low latency mode.
  * @exportDoc
  */
 shaka.extern.AbrConfiguration;
@@ -1191,6 +1197,26 @@ shaka.extern.OfflineConfiguration;
  * @exportDoc
  */
 shaka.extern.PlayerConfiguration;
+
+/**
+ * @typedef {{
+ *   enabled: boolean,
+ *   playbackRateMaxOverride: number,
+ *   playbackRateMinOverride: number,
+ *   targetLiveLatencyOverride: number
+ * }}
+ *
+ * @property {boolean} enabled
+ *   If true, enable LiveCatchUpController.  Defaults to false.
+ * @property {number} playbackRateMaxOverride
+ *   If not zero, override PlaybackRate.max in manifest.
+ * @property {number} playbackRateMinOverride
+ *   If not zero, override PlaybackRate.min in manifest.
+ * @property {number} targetLiveLatencyOverride
+ *   If not zero, override target live latency in manifest.
+ * @exportDoc
+ */
+shaka.extern.LiveCatchUpConfiguration;
 
 
 /**

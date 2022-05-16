@@ -45,6 +45,8 @@ describe('StreamingEngine', () => {
   let onError;
   /** @type {!jasmine.Spy} */
   let onEvent;
+  /** @type {!jasmine.Spy} */
+  let onSegmentDownloadCompleted;
 
   beforeAll(() => {
     video = shaka.test.UiUtils.createVideoElement();
@@ -60,6 +62,8 @@ describe('StreamingEngine', () => {
     onError = jasmine.createSpy('onError');
     onError.and.callFake(fail);
     onEvent = jasmine.createSpy('onEvent');
+    onSegmentDownloadCompleted
+      = jasmine.createSpy('onSegmentDownloadCompleted');
 
     eventManager = new shaka.util.EventManager();
     waiter = new shaka.test.Waiter(eventManager);
@@ -246,6 +250,7 @@ describe('StreamingEngine', () => {
       onManifestUpdate: () => {},
       onSegmentAppended: () => playhead.notifyOfBufferingChange(),
       onInitSegmentAppended: () => {},
+      onSegmentDownloadCompleted: Util.spyFunc(onSegmentDownloadCompleted),
     };
     streamingEngine = new shaka.media.StreamingEngine(
         /** @type {shaka.extern.Manifest} */(manifest), playerInterface);
