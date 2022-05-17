@@ -271,7 +271,9 @@ shakaDemo.Config = class {
             /* canBeDecimal= */ true)
         .addNumberInput_(MessageIds.SLOW_HALF_LIFE,
             'abr.advanced.slowHalfLife',
-            /* canBeDecimal= */ true);
+            /* canBeDecimal= */ true)
+        .addNumberInput_(MessageIds.STALL_COUNT_TO_DOWNGRADE,
+            'abr.stallCountToDowngrade');
     this.addRetrictionsSection_('abr',
         MessageIds.ADAPTATION_RESTRICTIONS_SECTION_HEADER);
   }
@@ -382,6 +384,14 @@ shakaDemo.Config = class {
             'streaming.lowLatencyMode')
         .addBoolInput_(MessageIds.AUTO_LOW_LATENCY,
             'streaming.autoLowLatencyMode')
+        .addBoolInput_(MessageIds.LIVE_CATCHUP_ENABLED,
+            'streaming.liveCatchUp.enabled')
+        .addNumberInput_(MessageIds.LIVE_CATCHUP_MAX_PLAYBACK_RATE,
+            'streaming.liveCatchUp.playbackRateMaxOverride')
+        .addNumberInput_(MessageIds.LIVE_CATCHUP_MIN_PLAYBACK_RATE,
+            'streaming.liveCatchUp.playbackRateMinOverride')
+        .addNumberInput_(MessageIds.LIVE_CATCHUP_TARGET_LIVE_LATENCY,
+            'streaming.liveCatchUp.targetLiveLatencyOverride')
         .addBoolInput_(MessageIds.FORCE_HTTPS,
             'streaming.forceHTTPS')
         .addBoolInput_(MessageIds.PREFER_NATIVE_HLS,

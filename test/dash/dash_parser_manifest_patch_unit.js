@@ -273,7 +273,9 @@ describe('DashParser Manifest Patch', () => {
       fakeNetEngine.setResponseText(mpdUri, mpd);
       fakeNetEngine.setResponseText(patchUri, patchContents);
 
-      await parser.start(mpdUri, playerInterface);
+      const manifest = await parser.start(mpdUri, playerInterface);
+      const stream = manifest.variants[0].video;
+      await stream.createSegmentIndex();
       await parser.update();
       /** @type {Element} */
       const dom = parser.getMpd();
@@ -324,7 +326,9 @@ describe('DashParser Manifest Patch', () => {
       fakeNetEngine.setResponseText(mpdUri, mpd);
       fakeNetEngine.setResponseText(patchUri, patchContents);
 
-      await parser.start(mpdUri, playerInterface);
+      const manifest = await parser.start(mpdUri, playerInterface);
+      const stream = manifest.variants[0].video;
+      await stream.createSegmentIndex();
       await parser.update();
       /** @type {Element} */
       const dom = parser.getMpd();
@@ -388,7 +392,9 @@ describe('DashParser Manifest Patch', () => {
       fakeNetEngine.setResponseText(mpdUri, mpd);
       fakeNetEngine.setResponseText(patchUri, patchContents);
 
-      await parser.start(mpdUri, playerInterface);
+      const manifest = await parser.start(mpdUri, playerInterface);
+      const stream = manifest.variants[0].video;
+      await stream.createSegmentIndex();
       await parser.update();
       /** @type {Element} */
       const dom = parser.getMpd();
@@ -459,7 +465,9 @@ describe('DashParser Manifest Patch', () => {
       fakeNetEngine.setResponseText(mpdUri, mpd);
       fakeNetEngine.setResponseText(patchUri, patchContents);
 
-      await parser.start(mpdUri, playerInterface);
+      const manifest = await parser.start(mpdUri, playerInterface);
+      const stream = manifest.variants[0].video;
+      await stream.createSegmentIndex();
       await parser.update();
       /** @type {Element} */
       const dom = parser.getMpd();

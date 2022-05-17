@@ -29,6 +29,8 @@ describe('LiveCatchUpController', () => {
     getPresentationTimeSpy = jasmine.createSpy('getPresentationTime');
     trickPlaySpy = jasmine.createSpy('trickPlay');
     getServiceDescriptionSpy = jasmine.createSpy('getServiceDescription');
+    getPresentationLatencyInfo = jasmine.createSpy(
+        'getPresentationLatencyInfo');
 
     const playerInterface = {
       getBufferEnd: shaka.test.Util.spyFunc(getBufferEndSpy),
@@ -41,6 +43,12 @@ describe('LiveCatchUpController', () => {
     };
 
     controller = new shaka.media.LiveCatchUpController(playerInterface);
+    controller.configure({
+      enabled: false,
+      playbackRateMaxOverride: 0,
+      playbackRateMinOverride: 0,
+      targetLiveLatencyOverride: 5000,
+    });
     controller.enable();
   });
 
@@ -54,6 +62,9 @@ describe('LiveCatchUpController', () => {
     getPlayRateSpy.and.returnValue(1);
     getBufferEndSpy.and.returnValue(10);
     getPresentationTimeSpy.and.returnValue(5);
+    getPresentationLatencyInfo.and.returnValue({
+      latency: 10000,
+    });
     controller.updatePlayRate();
     expect(trickPlaySpy).toHaveBeenCalledWith(
         controller.getDefaultMaxPlayRate());
@@ -69,6 +80,9 @@ describe('LiveCatchUpController', () => {
     getPlayRateSpy.and.returnValue(1);
     getBufferEndSpy.and.returnValue(10);
     getPresentationTimeSpy.and.returnValue(5);
+    getPresentationLatencyInfo.and.returnValue({
+      latency: 10000,
+    });
     getServiceDescriptionSpy.and.returnValue(serviceDescription);
     controller.updatePlayRate();
     expect(trickPlaySpy).toHaveBeenCalledWith(

@@ -29,6 +29,10 @@ describe('CastUtils', () => {
       'createPlayhead',
       'createMediaSourceEngine',
       'createStreamingEngine',
+      'createLiveCatchUpController',
+
+      // Covered by other test
+      'onSegmentDownloadCompleted',
     ];
 
     const castMembers = CastUtils.PlayerVoidMethods
