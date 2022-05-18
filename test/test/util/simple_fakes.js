@@ -162,8 +162,26 @@ shaka.test.FakeVideo = class {
   constructor(currentTime) {
     /** @const {!Object.<string, !Function>} */
     this.on = {};  // event listeners
+
     /** @type {!Array.<!TextTrack>} */
     this.textTracks = [];
+
+    // In a real video element, textTracks is an event target.
+    // Since Player listens to events on textTracks, we need to fake that
+    // interface.
+    this.textTracksEventTarget = new shaka.util.FakeEventTarget();
+    this.textTracks.addEventListener =
+        // eslint-disable-next-line no-restricted-syntax
+        this.textTracksEventTarget.addEventListener.bind(
+            this.textTracksEventTarget);
+    this.textTracks.removeEventListener =
+        // eslint-disable-next-line no-restricted-syntax
+        this.textTracksEventTarget.removeEventListener.bind(
+            this.textTracksEventTarget);
+    this.textTracks.dispatchEvent =
+        // eslint-disable-next-line no-restricted-syntax
+        this.textTracksEventTarget.dispatchEvent.bind(
+            this.textTracksEventTarget);
 
     this.currentTime = currentTime || 0;
     this.readyState = 0;
@@ -183,6 +201,10 @@ shaka.test.FakeVideo = class {
         jasmine.createSpy('addTextTrack').and.callFake((kind, id) => {
           const track = new shaka.test.FakeTextTrack();
           this.textTracks.push(track);
+
+          const trackEvent = new shaka.util.FakeEvent('addtrack', {track});
+          this.textTracksEventTarget.dispatchEvent(trackEvent);
+
           return track;
         });
 
@@ -318,11 +340,18 @@ shaka.test.FakePlayhead = class {
     /** @type {!jasmine.Spy} */
     this.setRebufferingGoal = jasmine.createSpy('setRebufferingGoal');
 
-    /** @type {!jasmine.Spy} */
-    this.setStartTime = jasmine.createSpy('setStartTime');
+    /** @private {number} */
+    this.startTime_ = 0;
 
     /** @type {!jasmine.Spy} */
-    this.getTime = jasmine.createSpy('getTime').and.returnValue(0);
+    this.setStartTime = jasmine.createSpy('setStartTime')
+        .and.callFake((value) => {
+          this.startTime_ = value;
+        });
+
+    /** @type {!jasmine.Spy} */
+    this.getTime = jasmine.createSpy('getTime')
+        .and.callFake(() => this.startTime_);
 
     /** @type {!jasmine.Spy} */
     this.setBuffering = jasmine.createSpy('setBuffering');

@@ -1161,8 +1161,9 @@ describe('NetworkingEngine', /** @suppress {accessControls} */ () => {
         return new shaka.util.AbortableOperation(p, () => {});
       });
 
-      /** @const {shaka.net.NetworkingEngine.PendingRequest} */
       const uri = 'resolve://';
+
+      /** @const {shaka.net.NetworkingEngine.PendingRequest} */
       const resp = networkingEngine.request(
           requestType, createRequest(uri));
       await Util.shortDelay();  // Allow Promises to resolve.
