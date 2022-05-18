@@ -942,5 +942,25 @@
   "DEMO_XLINK_SEARCH": {
     "description": "A tooltip for an optional search term.",
     "message": "Filters for assets that have [JARGON:XLINK] tags in their manifests, so that they can be broken into multiple files."
+  },
+  "DEMO_LIVE_CATCHUP_ENABLED": {
+    "description": "The name of a configuration value.",
+    "message": "Enable Live Catchup"
+  },
+  "DEMO_LIVE_CATCHUP_MAX_PLAYBACK_RATE": {
+    "description": "The name of a configuration value.",
+    "message": "Live Catchup Max Playback Rate"
+  },
+  "DEMO_LIVE_CATCHUP_MIN_PLAYBACK_RATE": {
+    "description": "The name of a configuration value.",
+    "message": "Live Catchup Min Playback Rate"
+  },
+  "DEMO_LIVE_CATCHUP_TARGET_LIVE_LATENCY": {
+    "description": "The name of a configuration value.",
+    "message": "Live Catchup Target Live Latency"
+  },
+  "DEMO_STALL_COUNT_TO_DOWNGRADE": {
+    "description": "The name of a configuration value.",
+    "message": "Stall Count to Downgrade"
   }
 }

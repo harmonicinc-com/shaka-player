@@ -1162,18 +1162,19 @@ describe('NetworkingEngine', /** @suppress {accessControls} */ () => {
       });
 
       /** @const {shaka.net.NetworkingEngine.PendingRequest} */
+      const uri = 'resolve://';
       const resp = networkingEngine.request(
-          requestType, createRequest('resolve://'));
+          requestType, createRequest(uri));
       await Util.shortDelay();  // Allow Promises to resolve.
       expect(onProgress).toHaveBeenCalledTimes(2);
-      expect(onProgress).toHaveBeenCalledWith(1, 2);
-      expect(onProgress).toHaveBeenCalledWith(4, 5);
+      expect(onProgress).toHaveBeenCalledWith(1, 2, uri);
+      expect(onProgress).toHaveBeenCalledWith(4, 5, uri);
       onProgress.calls.reset();
 
       delay.resolve();
       await resp.promise;
       expect(onProgress).toHaveBeenCalledTimes(1);
-      expect(onProgress).toHaveBeenCalledWith(7, 8);
+      expect(onProgress).toHaveBeenCalledWith(7, 8, uri);
     });
 
     it('doesn\'t forward progress events for non-SEGMENT', async () => {

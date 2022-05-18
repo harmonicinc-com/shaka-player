@@ -65,6 +65,7 @@ describe('SegmentIndex', /** @suppress {accessControls} */ () => {
       expect(ref).toBe(actual1);
     });
 
+    // Note: Should return next segment if in gap.
     it('works with time is between first endTime and second startTime', () => {
       const actual1 = makeReference(uri(10), 10, 20.12111);
       const actual2 = makeReference(uri(20), 20.12113, 30);
@@ -73,7 +74,7 @@ describe('SegmentIndex', /** @suppress {accessControls} */ () => {
       const pos = index.find(20.12112);
       goog.asserts.assert(pos != null, 'Null position!');
       const ref = index.get(pos);
-      expect(ref).toBe(actual1);
+      expect(ref).toBe(actual2);
     });
 
     it('returns the first segment if time < first start time', () => {

@@ -150,12 +150,12 @@ describe('DashParser Manifest', () => {
           manifest.minBufferTime = 75;
           manifest.addPartialVariant((variant) => {
             variant.language = 'en';
-            variant.bandwidth = 200;
+            variant.bandwidth = 150;
             variant.primary = true;
             variant.addPartialStream(ContentType.VIDEO, (stream) => {
-              stream.bandwidth = 100;
+              stream.bandwidth = 50;
               stream.frameRate = 1000000 / 42000;
-              stream.size(768, 576);
+              stream.size(576, 432);
               stream.mime('video/mp4', 'avc1.4d401f');
             });
             variant.addPartialStream(ContentType.AUDIO, (stream) => {
@@ -167,12 +167,12 @@ describe('DashParser Manifest', () => {
           });
           manifest.addPartialVariant((variant) => {
             variant.language = 'en';
-            variant.bandwidth = 150;
+            variant.bandwidth = 200;
             variant.primary = true;
             variant.addPartialStream(ContentType.VIDEO, (stream) => {
-              stream.bandwidth = 50;
+              stream.bandwidth = 100;
               stream.frameRate = 1000000 / 42000;
-              stream.size(576, 432);
+              stream.size(768, 576);
               stream.mime('video/mp4', 'avc1.4d401f');
             });
             variant.addPartialStream(ContentType.AUDIO, (stream) => {
