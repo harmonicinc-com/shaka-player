@@ -395,3 +395,71 @@ shaka.extern.CreateSegmentIndexFunction;
  * @exportDoc
  */
 shaka.extern.Stream;
+
+/**
+ * @typedef {{
+ *   prtMap: !Map.<string, shaka.extern.PrtData>,
+ *   periodIdMap: !Map.<number, string>,
+ *   clockOffset: number
+ * }}
+ *
+ * @property {Map.<string, shaka.extern.PrtData>} prtMap
+ *   structure of key: <periodId>_<representationId>_<type>
+ * @description
+ * Data need for calculating presentation latency on low latency stream
+ * specified {@link https://dashif.org/docs/CR-Low-Latency-Live-r8.pdf 9.X.5}.
+ *
+ */
+shaka.extern.PresentationLatencyData;
+
+
+/**
+ * @typedef {{
+ *   wca: number,
+ *   pta: number,
+ *   pto: number,
+ *   periodStart: number,
+ *   isInBand: boolean,
+ *   type: string
+ * }}
+ *
+ * @description
+ * Data need for calculating presentation latency on low latency stream
+ * specified {@link https://dashif.org/docs/CR-Low-Latency-Live-r8.pdf 9.X.5}.
+ *
+ */
+shaka.extern.PrtData;
+
+/**
+ * @typedef {{
+ *   schemeIdUri: string,
+ *   value: string
+ * }}
+ */
+shaka.extern.ServiceDescription.Scope;
+
+/**
+ * @typedef {{
+ *   target: number,
+ *   max: number,
+ *   min: number
+ * }}
+ */
+shaka.extern.ServiceDescription.Latency;
+
+/**
+ * @typedef {{
+ *   max: number,
+ *   min: number
+ * }}
+*/
+shaka.extern.ServiceDescription.PlaybackRate;
+
+/**
+ * @typedef {{
+ *   scope: ?shaka.extern.ServiceDescription.Scope,
+ *   latency: ?shaka.extern.ServiceDescription.Latency,
+ *   playbackRate: ?shaka.extern.ServiceDescription.PlaybackRate
+ * }}
+  */
+shaka.extern.ServiceDescription;

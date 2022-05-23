@@ -82,9 +82,24 @@ shaka.extern.AbrManager = class {
    * @param {number} deltaTimeMs The duration, in milliseconds, that the request
    *     took to complete.
    * @param {number} numBytes The total number of bytes transferred.
+   * @param {string} uri
    * @exportDoc
    */
-  segmentDownloaded(deltaTimeMs, numBytes) {}
+  segmentDownloaded(deltaTimeMs, numBytes, uri) {}
+
+  /**
+   * Notifies the AbrManager that a segment download has been completed
+   * (includes MP4 SIDX data, WebM Cues data, initialization segments,
+   * and media segments).
+   *
+   * @param {number} deltaTimeMs The duration, in milliseconds, that the request
+   *     took to complete.
+   * @param {number} numBytes The total number of bytes transferred.
+   * @param {!Array.<string>} uris
+   * @param {boolean} isFullSpeed
+   * @exportDoc
+   */
+  segmentDownloadCompleted(deltaTimeMs, numBytes, uris, isFullSpeed) {}
 
   /**
    * Gets an estimate of the current bandwidth in bit/sec.  This is used by the
@@ -113,6 +128,20 @@ shaka.extern.AbrManager = class {
    * @exportDoc
    */
   configure(config) {}
+
+  /**
+   * Called when enter buffering state
+   *
+   * @exportDoc
+   */
+  onBuffering() {}
+
+  /**
+   * Called when exit buffering state
+   *
+   * @exportDoc
+   */
+  onBufferingEnd() {}
 };
 
 
