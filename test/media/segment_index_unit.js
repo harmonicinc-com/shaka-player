@@ -65,6 +65,7 @@ describe('SegmentIndex', /** @suppress {accessControls} */ () => {
       expect(ref).toBe(actual1);
     });
 
+    // Note: Should return next segment if in gap.
     it('works with time is between first endTime and second startTime', () => {
       const actual1 = makeReference(uri(10), 10, 20.12111);
       const actual2 = makeReference(uri(20), 20.12113, 30);
@@ -73,7 +74,7 @@ describe('SegmentIndex', /** @suppress {accessControls} */ () => {
       const pos = index.find(20.12112);
       goog.asserts.assert(pos != null, 'Null position!');
       const ref = index.get(pos);
-      expect(ref).toBe(actual1);
+      expect(ref).toBe(actual2);
     });
 
     it('returns the first segment if time < first start time', () => {
@@ -100,6 +101,17 @@ describe('SegmentIndex', /** @suppress {accessControls} */ () => {
 
       const pos = index.find(21);
       expect(pos).toBeNull();
+    });
+
+    it('returns segment next to gap if time is within a gap', () => {
+      const actualSeg1 = makeReference(uri(10), 10, 20);
+      const actualSeg2 = makeReference(uri(25), 25, 30);
+      const index = new shaka.media.SegmentIndex([actualSeg1, actualSeg2]);
+
+      const pos = index.find(23);
+      goog.asserts.assert(pos != null, 'Null position!');
+      const ref = index.get(pos);
+      expect(ref).toBe(actualSeg2);
     });
   });
 

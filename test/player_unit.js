@@ -994,8 +994,9 @@ describe('Player', () => {
       // When low latency streaming gets enabled, rebufferingGoal will default
       // to 0.01 if unless specified, and inaccurateManifestTolerance will
       // default to 0 unless specified.
+      // Note: changed to 0.5 from 0.01.
       player.configure('streaming.lowLatencyMode', true);
-      expect(player.getConfiguration().streaming.rebufferingGoal).toBe(0.01);
+      expect(player.getConfiguration().streaming.rebufferingGoal).toBe(0.5);
       expect(player.getConfiguration().streaming.inaccurateManifestTolerance)
           .toBe(0);
     });
