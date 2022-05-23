@@ -1,0 +1,107 @@
+name: Create Release
+
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*\+harmonic'
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set Release version
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+      - name: Test Release Version
+        run: |
+          echo $RELEASE_VERSION
+          echo ${{ env.RELEASE_VERSION }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '2.x' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+          architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
+      - name: Build Shaka Player
+        run: python build/all.py
+
+      - name: Zip release files
+        run: tar  --transform 's,^,shaka-player/,' -czf shaka-player-${{ env.RELEASE_VERSION }}.tgz  package.json dist/shaka-player.compiled.debug.js dist/shaka-player.ui.debug.js dist/controls.css dist/shaka-player.compiled.js dist/shaka-player.ui.js
+        working-directory: ./
+
+      - name: Upload Release Asset
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.PAT_SECRET }}
+          file: ./shaka-player-${{ env.RELEASE_VERSION }}.tgz
+          asset_name: shaka-player-${{ env.RELEASE_VERSION }}.tgz
+          tag: ${{ github.ref }}
+          overwrite: true
+          body: "This is my release text"
+
+      - name: install gh-pages-multi
+        run: sudo npm i -g @koumoul/gh-pages-multi
+
+      - name: Collect files for demo page
+        run: |
+          rm -rf tmp
+          mkdir tmp
+          cp -r demo tmp
+          cp -r docs tmp
+          cp .github_page_deploy/demo/index.html tmp/demo/index.html
+          cp .github_page_deploy/index.html tmp/index.html
+          cp .github_page_deploy/.nojekyll  tmp/.nojekyll
+          cp .github_page_deploy/demo/main.js tmp/demo/main.js
+          cp .github_page_deploy/demo/load.js tmp/demo/load.js
+          cp -r dist tmp
+          cp --parent ui/controls.less tmp
+          cp -r --parent ui/locales tmp
+          cp -r --parent ui/less tmp
+          cp -r --parent demo/locales tmp
+          cp --parent node_modules/mux.js/dist/mux.min.js tmp
+          cp --parent node_modules/material-design-lite/dist/material.min.js tmp
+          cp --parent node_modules/dialog-polyfill/dist/dialog-polyfill.js tmp
+          cp --parent node_modules/awesomplete/awesomplete.min.js tmp
+          cp --parent node_modules/popper.js/dist/umd/popper.min.js tmp
+          cp --parent node_modules/tippy.js/umd/index.min.js tmp
+          cp --parent node_modules/pwacompat/pwacompat.min.js tmp
+          cp --parent node_modules/fastestsmallesttextencoderdecoder/EncoderDecoderTogether.min.js tmp
+
+      - name: Setup credential to publish page
+        run: |
+          git config --global user.email "johnny.yiu@harmonicinc.com"
+          git config --global user.name "Johnny Yiu"
+          git remote set-url origin https://x-access-token:${{secrets.PAT_SECRET}}@github.com/harmonicinc-com/shaka-player.git
+
+      - name: Publish demo page to github page (version)
+        run: gh-pages-multi deploy --title "Harmonic Shaka Player Demo" -s tmp -t ${{ env.RELEASE_VERSION }} --no-history
+
+      - name: Publish demo page to github page
+        run: gh-pages-multi deploy --title "Harmonic Shaka Player Demo" -s tmp -t latest --no-history
+
+      - name: Copy files to npm publish
+        run: |
+          mkdir ./harmonicinc/npm_publish/dist
+          cp ./AUTHORS ./CONTRIBUTORS ./LICENSE ./harmonicinc/npm_publish
+          cp dist/shaka-player.compiled.debug.js dist/shaka-player.compiled.debug.d.ts dist/shaka-player.ui.debug.js dist/shaka-player.ui.debug.d.ts dist/controls.css dist/shaka-player.compiled.js dist/shaka-player.compiled.d.ts dist/shaka-player.ui.js dist/shaka-player.ui.d.ts ./harmonicinc/npm_publish/dist
+        working-directory: ./
+
+      - name: Prepare publish to npm
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org/
+
+      - name: Publish to npm
+        run: |
+          yarn install
+          npm version ${{env.RELEASE_VERSION}}
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+        working-directory: ./harmonicinc/npm_publish
