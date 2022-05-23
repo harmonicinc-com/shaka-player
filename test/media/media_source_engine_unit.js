@@ -150,6 +150,7 @@ describe('MediaSourceEngine', () => {
         video,
         mockClosedCaptionParser,
         mockTextDisplayer);
+    mediaSourceEngine.setLowLatencyMode(true);
   });
 
   afterEach(() => {

@@ -45,6 +45,7 @@ describe('MediaSourceEngine', () => {
     mediaSource = /** @type {?} */(mediaSourceEngine)['mediaSource_'];
     expect(video.src).toBeTruthy();
     await mediaSourceEngine.init(new Map(), false);
+    mediaSourceEngine.setLowLatencyMode(true);
   });
 
   afterEach(async () => {

@@ -62,6 +62,16 @@ shaka.test.FakeAbrManager = class {
 
     /** @type {!jasmine.Spy} */
     this.configure = jasmine.createSpy('configure');
+
+    /** @type {!jasmine.Spy} */
+    this.onBuffering = jasmine.createSpy('onBuffering');
+
+    /** @type {!jasmine.Spy} */
+    this.onBufferingEnd = jasmine.createSpy('onBufferingEnd');
+
+    /** @type {!jasmine.Spy} */
+    this.segmentDownloadCompleted = jasmine.createSpy(
+        'segmentDownloadCompleted');
   }
 };
 

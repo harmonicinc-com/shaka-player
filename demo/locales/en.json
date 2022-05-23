@@ -235,5 +235,10 @@
   "DEMO_WIDEVINE": "Widevine DRM",
   "DEMO_XLINK": "XLink",
   "DEMO_XLINK_FAIL_GRACEFULLY": "Xlink Should Fail Gracefully",
-  "DEMO_XLINK_SEARCH": "Filters for assets that have XLINK tags in their manifests, so that they can be broken into multiple files."
+  "DEMO_XLINK_SEARCH": "Filters for assets that have XLINK tags in their manifests, so that they can be broken into multiple files.",
+  "DEMO_LIVE_CATCHUP_ENABLED": "Live Catchup Enabled",
+  "DEMO_LIVE_CATCHUP_MAX_PLAYBACK_RATE": "Live Catchup Max Playback Rate",
+  "DEMO_LIVE_CATCHUP_MIN_PLAYBACK_RATE": "Live Catchup Min Playback Rate",
+  "DEMO_LIVE_CATCHUP_TARGET_LIVE_LATENCY": "Live Catchup Target Live Latency",
+  "DEMO_STALL_COUNT_TO_DOWNGRADE": "Stall Count To Downgrade"
 }
