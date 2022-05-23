@@ -8,9 +8,9 @@ on:
       pr:
         description: "A PR number to build and test in the lab.  If empty, will build and test from main."
         required: false
-  schedule:
-    # Runs every night at 2am PST / 10am UTC, testing against the main branch.
-    - cron: '0 10 * * *'
+#  schedule:
+#    # Runs every night at 2am PST / 10am UTC, testing against the main branch.
+#    - cron: '0 10 * * *'
 
 # Only one run of this workflow is allowed at a time, since it uses physical
 # resources in our lab.
