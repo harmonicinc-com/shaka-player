@@ -74,6 +74,10 @@ describe('StreamingEngine', () => {
   let onSegmentDownloadCompleted;
   /** @type {!shaka.media.StreamingEngine} */
   let streamingEngine;
+  /** @type {!shaka.test.FakeAbrManager} */
+  let abrManager;
+  /** @type {!jasmine.Spy} */
+  let refreshManifest;
 
   /** @type {function(function(), number)} */
   let realSetTimeout;
@@ -424,6 +428,8 @@ describe('StreamingEngine', () => {
     getBandwidthEstimate.and.returnValue(1e3);
     onSegmentDownloadCompleted =
       jasmine.createSpy('onSegmentDownloadCompleted');
+    abrManager = new shaka.test.FakeAbrManager();
+    refreshManifest = jasmine.createSpy('refreshManifest');
 
     if (!config) {
       config = shaka.util.PlayerConfiguration.createDefault().streaming;
@@ -447,6 +453,8 @@ describe('StreamingEngine', () => {
       onSegmentAppended: Util.spyFunc(onSegmentAppended),
       onInitSegmentAppended: () => {},
       onSegmentDownloadCompleted: Util.spyFunc(onSegmentDownloadCompleted),
+      abrManager,
+      refreshManifest: Util.spyFunc(refreshManifest),
     };
     streamingEngine = new shaka.media.StreamingEngine(
         /** @type {shaka.extern.Manifest} */(manifest), playerInterface);

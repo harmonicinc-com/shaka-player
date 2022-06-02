@@ -966,5 +966,9 @@
   "DEMO_STALL_COUNT_TO_DOWNGRADE": {
     "description": "The name of a configuration value.",
     "message": "Stall Count to Downgrade"
+  },
+  "DEMO_FAILOVER": {
+    "description": "The name of a configuration value.",
+    "message": "Failover"
   }
 }

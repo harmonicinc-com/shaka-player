@@ -47,6 +47,7 @@ describe('DashParser SegmentTemplate', () => {
       isLowLatencyMode: () => false,
       isAutoLowLatencyMode: () => false,
       enableLowLatencyMode: () => {},
+      abrManager: new shaka.test.FakeAbrManager(),
     };
   });
 

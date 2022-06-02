@@ -77,6 +77,7 @@ describe('HlsParser live', () => {
       isLowLatencyMode: () => false,
       isAutoLowLatencyMode: () => false,
       enableLowLatencyMode: () => {},
+      abrManager: new shaka.test.FakeAbrManager(),
     };
 
     parser = new shaka.hls.HlsParser();
