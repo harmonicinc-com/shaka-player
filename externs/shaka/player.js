@@ -865,7 +865,8 @@ shaka.extern.ManifestConfiguration;
  *   updateIntervalSeconds: number,
  *   dispatchAllEmsgBoxes: boolean,
  *   observeQualityChanges: boolean,
- *   maxDisabledTime: number
+ *   maxDisabledTime: number,
+ *   failover: boolean
  * }}
  *
  * @description
@@ -976,6 +977,12 @@ shaka.extern.ManifestConfiguration;
  *   The maximum time a variant can be disabled when NETWORK HTTP_ERROR
  *   is reached, in seconds.
  *   If all variants are disabled this way, NETWORK HTTP_ERROR will be thrown.
+ * @property {boolean} failover
+ *   If enabled, the player will try to recover from network errors by:
+ *   - Fetching new manifest
+ *   - Discarding previous segment references
+ *   - Will not retry downloading segments that belong to previous manifest
+ *   - Switch to the new variant
  * @exportDoc
  */
 shaka.extern.StreamingConfiguration;
