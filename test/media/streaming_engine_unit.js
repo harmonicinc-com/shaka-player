@@ -2135,6 +2135,42 @@ describe('StreamingEngine', () => {
       // baseDelay == 10000, maybe be longer due to delays in the event loop.
       expect(callbackTime - startTime).toBeGreaterThanOrEqual(10000);
     });
+
+    // TODO
+    it('fallback to another variant if configured to', async () => {
+      setupLive();
+
+      // Wrap the NetworkingEngine to cause errors.
+      const targetUri = '0_audio_init';
+      failFirstRequestForTarget(netEngine, targetUri,
+          shaka.util.Error.Code.BAD_HTTP_STATUS);
+
+      mediaSourceEngine = new shaka.test.FakeMediaSourceEngine(segmentData);
+      const config = shaka.util.PlayerConfiguration.createDefault().streaming;
+      config.failover = true;
+      createStreamingEngine(config);
+
+      presentationTimeInSeconds = 100;
+
+      // Here we go!
+      streamingEngine.switchVariant(variant);
+      // streamingEngine.switchTextStream(textStream);
+      await streamingEngine.start();
+      playing = true;
+
+      await runTest();
+      expect(onError).not.toHaveBeenCalled();
+      expect(refreshManifest).toHaveBeenCalledTimes(1);
+      expect(abrManager.chooseVariant).toHaveBeenCalledTimes(1);
+      expect(videoStream.createSegmentIndex).toHaveBeenCalled();
+      expect(audioStream.createSegmentIndex).toHaveBeenCalled();
+
+      const targetCalls = netEngine.request.calls.all().filter((data) => {
+        const request = data.args[1];
+        return request.uris[0] == targetUri;
+      });
+      expect(targetCalls.length).toBe(1);
+    });
   });
 
   describe('retry()', () => {
