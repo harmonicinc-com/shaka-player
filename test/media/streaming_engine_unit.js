@@ -2136,7 +2136,6 @@ describe('StreamingEngine', () => {
       expect(callbackTime - startTime).toBeGreaterThanOrEqual(10000);
     });
 
-    // TODO
     it('fallback to another variant if configured to', async () => {
       setupLive();
 
@@ -2154,22 +2153,26 @@ describe('StreamingEngine', () => {
 
       // Here we go!
       streamingEngine.switchVariant(variant);
-      // streamingEngine.switchTextStream(textStream);
       await streamingEngine.start();
       playing = true;
 
       await runTest();
+
+      // Should not trigger error handler
       expect(onError).not.toHaveBeenCalled();
+      // Make sure new manifest was loaded
       expect(refreshManifest).toHaveBeenCalledTimes(1);
+      // Make sure new variant was chosen, and segment indices were reset
       expect(abrManager.chooseVariant).toHaveBeenCalledTimes(1);
       expect(videoStream.createSegmentIndex).toHaveBeenCalled();
       expect(audioStream.createSegmentIndex).toHaveBeenCalled();
 
+      // One for init call, one for getting manifest prior to switching variant
       const targetCalls = netEngine.request.calls.all().filter((data) => {
         const request = data.args[1];
         return request.uris[0] == targetUri;
       });
-      expect(targetCalls.length).toBe(1);
+      expect(targetCalls.length).toBe(2);
     });
   });
 

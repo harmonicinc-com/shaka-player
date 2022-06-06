@@ -86,6 +86,15 @@ shaka.extern.ManifestParser = class {
   update() {}
 
   /**
+   * Tells the parser to do a manual manifest update, and forcing it to clear
+   * the current periods and stream map.
+   * Implementing this is optional.
+   * This is only called when streaming.fallback is enabled.
+   * @exportDoc
+   */
+  forceUpdate() {}
+
+  /**
    * Tells the parser that the expiration time of an EME session has changed.
    * Implementing this is optional.
    *
