@@ -27,6 +27,7 @@ describe('DashParser Manifest Patch', () => {
 
       modifyManifestRequest: () => {},
       modifySegmentRequest: () => {},
+      abrManager: new shaka.test.FakeAbrManager(),
     };
   });
 

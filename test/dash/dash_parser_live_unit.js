@@ -36,6 +36,7 @@ describe('DashParser Live', () => {
       isLowLatencyMode: () => false,
       isAutoLowLatencyMode: () => false,
       enableLowLatencyMode: () => {},
+      abrManager: new shaka.test.FakeAbrManager(),
     };
   });
 

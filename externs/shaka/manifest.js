@@ -76,7 +76,6 @@
  * @property {boolean} sequenceMode
  *   If true, we will append the media segments using sequence mode; that is to
  *   say, ignoring any timestamps inside the media files.
- *
  * @exportDoc
  */
 shaka.extern.Manifest;

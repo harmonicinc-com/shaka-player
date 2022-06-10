@@ -348,6 +348,7 @@ describe('DashParser SegmentList', () => {
       isLowLatencyMode: () => false,
       isAutoLowLatencyMode: () => false,
       enableLowLatencyMode: () => {},
+      abrManager: new shaka.test.FakeAbrManager(),
     };
     const manifest = await dashParser.start('dummy://foo', playerInterface);
     const stream = manifest.variants[0].video;
