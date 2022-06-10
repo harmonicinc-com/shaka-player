@@ -111,7 +111,8 @@ shaka.extern.ManifestParser = class {
  *   onError: function(!shaka.util.Error),
  *   isLowLatencyMode: function():boolean,
  *   isAutoLowLatencyMode: function():boolean,
- *   enableLowLatencyMode: function()
+ *   enableLowLatencyMode: function(),
+ *   abrManager: !shaka.extern.AbrManager
  * }}
  *
  * @description
