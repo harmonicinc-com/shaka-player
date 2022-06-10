@@ -1143,6 +1143,44 @@ describe('StreamingEngine', () => {
       netEngine.expectRequest('text-20-init', segmentType);
       netEngine.expectNoRequest('text-21-init', segmentType);
     });
+
+    xit('should refresh variant if invalid segmentReference ' +
+      'is returned', async () => {
+      setupLive();
+      const targetUri = '0_audio_init';
+
+      mediaSourceEngine = new shaka.test.FakeMediaSourceEngine(segmentData);
+      createStreamingEngine();
+
+      const segmentIndex = new shaka.test.FakeSegmentIndex();
+      segmentIndex.find.and.callFake(() => 0);
+      segmentIndex.get.and.callFake(() => new shaka.media.SegmentReference(
+          0, 10, () => [''], 0, null, null, 0, 0, 0, [], null, null, null,
+      ));
+      variant.video.segmentIndex = segmentIndex;
+      variant.audio.segmentIndex = segmentIndex;
+
+      // Here we go!
+      streamingEngine.switchVariant(variant);
+      await streamingEngine.start();
+      playing = true;
+
+      await Util.fakeEventLoop(5);
+      // await runTest();
+
+      expect(refreshManifest).toHaveBeenCalledTimes(1);
+      expect(abrManager.chooseVariant).toHaveBeenCalledTimes(1);
+      expect(videoStream.createSegmentIndex).toHaveBeenCalledTimes(2);
+      expect(audioStream.createSegmentIndex).toHaveBeenCalledTimes(2);
+
+      // One for init call, one for getting the latest manifest prior to
+      // switching variant
+      const targetCalls = netEngine.request.calls.all().filter((data) => {
+        const request = data.args[1];
+        return request.uris[0] === targetUri;
+      });
+      expect(targetCalls.length).toBe(2);
+    });
   });
 
   describe('handles seeks (VOD)', () => {

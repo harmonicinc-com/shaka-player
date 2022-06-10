@@ -404,9 +404,7 @@ shakaDemo.Config = class {
         .addBoolInput_(MessageIds.OBSERVE_QUALITY_CHANGES,
             'streaming.observeQualityChanges')
         .addNumberInput_(MessageIds.MAX_DISABLED_TIME,
-            'streaming.maxDisabledTime')
-        .addBoolInput_(MessageIds.FAILOVER,
-            'streaming.failover');
+            'streaming.maxDisabledTime');
 
     if (!shakaDemoMain.getNativeControlsEnabled()) {
       this.addBoolInput_(MessageIds.ALWAYS_STREAM_TEXT,
