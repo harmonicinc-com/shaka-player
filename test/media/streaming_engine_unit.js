@@ -944,6 +944,27 @@ describe('StreamingEngine', () => {
     });
   });
 
+  it('use UTC timing when checking full segment', async () => {
+    setupLive();
+    timeline.getClockOffset.and.returnValue(60 * 1000);
+    timeline.getPresentationStartTime.and.returnValue(1);
+    mediaSourceEngine = new shaka.test.FakeMediaSourceEngine(segmentData);
+    createStreamingEngine();
+
+    // Here we go!
+    streamingEngine.switchVariant(variant);
+    await streamingEngine.start();
+    playing = true;
+
+    await runTest();
+
+    const now = Date.now() / 1000.0;
+    const isFull = streamingEngine.isSegmentAtFullNetworkSpeed(now);
+    expect(timeline.getClockOffset).toHaveBeenCalled();
+    expect(timeline.getPresentationStartTime).toHaveBeenCalled();
+    expect(isFull).toBe(true);
+  });
+
   describe('switchVariant/switchTextStream', () => {
     let initialVariant;
     let sameAudioVariant;
