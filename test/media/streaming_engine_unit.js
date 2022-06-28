@@ -1135,6 +1135,50 @@ describe('StreamingEngine', () => {
       netEngine.expectRequest('text-20-init', segmentType);
       netEngine.expectNoRequest('text-21-init', segmentType);
     });
+
+    // Similar to "handles network errors retries if configured to" test
+    // but don't bypass the retry logic, and check if
+    // dropInvalidReferences has been called
+    it('should fix segment iterator if segment reference is invalid',
+        async () => {
+          setupLive();
+          // Wrap the NetworkingEngine to cause errors.
+          const targetUri = '0_audio_init';
+          failFirstRequestForTarget(netEngine, targetUri,
+              shaka.util.Error.Code.BAD_HTTP_STATUS);
+
+          mediaSourceEngine = new shaka.test.FakeMediaSourceEngine(segmentData);
+
+          const config = shaka.util.PlayerConfiguration
+              .createDefault().streaming;
+          config.failureCallback = () => streamingEngine.retry();
+          createStreamingEngine(config);
+
+          presentationTimeInSeconds = 100;
+
+          onError.and.callFake(() => {});
+
+          await audioStream.createSegmentIndex();
+          audioStream.segmentIndex.dropInvalidReferences =
+            jasmine.createSpy('dropInvalidReferences');
+
+          // Here we go!
+          streamingEngine.switchVariant(variant);
+          streamingEngine.switchTextStream(textStream);
+          await streamingEngine.start();
+          playing = true;
+
+          await runTest();
+          expect(mediaSourceEngine.endOfStream).toHaveBeenCalledTimes(1);
+          expect(audioStream.segmentIndex.dropInvalidReferences)
+              .toHaveBeenCalled();
+
+          const targetCalls = netEngine.request.calls.all().filter((data) => {
+            const request = data.args[1];
+            return request.uris[0] == targetUri;
+          });
+          expect(targetCalls.length).toBeGreaterThan(0);
+        });
   });
 
   describe('handles seeks (VOD)', () => {
@@ -1997,6 +2041,15 @@ describe('StreamingEngine', () => {
         expect(error.category).toBe(shaka.util.Error.Category.NETWORK);
         expect(error.code).toBe(shaka.util.Error.Code.BAD_HTTP_STATUS);
       });
+
+      // Bypass segment iterator recovery
+      await audioStream.createSegmentIndex();
+      const segmentIndex = audioStream.segmentIndex;
+      const oldFind = segmentIndex.find;
+      audioStream.segmentIndex.find = (time) => {
+        // eslint-disable-next-line no-restricted-syntax
+        return time > 100 ? null : oldFind.call(segmentIndex, time);
+      };
 
       // Here we go!
       streamingEngine.switchVariant(variant);

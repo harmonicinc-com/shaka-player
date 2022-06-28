@@ -2335,40 +2335,4 @@ describe('DashParser Manifest', () => {
       periods: periodXmls.join('\n'),
     });
   }
-
-  // Bug description: Inconsistent period start time in the manifests due
-  // to failover triggered in backend servers
-
-  // When one of the servers is down, the manifest will be served by other
-  // redundant servers. The period start time might become out of sync
-  // during the switch-over/recovery.
-
-  it('skip periods that are earlier than max period start time', async () => {
-    const sources = [
-      buildManifestWithPeriodStartTime([5, 15]),
-      buildManifestWithPeriodStartTime([6, 15]), // simulate out-of-sync of +1s
-      buildManifestWithPeriodStartTime([4, 15]), // simulate out-of-sync of -1s
-    ];
-    const segments = [];
-
-    for (const source of sources) {
-      fakeNetEngine.setResponseText('dummy://foo', source);
-      /** @type {shaka.extern.Manifest} */
-      // eslint-disable-next-line no-await-in-loop
-      const manifest = await parser.start('dummy://foo', playerInterface);
-      const video = manifest.variants[0].video;
-      // eslint-disable-next-line no-await-in-loop
-      await video.createSegmentIndex();
-      goog.asserts.assert(video.segmentIndex, 'Null segmentIndex!');
-      segments.push(Array.from(video.segmentIndex));
-    }
-
-    // Expect identical segments
-    expect(segments[0].length).toBe(2);
-    expect(segments[1].length).toBe(2);
-    expect(segments[0][0].startTime).toBe(5);
-    expect(segments[1][0].startTime).toBe(5);
-    expect(segments[0][1].startTime).toBe(15);
-    expect(segments[1][1].startTime).toBe(15);
-  });
 });
