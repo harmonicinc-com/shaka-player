@@ -945,6 +945,23 @@ describe('SegmentIndex', /** @suppress {accessControls} */ () => {
 
       expect(Array.from(metaIndex)).toEqual(oldRefs.concat(inputRefs2));
     });
+
+    it('finds & drops stale/invalid references', () => {
+      const index1Copy = new shaka.media.SegmentIndex(inputRefs1.slice());
+
+      metaIndex.appendSegmentIndex(index0); // to be dropped: Before #3 (Stale)
+      metaIndex.appendSegmentIndex(index1);
+      metaIndex.appendSegmentIndex(index1Copy); // to be dropped: Discontinuity
+      metaIndex.appendSegmentIndex(index2);
+      // Let say we're playing reference index 3 which is in index1
+      metaIndex.dropStaleReferences(3);
+
+      // We should only leave with index1 and index2
+      expect(metaIndex.find(0)).toBe(0);
+      expect(metaIndex.find(30)).toBe(0);
+      expect(metaIndex.find(60)).toBe(3);
+      expect(Array.from(metaIndex)).toEqual(inputRefs1.concat(inputRefs2));
+    });
   });
 
   /**

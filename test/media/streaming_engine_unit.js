@@ -1159,8 +1159,8 @@ describe('StreamingEngine', () => {
           onError.and.callFake(() => {});
 
           await audioStream.createSegmentIndex();
-          audioStream.segmentIndex.dropInvalidReferences =
-            jasmine.createSpy('dropInvalidReferences');
+          audioStream.segmentIndex.dropStaleReferences =
+            jasmine.createSpy('dropStaleReferences');
 
           // Here we go!
           streamingEngine.switchVariant(variant);
@@ -1170,7 +1170,7 @@ describe('StreamingEngine', () => {
 
           await runTest();
           expect(mediaSourceEngine.endOfStream).toHaveBeenCalledTimes(1);
-          expect(audioStream.segmentIndex.dropInvalidReferences)
+          expect(audioStream.segmentIndex.dropStaleReferences)
               .toHaveBeenCalled();
 
           const targetCalls = netEngine.request.calls.all().filter((data) => {
