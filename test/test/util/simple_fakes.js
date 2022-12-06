@@ -480,6 +480,10 @@ shaka.test.FakeSegmentIndex = class {
               return this.get(nextPosition - 1);
             },
 
+            currentPosition: () => {
+              return nextPosition;
+            },
+
             seek: (time) => {
               nextPosition = this.find(time);
               return this.get(nextPosition++);
