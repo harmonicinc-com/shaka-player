@@ -118,7 +118,8 @@ shaka.extern.InitDataOverride;
  *   serverCertificateUri: string,
  *   sessionType: string,
  *   initData: Array.<!shaka.extern.InitDataOverride>,
- *   keyIds: Set.<string>
+ *   keyIds: Set.<string>,
+ *   [keyUri]: (string|undefined)
  * }}
  *
  * @description
@@ -167,6 +168,9 @@ shaka.extern.InitDataOverride;
  *   <i>Defaults to the empty Set</i> <br>
  *   If not empty, contains the default key IDs for this key system, as
  *   lowercase hex strings.
+ * @property {(string|undefined)} [keyUri]
+ *   <i>Optional. Defaults to ''</i><br>
+ *   Key URI for HLS only. Used to fetch the actual 16-byte key.
  * @exportDoc
  */
 shaka.extern.DrmInfo;
