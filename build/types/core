@@ -8,8 +8,6 @@
 +../../lib/abr/sliding_percentile.js
 +../../lib/abr/sliding_percentile_bandwidth_estimator.js
 
-+../../lib/config/auto_show_text.js
-
 +../../lib/debug/asserts.js
 +../../lib/debug/log.js
 
@@ -28,7 +26,6 @@
 +../../lib/media/gap_jumping_controller.js
 +../../lib/media/live_catchup_controller.js
 +../../lib/media/manifest_parser.js
-+../../lib/media/media_source_capabilities.js
 +../../lib/media/media_source_engine.js
 +../../lib/media/mp4_segment_index_parser.js
 +../../lib/media/play_rate_controller.js
@@ -42,8 +39,8 @@
 +../../lib/media/segment_reference.js
 +../../lib/media/stall_detector.js
 +../../lib/media/streaming_engine.js
-+../../lib/media/segment_prefetch.js
 +../../lib/media/time_ranges_utils.js
++../../lib/media/transmuxer.js
 +../../lib/media/video_wrapper.js
 +../../lib/media/webm_segment_index_parser.js
 
@@ -61,11 +58,7 @@
 +../../lib/text/cue.js
 +../../lib/text/simple_text_displayer.js
 +../../lib/text/text_engine.js
-+../../lib/text/text_utils.js
 +../../lib/text/ui_text_displayer.js
-+../../lib/text/web_vtt_generator.js
-
-+../../lib/transmuxer/transmuxer_engine.js
 
 +../../lib/util/abortable_operation.js
 +../../lib/util/array_utils.js
@@ -79,14 +72,12 @@
 +../../lib/util/ebml_parser.js
 +../../lib/util/error.js
 +../../lib/util/event_manager.js
-+../../lib/util/exp_golomb.js
 +../../lib/util/fairplay_utils.js
 +../../lib/util/fake_event.js
 +../../lib/util/fake_event_target.js
 +../../lib/util/functional.js
 +../../lib/util/i_destroyable.js
 +../../lib/util/i_releasable.js
-+../../lib/util/id3_utils.js
 +../../lib/util/iterables.js
 +../../lib/util/language_utils.js
 +../../lib/util/lazy.js
@@ -112,7 +103,6 @@
 +../../lib/util/switch_history.js
 +../../lib/util/text_parser.js
 +../../lib/util/timer.js
-+../../lib/util/ts_parser.js
 +../../lib/util/uint8array_utils.js
 +../../lib/util/xml_utils.js
 
