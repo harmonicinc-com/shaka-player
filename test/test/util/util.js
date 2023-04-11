@@ -89,11 +89,10 @@ shaka.test.Util = class {
    * given value.
    *
    * @param {number} val
-   * @param {number=} maxDelta
    * @return {number}
    */
-  static closeTo(val, maxDelta = 0.000001) {
-    const E = /** @type {number} */(maxDelta);
+  static closeTo(val) {
+    const E = 0.000001;
     return /** @type {number} */(/** @type {?} */({
       asymmetricMatch: (other) => other >= val - E && other <= val + E,
       jasmineToString: () => '<closeTo: ' + val + '>',
@@ -129,7 +128,7 @@ shaka.test.Util = class {
    */
   static expectToEqualElementCompare_(actual, expected) {
     const diff =
-      shaka.test.Util.expectToEqualElementRecursive_(actual, expected);
+        shaka.test.Util.expectToEqualElementRecursive_(actual, expected);
     const result = {};
     result.pass = diff == null;
     if (result.pass) {
@@ -150,8 +149,8 @@ shaka.test.Util = class {
    */
   static expectToEqualElementRecursive_(actual, expected) {
     const prospectiveDiff = 'The difference was in ' +
-      (actual.outerHTML || actual.textContent) + ' vs ' +
-      (expected['outerHTML'] || expected.textContent) + ': ';
+        (actual.outerHTML || actual.textContent) + ' vs ' +
+        (expected['outerHTML'] || expected.textContent) + ': ';
     const getAttr = (obj, attr) => {
       if (attr.namespaceURI) {
         return shaka.util.XmlUtils.getAttributeNS(
@@ -183,7 +182,7 @@ shaka.test.Util = class {
         if (valueA != valueB) {
           const name = (attr.prefix ? attr.prefix + ':' : '') + attr.localName;
           return `${prospectiveDiff} Attribute ${name} was different ` +
-            `(${valueA} vs ${valueB})`;
+                 `(${valueA} vs ${valueB})`;
         }
       }
 
@@ -194,7 +193,7 @@ shaka.test.Util = class {
         const aNode = actual.childNodes[i];
         const eNode = expected.childNodes[i];
         const diff =
-          shaka.test.Util.expectToEqualElementRecursive_(aNode, eNode);
+            shaka.test.Util.expectToEqualElementRecursive_(aNode, eNode);
         if (diff) {
           return diff;
         }
@@ -212,20 +211,20 @@ shaka.test.Util = class {
    */
   static compareReferences(first, second) {
     const isSegment = first instanceof shaka.media.SegmentReference &&
-      second instanceof shaka.media.SegmentReference;
+        second instanceof shaka.media.SegmentReference;
     const isInit = first instanceof shaka.media.InitSegmentReference &&
-      second instanceof shaka.media.InitSegmentReference;
+        second instanceof shaka.media.InitSegmentReference;
     if (isSegment || isInit) {
       const firstRef = /** @type {shaka.media.AnySegmentReference} */(first);
       const secondRef = /** @type {shaka.media.AnySegmentReference} */(second);
       const a = firstRef.getUris();
       const b = secondRef.getUris();
       if (typeof a !== 'object' || typeof b !== 'object' ||
-        typeof a.length != 'number' || typeof b.length !== 'number') {
+          typeof a.length != 'number' || typeof b.length !== 'number') {
         return false;
       }
       if (a.length != b.length ||
-        !a.every((x, i) => { return x == b[i]; })) {
+          !a.every((x, i) => { return x == b[i]; })) {
         return false;
       }
 
@@ -263,8 +262,8 @@ shaka.test.Util = class {
 
       xhr.onload = (event) => {
         if (xhr.status >= 200 &&
-          xhr.status <= 299 &&
-          !!xhr.response) {
+            xhr.status <= 299 &&
+            !!xhr.response) {
           resolve(/** @type {!ArrayBuffer} */(xhr.response));
         } else {
           let message = '';
@@ -326,6 +325,126 @@ shaka.test.Util = class {
     // https://github.com/shaka-project/closure-compiler/issues/1422
     return /** @type {Function} */(spy)(...varArgs);
   }
+
+  /**
+   * Waits for a particular font to be loaded.  Useful in screenshot tests to
+   * make sure we have consistent results with regard to the web fonts we load
+   * in the UI.
+   *
+   * @param {string} name
+   * @return {!Promise}
+   */
+  static async waitForFont(name) {
+    await new Promise((resolve, reject) => {
+      // https://github.com/zachleat/fontfaceonload
+      // eslint-disable-next-line new-cap
+      FontFaceOnload(name, {
+        success: resolve,
+        error: () => {
+          reject(new Error('Timeout waiting for font ' + name + ' to load'));
+        },
+        timeout: 10 * 1000,  // ms
+      });
+    });
+
+    // Wait one extra tick to make sure the font rendering on the page has been
+    // updated.  Without this, we saw some rare test flake in Firefox on Mac.
+    await this.shortDelay();
+  }
+
+  /**
+   * Checks with Karma to see if this browser can take a screenshot.
+   *
+   * Only WebDriver-connected browsers can take a screenshot, and only Karma
+   * knows if the browser is connected via WebDriver.  So this must be checked
+   * in Karma via an HTTP request.
+   *
+   * @return {!Promise.<boolean>}
+   */
+  static async supportsScreenshots() {
+    // We need our own ID for Karma to look up the WebDriver connection.
+    // For manually-connected browsers, this ID may not exist.  In those cases,
+    // this method is expected to return false.
+    const parentUrlParams = window.parent.location.search;
+
+    const buffer = await shaka.test.Util.fetch(
+        '/screenshot/isSupported' + parentUrlParams);
+    const json = shaka.util.StringUtils.fromUTF8(buffer);
+    const ok = /** @type {boolean} */(JSON.parse(json));
+    return ok;
+  }
+
+  /**
+   * Asks Karma to take a screenshot for us via the WebDriver connection and
+   * compare it to the "official" screenshot for this test and platform.  Sets
+   * an expectation that the new screenshot does not differ from the official
+   * screenshot more than a fixed threshold.
+   *
+   * Only works on browsers connected via WebDriver.  Use supportsScreenshots()
+   * to filter screenshot-dependent tests.
+   *
+   * @param {!HTMLElement} element The HTML element to screenshot.  Must be
+   *   within the bounds of the viewport.
+   * @param {string} name An identifier for the screenshot.  Use alphanumeric
+   *   plus dash and underscore only.
+   * @param {number} minSimilarity A minimum similarity score between 0 and 1.
+   * @return {!Promise}
+   */
+  static async checkScreenshot(element, name, minSimilarity=1) {
+    // Make sure the DOM is up-to-date and layout has settled before continuing.
+    // Without this delay, or with a shorter delay, we sometimes get missing
+    // elements in our UITextDisplayer tests on some platforms.
+    await this.delay(0.1);
+
+    // We need our own ID for Karma to look up the WebDriver connection.
+    // By this point, we should have passed supportsScreenshots(), so the ID
+    // should definitely be there.
+    const parentUrlParams = window.parent.location.search;
+    goog.asserts.assert(parentUrlParams.includes('id='), 'No ID in URL!');
+
+    // Tests run in an iframe.  So we also need the coordinates of that iframe
+    // within the page, so that the screenshot can be consistently cropped to
+    // the element we care about.
+    const iframe = /** @type {HTMLIFrameElement} */(
+      window.parent.document.getElementById('context'));
+    const iframeRect = iframe.getBoundingClientRect();
+    const elementRect = element.getBoundingClientRect();
+    const x = iframeRect.left + elementRect.left;
+    const y = iframeRect.top + elementRect.top;
+    const width = elementRect.width;
+    const height = elementRect.height;
+
+    // Furthermore, the screenshot may not be at the scale you expect.  Measure
+    // the browser window size in JavaScript and communicate that to Karma, too,
+    // so it can convert coordinates before cropping.  This value, as opposed to
+    // document.body.getBoundingClientRect(), seems to most accurately reflect
+    // the size of the screenshot area.
+    const bodyWidth = window.parent.innerWidth;
+    const bodyHeight = window.parent.innerHeight;
+
+    // In addition to the id param from the top-level window, pass these
+    // parameters to the screenshot endpoint in Karma.
+    const params = {x, y, width, height, bodyWidth, bodyHeight, name};
+
+    let paramsString = '';
+    for (const k in params) {
+      paramsString += '&' + k + '=' + params[k];
+    }
+
+    const buffer = await shaka.test.Util.fetch(
+        '/screenshot/diff' + parentUrlParams + paramsString);
+    const json = shaka.util.StringUtils.fromUTF8(buffer);
+    const similarity = /** @type {number} */(JSON.parse(json));
+
+    // If the minimum similarity is not met, you can review the new screenshot
+    // and the diff image in the screenshots folder.  Look for images that end
+    // with "-new" and "-diff".  (NOTE: The diff is a pixel-wise diff for human
+    // review, and is not produced with the same structural similarity
+    // algorithm used to detect changes in the test.)  If cropping doesn't work
+    // right, you can view the full-page screenshot in the image that ends with
+    // "-full".
+    expect(similarity).withContext(name).not.toBeLessThan(minSimilarity);
+  }
 };
 
 /**
@@ -365,8 +484,8 @@ shaka.test.Util.customMatchers_ = {
       compare: (actual, expected) => {
         const callCount = actual.calls.count();
         const callArgs = callCount > 0 ?
-          actual.calls.mostRecent().args :
-          [];
+                         actual.calls.mostRecent().args :
+                         [];
 
         const result = {};
 
@@ -376,7 +495,7 @@ shaka.test.Util.customMatchers_ = {
         } else if (!util.equals(callArgs, expected)) {
           result.pass = false;
           result.message =
-            'Expected to be called with ' + expected + ' not ' + callArgs;
+              'Expected to be called with ' + expected + ' not ' + callArgs;
         } else {
           result.pass = true;
         }
