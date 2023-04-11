@@ -5,6 +5,9 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
     branches:
       - 'harmonic-v\d.*'
+  push:
+    branches:
+      - 'harmonic-v\d.*'
   workflow_dispatch: # Allows for manual triggering.
     inputs:
       ref:
