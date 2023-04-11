@@ -1,15 +1,20 @@
-# Build with:
-#   docker build -t shaka-player-build /path/to/shaka-player/build/docker
-# Run with:
-#   docker run -v /path/to/shaka-player:/usr/src --user $(id -u):$(id -g) shaka-player-build
+# Alpine was chosen by providing a node container less than 100mb
+FROM node:17.7.1-alpine3.15
 
-FROM alpine:3.14
+WORKDIR /usr/src/app
 
 # Install dependencies
-RUN apk add --update --no-cache \
-  bash git nodejs npm openjdk11-jre-headless python3
+RUN apk add --update --no-cache openssh git python3 openjdk11-jre-headless
+RUN ln -sf python3 /usr/bin/python
 
-WORKDIR /usr/src
-ENV HOME /tmp
+# Change to non-root user
+USER node
 
-CMD ["python3", "build/all.py"]
+# Prevent proxy timeout error (very slow connections)
+RUN npm config set fetch-retry-mintimeout 20000
+RUN npm config set fetch-retry-maxtimeout 120000
+RUN npm config rm proxy
+RUN npm config rm https-proxy
+
+# Run compilation
+CMD [ "python", "build/all.py" ]
