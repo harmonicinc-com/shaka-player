@@ -973,7 +973,7 @@ describe('DashParser Live', () => {
         '</MPD>',
       ].join('\n');
       fakeNetEngine
-          .setResponseText('http://foo.bar/date', '1970-01-01T00:00:30Z')
+          .setResponseText('http://foo.bar/date', '1970-01-01T00:00:30.000Z')
           .setResponseText('dummy://foo', manifest);
     });
 
