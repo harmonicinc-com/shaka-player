@@ -176,6 +176,33 @@ describe('DashParser Manifest Patch', () => {
           .toBe('patch.mpd?publishTime=2020-12-12T03:40:59.51Z');
     });
 
+    it('replace node by attribute', async () => {
+      const patchContents = [
+        '<Patch xmlns="urn:mpeg:dash:schema:mpd-patch:2020">',
+        '   <replace sel="/MPD/Period[@id=\'1\']/AdaptationSet[1]',
+        '     /SegmentTemplate/SegmentTimeline/S[@t=\'30\']">',
+        '     <S t="30" d="29" />',
+        '   </replace>',
+        '</Patch>',
+      ].join('\n');
+      fakeNetEngine.setResponseText(patchUri, patchContents);
+
+      await parser.start('dummy://foo/manifest.mpd', playerInterface);
+      await parser.update();
+      /** @type {Element} */
+      const mpd = parser.getMpd();
+
+      const xpath = [
+        '/MPD/Period[@id=\'1\']/AdaptationSet[1]',
+        '/SegmentTemplate/SegmentTimeline/S[2]',
+      ].join('\n');
+      const evaluator = new XPathEvaluator();
+      const node = shaka.dash.DashParser.getNodeByXPath(evaluator, mpd, xpath);
+
+      expect(node).not.toBe(null);
+      expect(node.getAttribute('d')).toBe('29');
+    });
+
     it('remove attribute', async () => {
       const patchContents = [
         '<Patch xmlns="urn:mpeg:dash:schema:mpd-patch:2020">',
@@ -203,6 +230,32 @@ describe('DashParser Manifest Patch', () => {
         '<Patch xmlns="urn:mpeg:dash:schema:mpd-patch:2020">',
         '   <remove sel="/MPD/Period[@id=\'1\']/AdaptationSet[1]',
         '     /SegmentTemplate/SegmentTimeline/S[1]">',
+        '   </remove>',
+        '</Patch>',
+      ].join('\n');
+      fakeNetEngine.setResponseText(patchUri, patchContents);
+
+      await parser.start('dummy://foo/manifest.mpd', playerInterface);
+      await parser.update();
+      /** @type {Element} */
+      const mpd = parser.getMpd();
+
+      const xpath = [
+        '/MPD/Period[@id=\'1\']/AdaptationSet[1]',
+        '/SegmentTemplate/SegmentTimeline',
+      ].join('\n');
+      const evaluator = new XPathEvaluator();
+      const node = shaka.dash.DashParser.getNodeByXPath(evaluator, mpd, xpath);
+
+      expect(node).not.toBe(null);
+      expect(node.childElementCount).toBe(1);
+    });
+
+    it('remove node by attribute', async () => {
+      const patchContents = [
+        '<Patch xmlns="urn:mpeg:dash:schema:mpd-patch:2020">',
+        '   <remove sel="/MPD/Period[@id=\'1\']/AdaptationSet[1]',
+        '     /SegmentTemplate/SegmentTimeline/S[@t=\'0\']">',
         '   </remove>',
         '</Patch>',
       ].join('\n');
