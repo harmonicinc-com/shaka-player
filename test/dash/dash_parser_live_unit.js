@@ -1500,7 +1500,7 @@ describe('DashParser Live', () => {
     // fake the current time and wait long enough for the timer to fire and
     // update the references.
     Date.now = () => 10.1 * 1000;
-    await shaka.test.Util.delay(2.1);  // A little longer than the segments are.
+    stream.segmentIndex.update();
 
     ManifestParser.verifySegmentIndex(stream, [
       shaka.test.ManifestParser.makeReference('s1.mp4', 0, 2, originalUri),
