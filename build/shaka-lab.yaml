@@ -61,7 +61,31 @@ vars:
       excludeSwitches:
         - "disable-component-update"
 
-  chrome_android_config: &chrome_android_config
+  basic_edge_config: &basic_edge_config
+    ms:edgeOptions:
+      args:
+        # Normally, Edge disallows autoplaying videos in many cases.  Enable it
+        # for testing.
+        - "--autoplay-policy=no-user-gesture-required"
+        # Disable browser features that try to save power by suspending media,
+        # throttling timers, etc.
+        - "--disable-background-media-suspend"
+        - "--disable-background-timer-throttling"
+        - "--disable-backgrounding-occluded-windows"
+
+      # Instruct edgedriver not to disable component updater. The component
+      # updater must run in order for the Widevine CDM to be available when
+      # using a new user-data-dir.
+      excludeSwitches:
+        - "disable-component-update"
+
+  # Work around https://github.com/MicrosoftEdge/EdgeWebDriver/issues/102#issuecomment-1710724173
+  # by specifying the binary path on Linux.
+  edge_linux_config: &edge_linux_config
+    ms:edgeOptions:
+      binary: /usr/bin/microsoft-edge
+
+  android_chrome_config: &android_chrome_config
     goog:chromeOptions:
       args: *minimum_chrome_android_args
 
@@ -137,7 +161,18 @@ ChromeLinux:
 FirefoxLinux:
   browser: firefox
   os: Linux
-  extra_config: *firefox_config
+  extra_configs:
+    - *basic_firefox_config
+
+EdgeLinux:
+  browser: msedge
+  os: Linux
+  extra_configs:
+    - *basic_edge_config
+    - *edge_linux_config
+
+
+### Misc ###
 
 ChromeAndroid:
   browser: chrome
