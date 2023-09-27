@@ -357,6 +357,7 @@ describe('RegionObserver', () => {
       startTime: startTimeSeconds,
       endTime: endTimeSeconds,
       eventElement: null,
+      hlsDateRangeInfo: null,
     };
   }
 

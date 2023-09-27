@@ -445,12 +445,13 @@ shaka.extern.ID3Metadata;
 
 /**
  * @typedef {{
- *   schemeIdUri: string,
- *   value: string,
+ *   schemeIdUri: ?string,
+ *   value: ?string,
  *   startTime: number,
  *   endTime: number,
  *   id: string,
- *   eventElement: Element
+ *   eventElement: ?Element,
+ *   hlsDateRangeInfo: ?shaka.extern.HlsDateRangeInfo
  * }}
  *
  * @description
@@ -458,9 +459,9 @@ shaka.extern.ID3Metadata;
  * to be raised when the playhead enters or exits it.  In DASH this is the
  * EventStream element.
  *
- * @property {string} schemeIdUri
+ * @property {?string} schemeIdUri
  *   Identifies the message scheme.
- * @property {string} value
+ * @property {?string} value
  *   Specifies the value for the region.
  * @property {number} startTime
  *   The presentation time (in seconds) that the region should start.
@@ -468,11 +469,36 @@ shaka.extern.ID3Metadata;
  *   The presentation time (in seconds) that the region should end.
  * @property {string} id
  *   Specifies an identifier for this instance of the region.
- * @property {Element} eventElement
+ * @property {?Element} eventElement
  *   The XML element that defines the Event.
+ * @property {?shaka.extern.HlsDateRangeInfo} hlsDateRangeInfo
+ *   Info in an HLS EXT-X-DATERANGE tag.
  * @exportDoc
  */
 shaka.extern.TimelineRegionInfo;
+
+/**
+ * @typedef {{
+ *   class: ?string,
+ *   duration: ?number,
+ *   plannedDuration: ?number,
+ *   customAttributes: !Object.<string, ?>
+ * }}
+ *
+ * @description
+ * Contains information about an EXT-X-DATERANGE tag in HLS.
+ *
+ * @property {?string} class
+ *   CLASS attribute from the EXT-X-DATERANGE tag.
+ * @property {?number} duration
+ *   DURATION attribute from the EXT-X-DATERANGE tag.
+ * @property {?number} plannedDuration
+ *   PLANNED-DURATION attribute from the EXT-X-DATERANGE tag.
+ * @property {!Object.<string, ?>} customAttributes
+ *   X-<client-attribute> from the EXT-X-DATERANGE tag.
+ * @exportDoc
+ */
+shaka.extern.HlsDateRangeInfo;
 
 /**
  * @typedef {{
