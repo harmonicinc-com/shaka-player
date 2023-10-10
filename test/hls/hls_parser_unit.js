@@ -130,6 +130,17 @@ describe('HlsParser', () => {
     return actual;
   }
 
+  /**
+   * Trigger a playlist update.
+   * @suppress {accessControls}
+   */
+  async function updatePlaylist() {
+    if (parser.updatePlaylistTimer_) {
+      parser.updatePlaylistTimer_.tickNow();
+    }
+    await Util.shortDelay();  // Allow update to complete.
+  }
+
   it('parses manifest attributes', async () => {
     const master = [
       '#EXTM3U\n',
@@ -3781,5 +3792,187 @@ describe('HlsParser', () => {
       'test:/audio3.mp4',
       'test:/audio4.mp4',
     ]);
+  });
+
+  describe('EXT-X-DATERANGE', () => {
+    const master = [
+      '#EXTM3U\n',
+      '#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="aud1",LANGUAGE="eng",URI="audio"\n',
+      '#EXT-X-STREAM-INF:BANDWIDTH=200,CODECS="avc1,mp4a",',
+      'RESOLUTION=960x540,FRAME-RATE=60,AUDIO="aud1"\n',
+      'video\n',
+    ].join('');
+
+    const media = [
+      '#EXTM3U\n',
+      '#EXT-X-TARGETDURATION:5\n',
+      '#EXT-X-MAP:URI="init.mp4",BYTERANGE="616@0"\n',
+      '#EXT-X-MEDIA-SEQUENCE:1\n',
+      '#EXT-X-PROGRAM-DATE-TIME:2000-01-01T00:00:05.00Z\n',
+      '#EXTINF:5,\n',
+      'main.mp4\n',
+      '#EXT-X-DATERANGE:ID="abc",CLASS="com.example",',
+      'START-DATE="2000-01-01T00:00:10.00Z",PLANNED-DURATION=10.000,',
+      'X-CUSTOM-NAME="custom-value-abc"\n',
+      '#EXT-X-PROGRAM-DATE-TIME:2000-01-01T00:00:10.00Z\n',
+      '#EXTINF:5,\n',
+      'main.mp4\n',
+      '#EXT-X-DATERANGE:ID="xyz",CLASS="com.example",',
+      'START-DATE="2000-01-01T00:00:15.00Z",PLANNED-DURATION=5.000,',
+      'X-CUSTOM-NAME="custom-value-xyz"\n',
+      '#EXT-X-PROGRAM-DATE-TIME:2000-01-01T00:00:15.00Z\n',
+      '#EXTINF:5,\n',
+      'main.mp4\n',
+      '#EXT-X-PROGRAM-DATE-TIME:2000-01-01T00:00:20.00Z\n',
+      '#EXTINF:5,\n',
+      'main.mp4',
+    ].join('');
+
+    /** @type {!jasmine.Spy} */
+    let onTimelineRegionAddedSpy;
+
+    beforeEach(() => {
+      onTimelineRegionAddedSpy = jasmine.createSpy('onTimelineRegionAdded');
+      playerInterface.onTimelineRegionAdded =
+        shaka.test.Util.spyFunc(onTimelineRegionAddedSpy);
+    });
+
+    it('parses EXT-X-DATERANGE tags as TimelineRegion', async () => {
+      fakeNetEngine
+          .setResponseText('test:/master', master)
+          .setResponseText('test:/audio', media)
+          .setResponseText('test:/video', media)
+          .setResponseValue('test:/init.mp4', initSegmentData)
+          .setResponseValue('test:/main.mp4', segmentData);
+      await parser.start('test:/master', playerInterface);
+
+      expect(onTimelineRegionAddedSpy).toHaveBeenCalledTimes(2);
+
+      expect(onTimelineRegionAddedSpy).toHaveBeenCalledWith({
+        schemeIdUri: null,
+        value: null,
+        startTime: 5,
+        endTime: 15,
+        id: 'abc',
+        eventElement: null,
+        hlsDateRangeInfo: {
+          class: 'com.example',
+          duration: 0,
+          plannedDuration: 10,
+          customAttributes: {
+            'X-CUSTOM-NAME': 'custom-value-abc',
+          },
+        },
+      });
+      expect(onTimelineRegionAddedSpy).toHaveBeenCalledWith({
+        schemeIdUri: null,
+        value: null,
+        startTime: 10,
+        endTime: 15,
+        id: 'xyz',
+        eventElement: null,
+        hlsDateRangeInfo: {
+          class: 'com.example',
+          duration: 0,
+          plannedDuration: 5,
+          customAttributes: {
+            'X-CUSTOM-NAME': 'custom-value-xyz',
+          },
+        },
+      });
+    });
+
+    it('updates TimelineRegion when duration has changed', async () => {
+      const newMedia = [
+        '#EXTM3U\n',
+        '#EXT-X-TARGETDURATION:5\n',
+        '#EXT-X-MAP:URI="init.mp4",BYTERANGE="616@0"\n',
+        '#EXT-X-MEDIA-SEQUENCE:4\n',
+        '#EXT-X-DATERANGE:ID="abc",CLASS="com.example",',
+        'START-DATE="2000-01-01T00:00:10.00Z",',
+        'END-DATE="2000-01-01T00:00:20.00Z",DURATION=10.000\n',
+        '#EXT-X-PROGRAM-DATE-TIME:2000-01-01T00:00:20.00Z\n',
+        '#EXTINF:5,\n',
+        'main.mp4\n',
+        '#EXT-X-DATERANGE:ID="xyz",CLASS="com.example",',
+        'START-DATE="2000-01-01T00:00:15.00Z",',
+        'END-DATE="2000-01-01T00:00:25.00Z",DURATION=10.000\n',
+        '#EXT-X-PROGRAM-DATE-TIME:2000-01-01T00:00:25.00Z\n',
+        '#EXTINF:5,\n',
+        'main.mp4',
+      ].join('');
+
+      fakeNetEngine
+          .setResponseText('test:/master', master)
+          .setResponseText('test:/audio', media)
+          .setResponseText('test:/video', media)
+          .setResponseValue('test:/init.mp4', initSegmentData)
+          .setResponseValue('test:/main.mp4', segmentData);
+      await parser.start('test:/master', playerInterface);
+
+      expect(onTimelineRegionAddedSpy).toHaveBeenCalledTimes(2);
+      onTimelineRegionAddedSpy.calls.reset();
+
+      fakeNetEngine
+          .setResponseText('test:/audio', newMedia)
+          .setResponseText('test:/video', newMedia);
+      await updatePlaylist();
+
+      expect(onTimelineRegionAddedSpy).toHaveBeenCalledTimes(1);
+      expect(onTimelineRegionAddedSpy).toHaveBeenCalledWith({
+        schemeIdUri: null,
+        value: null,
+        startTime: 10,
+        endTime: 20,
+        id: 'xyz',
+        eventElement: null,
+        hlsDateRangeInfo: {
+          class: 'com.example',
+          duration: 10,
+          plannedDuration: 5,
+          customAttributes: {
+            'X-CUSTOM-NAME': 'custom-value-xyz',
+          },
+        },
+      });
+    });
+
+    it('parses startTime correctly when segments are removed', async () => {
+      const newMedia = [
+        '#EXTM3U\n',
+        '#EXT-X-TARGETDURATION:5\n',
+        '#EXT-X-MAP:URI="init.mp4",BYTERANGE="616@0"\n',
+        '#EXT-X-MEDIA-SEQUENCE:4\n',
+        '#EXT-X-DATERANGE:ID="pqrs",CLASS="com.example",',
+        'START-DATE="2000-01-01T00:00:20.00Z",PLANNED-DURATION=15.000,\n',
+        '#EXT-X-PROGRAM-DATE-TIME:2000-01-01T00:00:20.00Z\n',
+        '#EXTINF:5,\n',
+        'main.mp4',
+        '#EXT-X-PROGRAM-DATE-TIME:2000-01-01T00:00:25.00Z\n',
+        '#EXTINF:5,\n',
+        'main.mp4',
+      ].join('');
+
+      fakeNetEngine
+          .setResponseText('test:/master', master)
+          .setResponseText('test:/audio', media)
+          .setResponseText('test:/video', media)
+          .setResponseValue('test:/init.mp4', initSegmentData)
+          .setResponseValue('test:/main.mp4', segmentData);
+      await parser.start('test:/master', playerInterface);
+
+      expect(onTimelineRegionAddedSpy).toHaveBeenCalledTimes(2);
+      onTimelineRegionAddedSpy.calls.reset();
+
+      fakeNetEngine
+          .setResponseText('test:/audio', newMedia)
+          .setResponseText('test:/video', newMedia);
+      await updatePlaylist();
+
+      expect(onTimelineRegionAddedSpy).toHaveBeenCalledTimes(1);
+
+      expect(onTimelineRegionAddedSpy).toHaveBeenCalledWith(
+          jasmine.objectContaining({startTime: 15, endTime: 30}));
+    });
   });
 });
