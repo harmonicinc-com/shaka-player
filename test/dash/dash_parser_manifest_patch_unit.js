@@ -17,16 +17,16 @@ describe('DashParser Manifest Patch', () => {
     playerInterface = {
       networkingEngine: fakeNetEngine,
       filter: (manifest) => Promise.resolve(),
-      makeTextStreamsForClosedCaptions: (manifest) => {},
+      makeTextStreamsForClosedCaptions: (manifest) => { },
       onTimelineRegionAdded: fail,  // Should not have any EventStream elements.
       onEvent: shaka.test.Util.spyFunc(onEventSpy),
       onError: fail,
       isLowLatencyMode: () => false,
       isAutoLowLatencyMode: () => false,
-      enableLowLatencyMode: () => {},
+      enableLowLatencyMode: () => { },
 
-      modifyManifestRequest: () => {},
-      modifySegmentRequest: () => {},
+      modifyManifestRequest: () => { },
+      modifySegmentRequest: () => { },
     };
   });
 
@@ -145,7 +145,7 @@ describe('DashParser Manifest Patch', () => {
 
       const evaluator = new XPathEvaluator();
       const node = shaka.dash.DashParser.getNodeByXPath(evaluator, mpd,
-          '/MPD/Period[@id=\'1\']/AdaptationSet[1]/SegmentTemplate');
+        '/MPD/Period[@id=\'1\']/AdaptationSet[1]/SegmentTemplate');
 
       expect(node).not.toBe(null);
       expect(node.getAttribute('timescale')).toBe('123');
@@ -169,11 +169,11 @@ describe('DashParser Manifest Patch', () => {
 
       const evaluator = new XPathEvaluator();
       const node = shaka.dash.DashParser.getNodeByXPath(evaluator, mpd,
-          '/MPD/PatchLocation');
+        '/MPD/PatchLocation');
 
       expect(node).not.toBe(null);
       expect(node.textContent)
-          .toBe('patch.mpd?publishTime=2020-12-12T03:40:59.51Z');
+        .toBe('patch.mpd?publishTime=2020-12-12T03:40:59.51Z');
     });
 
     it('replace node by attribute', async () => {
@@ -219,7 +219,7 @@ describe('DashParser Manifest Patch', () => {
 
       const evaluator = new XPathEvaluator();
       const node = shaka.dash.DashParser.getNodeByXPath(evaluator, mpd,
-          '/MPD/Period[@id=\'1\']/AdaptationSet[1]/SegmentTemplate');
+        '/MPD/Period[@id=\'1\']/AdaptationSet[1]/SegmentTemplate');
 
       expect(node).not.toBe(null);
       expect(node.hasAttribute('timescale')).toBe(false);
@@ -285,6 +285,11 @@ describe('DashParser Manifest Patch', () => {
     /** @type {string} */
     let patchUri;
 
+    const queryDOM = (dom, xpath) => {
+      const evaluator = new XPathEvaluator();
+      return shaka.dash.DashParser.getNodeByXPath(evaluator, dom, xpath);
+    };
+
     beforeEach(() => {
       mpdUri = 'dummy://foo/manifest.mpd';
       patchUri = 'dummy://foo/patch.mpd?publishTime=2020-12-12T03:40:55.51Z';
@@ -346,7 +351,7 @@ describe('DashParser Manifest Patch', () => {
 
     it('remove segments with r attribute', async () => {
       const mpd = [
-        '<MPD minBufferTime="PT75S" timeShiftBufferDepth="PT200S"',
+        '<MPD minBufferTime="PT15S" timeShiftBufferDepth="PT30S"',
         ' type="dynamic"',
         ' availabilityStartTime="1970-01-01T00:00:00Z"',
         ' maxSegmentDuration="PT5S"',
@@ -361,8 +366,7 @@ describe('DashParser Manifest Patch', () => {
         '    <AdaptationSet mimeType="video/mp4">',
         '      <SegmentTemplate timescale="1" media="1.mp4">',
         '        <SegmentTimeline>',
-        '          <S t="0" d="30" r="10"/>',
-        '          <S t="330" d="30" />',
+        '          <S t="0" d="2" r="18"/>',
         '        </SegmentTimeline>',
         '      </SegmentTemplate>',
         '      <Representation id="1" bandwidth="1" />',
@@ -370,40 +374,147 @@ describe('DashParser Manifest Patch', () => {
         '  </Period>',
         '</MPD>',
       ].join('\n');
-      const patchContents = [
-        '<Patch xmlns="urn:mpeg:dash:schema:mpd-patch:2020">',
-        '   <add sel="/MPD/Period[@id=\'1\']/AdaptationSet[1]',
-        '     /SegmentTemplate/SegmentTimeline/S[2]" type="@r">1</add>',
-        '</Patch>',
-      ].join('\n');
+      
       fakeNetEngine.setResponseText(mpdUri, mpd);
-      fakeNetEngine.setResponseText(patchUri, patchContents);
-
-      const manifest = await parser.start(mpdUri, playerInterface);
+      let manifest = await parser.start(mpdUri, playerInterface);
       const stream = manifest.variants[0].video;
       await stream.createSegmentIndex();
+
+      /////////////// Patch 1 ///////////////
+      fakeNetEngine.setResponseText(patchUri, [
+        '<Patch xmlns="urn:mpeg:dash:schema:mpd-patch:2020">',
+        '   <replace sel="/MPD/Period[@id=\'1\']/AdaptationSet[1]',
+        '     /SegmentTemplate/SegmentTimeline/S[1]/@r">19</replace>',
+        '</Patch>',
+      ].join('\n'));
       await parser.update();
       /** @type {Element} */
-      const dom = parser.getMpd();
+      let dom = parser.getMpd();
 
-      const evaluator = new XPathEvaluator();
-      let xpath = [
+      let node = queryDOM(dom, [
         '/MPD/Period[@id=\'1\']/AdaptationSet[1]',
         '/SegmentTemplate/SegmentTimeline',
+      ].join('\n'));
+
+      expect(node).not.toBe(null);
+      expect(node.childElementCount).toBe(1);
+
+      node = queryDOM(dom, [
+        '/MPD/Period[@id=\'1\']/AdaptationSet[1]',
+        '/SegmentTemplate/SegmentTimeline/S[1]',
+      ].join('\n'));
+      expect(node).not.toBe(null);
+      expect(node.getAttribute('t')).toBe('0');
+      expect(node.getAttribute('r')).toBe('19');
+
+      /////////////// Patch 2 ///////////////
+      fakeNetEngine.setResponseText(patchUri, [
+        '<Patch xmlns="urn:mpeg:dash:schema:mpd-patch:2020">',
+        '   <add sel="/MPD/Period[@id=\'1\']/AdaptationSet[1]',
+        '     /SegmentTemplate/SegmentTimeline">',
+        '     <S t="40" d="1" r="2"/></add>',
+        '</Patch>',
+      ].join('\n'));
+      await parser.update();
+      /** @type {Element} */
+      dom = parser.getMpd();
+      
+      node = queryDOM(dom, [
+        '/MPD/Period[@id=\'1\']/AdaptationSet[1]',
+        '/SegmentTemplate/SegmentTimeline/S[1]',
+      ].join('\n'));
+      
+      expect(node).not.toBe(null);
+      expect(node.getAttribute('t')).toBe('10');
+      expect(node.getAttribute('r')).toBe('14');
+    });
+
+    it('remove segments with r attribute (Low Latency)', async () => {
+      const mpd = [
+        '<MPD minBufferTime="PT15S" timeShiftBufferDepth="PT30S"',
+        ' type="dynamic"',
+        ' availabilityStartTime="1970-01-01T00:00:00Z"',
+        ' maxSegmentDuration="PT5S"',
+        ' suggestedPresentationDelay="PT0S"',
+        ' xmlns="urn:mpeg:dash:schema:mpd-patch:2011"',
+        ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"',
+        ' xsi:schemaLocation="urn:mpeg:dash:schema:mpd-patch:2020',
+        ' DASH-MPDPATCH.xsd">',
+        '  <PatchLocation ttl="60"',
+        '   >patch.mpd?publishTime=2020-12-12T03:40:55.51Z</PatchLocation>',
+        '  <Period id="1">',
+        '    <AdaptationSet mimeType="video/mp4">',
+        '      <SegmentTemplate timescale="1" media="1.mp4" availabilityTimeOffset="1.900000" availabilityTimeComplete="false">',
+        '        <SegmentTimeline>',
+        '          <S t="0" d="2" r="18"/>',
+        '          <S t="38" d="1" />', // This is LL segment
+        '        </SegmentTimeline>',
+        '      </SegmentTemplate>',
+        '      <Representation id="1" bandwidth="1" />',
+        '    </AdaptationSet>',
+        '  </Period>',
+        '</MPD>',
       ].join('\n');
-      let node = shaka.dash.DashParser.getNodeByXPath(evaluator, dom, xpath);
+
+      fakeNetEngine.setResponseText(mpdUri, mpd);
+      let manifest = await parser.start(mpdUri, playerInterface);
+      const stream = manifest.variants[0].video;
+      await stream.createSegmentIndex();
+
+      /////////////// Patch 1 ///////////////
+      fakeNetEngine.setResponseText(patchUri, [
+        '<Patch xmlns="urn:mpeg:dash:schema:mpd-patch:2020">',
+        '   <remove sel="/MPD/Period[@id=\'1\']/AdaptationSet[1]/SegmentTemplate/SegmentTimeline/S[2]"></remove>',
+        '   <replace sel="/MPD/Period[@id=\'1\']/AdaptationSet[1]/SegmentTemplate/SegmentTimeline/S[1]/@r">19</replace>',
+        '   <add sel="/MPD/Period[@id=\'1\']/AdaptationSet[1]/SegmentTemplate/SegmentTimeline">',
+        '     <S t="40" d="1"/>',
+        '   </add>',
+        '</Patch>',
+      ].join('\n'));
+      await parser.update();
+      /** @type {Element} */
+      let dom = parser.getMpd();
+
+      let node = queryDOM(dom, [
+        '/MPD/Period[@id=\'1\']/AdaptationSet[1]',
+        '/SegmentTemplate/SegmentTimeline',
+      ].join('\n'));
 
       expect(node).not.toBe(null);
       expect(node.childElementCount).toBe(2);
 
-      xpath = [
+      node = queryDOM(dom, [
         '/MPD/Period[@id=\'1\']/AdaptationSet[1]',
         '/SegmentTemplate/SegmentTimeline/S[1]',
-      ].join('\n');
-      node = shaka.dash.DashParser.getNodeByXPath(evaluator, dom, xpath);
+      ].join('\n'));
       expect(node).not.toBe(null);
-      expect(node.getAttribute('t')).toBe('150');
-      expect(node.getAttribute('r')).toBe('5');
+      expect(node.getAttribute('t')).toBe('0');
+      expect(node.getAttribute('r')).toBe('19');
+
+      /////////////// Patch 2 ///////////////
+      fakeNetEngine.setResponseText(patchUri, [
+        '<Patch xmlns="urn:mpeg:dash:schema:mpd-patch:2020">',
+        '   <remove sel="/MPD/Period[@id=\'1\']/AdaptationSet[1]/SegmentTemplate/SegmentTimeline/S[2]"></remove>',
+        '   <add sel="/MPD/Period[@id=\'1\']/AdaptationSet[1]/SegmentTemplate/SegmentTimeline">',
+        '     <S t="40" d="3"/>',
+        '   </add>',
+        '   <add sel="/MPD/Period[@id=\'1\']/AdaptationSet[1]/SegmentTemplate/SegmentTimeline">',
+        '     <S t="43" d="1"/>',
+        '   </add>',
+        '</Patch>',
+      ].join('\n'));
+      await parser.update();
+      /** @type {Element} */
+      dom = parser.getMpd();
+      
+      node = queryDOM(dom, [
+        '/MPD/Period[@id=\'1\']/AdaptationSet[1]',
+        '/SegmentTemplate/SegmentTimeline/S[1]',
+      ].join('\n'));
+      
+      expect(node).not.toBe(null);
+      expect(node.getAttribute('t')).toBe('10');
+      expect(node.getAttribute('r')).toBe('14');
     });
 
     it('remove multiple segments with r attribute', async () => {
